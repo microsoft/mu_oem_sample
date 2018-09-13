@@ -1,0 +1,78 @@
+## @file
+# Component declaration file for the oem sample package.
+#
+# Copyright (c) 2018, Microsoft Corporation
+
+# All rights reserved.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+##
+
+[Defines]
+    DEC_SPECIFICATION   = 0x00010005
+    PACKAGE_NAME        = OemPkg
+    PACKAGE_GUID        = 394D14C6-8C75-4A83-BFE0-969EFB5AF0AA
+    PACKAGE_VERSION     = 0.1
+
+[Includes]
+    Include
+
+[LibraryClasses]
+
+[Guids]
+  # {394D14C6-8C75-4A83-BFE0-969EFB5AF0AA}
+  gOemPkgTokenSpaceGuid = { 0x394D14C6, 0x8C75, 0x4A83, { 0xBF, 0xE0, 0x96, 0x9E, 0xFB, 0x5A, 0xF0, 0xAA } }
+
+  #
+  # Guid for Alt Boot tracking variables namespace
+  #
+  gAltBootGuid = {0x26D75FF0, 0xD5CD, 0x49EC, {0x80, 0x92, 0xF8, 0xEC, 0x4D, 0x18, 0xEF, 0x33}}
+
+  ## Guid for the Uefi Version Variable Namespace.
+  #  Include/Guid/UefiVersionVariable.h
+  #
+  gMsUefiVersionVariableNameSpace = { 0x62f417c1, 0xdb72, 0x4967, { 0xaf, 0x48, 0x65, 0x8d, 0xb3, 0xef, 0x88, 0x5b } }
+
+  #
+  # Guid for FrontPage NV variable
+  # 9B09B8C1-3CC0-4F3B-A6CB-A0214B7F4C63
+  gOemBootNVVarGuid = { 0x9b09b8c1, 0x3cc0, 0x4f3b, { 0xa6, 0xcb, 0xa0, 0x21, 0x4b, 0x7f, 0x4c, 0x63 } }
+
+[Protocols]
+  gMsButtonServicesProtocolGuid     = { 0xe0084c50, 0x3efd, 0x43f7, { 0x88, 0xdf, 0x19, 0x4d, 0xf2, 0xd1, 0x60, 0xf0 }}
+
+[PcdsFixedAtBuild]
+  gOemPkgTokenSpaceGuid.PcdUefiVersionNumber        |00000000|UINT32|0x00000001
+
+  ##
+  # POST background color (default: black).
+  #
+  gOemPkgTokenSpaceGuid.PcdPostBackgroundColor|0x0|UINT32|0x40000186
+
+    ## FFS filename to find the default BMP Logo file.
+  # @Prompt FFS Name of Boot Logo File
+  gOemPkgTokenSpaceGuid.PcdLogoFile |{ 0x99, 0x8b, 0xB2, 0x7B, 0xBB, 0x61, 0xD5, 0x11, 0x9A, 0x5D, 0x00, 0x90, 0x27, 0x3F, 0xC1, 0x4D }|VOID*|0x40000128
+
+  ## FFS filename to find the Too Hot BMP file.
+  #  {7C3A8851-A6D2-445B-A53B-155F867AB4DA}
+  gOemPkgTokenSpaceGuid.PcdThermalFile |{ 0x51, 0x88, 0x3A, 0x7C, 0xD2, 0xA6, 0x5B, 0x44, 0xA5, 0x3B, 0x15, 0x5F, 0x86, 0x7A, 0xB4, 0xDA }|VOID*|0x20000030
+
+  ## FFS filename to find the Low Battery BMP file.
+  #  {D2AF039E-9F1F-4616-97AF-BE4509A365EA}
+  gOemPkgTokenSpaceGuid.PcdLowBatteryFile |{ 0x9E, 0x03, 0xAF, 0xD2, 0x1F, 0x9F, 0x16, 0x46, 0x97, 0xAF, 0xBE, 0x45, 0x09, 0xA3, 0x65, 0xEA }|VOID*|0x20000031
