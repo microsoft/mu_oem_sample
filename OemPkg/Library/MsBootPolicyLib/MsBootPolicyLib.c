@@ -410,7 +410,9 @@ MsBootPolicyLibGetBootSequence(
     BOOLEAN        AltBootRequest
     ) {
 
-    //TODO - GetSetting from SetupVariable
+    if (BootSequence == NULL) {
+      return EFI_INVALID_PARAMETER;
+    }
 
     if (AltBootRequest) {
         *BootSequence = BootSequenceUPH;

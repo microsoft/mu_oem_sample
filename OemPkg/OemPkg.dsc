@@ -68,6 +68,19 @@
   ResetSystemLib|MdeModulePkg/Library/DxeResetSystemLib/DxeResetSystemLib.inf
   TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
 
+  UIToolKitLib|MsGraphicsPkg/Library/SimpleUIToolKit/SimpleUIToolKit.inf
+  MsUiThemeLib|MsGraphicsPkg/Library/MsUiThemeLib/Dxe/MsUiThemeLib.inf
+  BootGraphicsLib|MsGraphicsPkg/Library/BootGraphicsLibNull/BootGraphicsLib.inf
+  BootGraphicsProviderLib|MsGraphicsPkg/Library/BootGraphicsProviderLibNull/BootGraphicsProviderLib.inf
+  MsColorTableLib|MsGraphicsPkg/Library/MsColorTableLib/MsColorTableLib.inf
+  SwmDialogsLib|MsGraphicsPkg/Library/SwmDialogsLib/SwmDialogs.inf
+
+  FmpHelperLib|MsCapsuleUpdatePkg/Library/FmpHelperLib/FmpHelperDxeLib.inf
+
+  GraphicConsoleHelperLib|PcBdsPkg/Library/GraphicConsoleHelperLib/GraphicConsoleHelper.inf
+  MsBootOptionsLib|PcBdsPkg/Library/MsBootOptionsLib/MsBootOptionsLib.inf
+  MsPlatformDevicesLib|PcBdsPkg/Library/MsPlatformDevicesNullLib/MsPlatformDevicesNullLib.inf
+
   MsAltBootLib|OemPkg/Library/MsAltBootLib/MsAltBootLib.inf
   MsBootPolicyLib|OemPkg/Library/MsBootPolicyLib/MsBootPolicyLib.inf
   MsNVBootReasonLib|OemPkg/Library/MsNVBootReasonLib/MsNVBootReasonLib.inf
@@ -75,8 +88,12 @@
 
   DeviceStateLib|MsCorePkg/Library/DeviceStateLib/DeviceStateLib.inf
   DeviceBootManagerLib|MsCorePkg/Library/DeviceBootManagerLibNull/DeviceBootManagerLibNull.inf
+  MathLib|MsCorePkg/Library/MathLib/MathLib.inf
 
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
+
+[LibraryClasses.IA32]
+  MsUiThemeLib|MsGraphicsPkg/Library/MsUiThemeLib/Pei/MsUiThemeLib.inf
 
 [LibraryClasses.X64]
 
@@ -89,7 +106,6 @@
 #!endif
 
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
-  MsUiThemeLib|MsGraphicsPkg/Library/MsUiThemeLib/Dxe/MsUiThemeLib.inf
 
 ###############################################################
 #
@@ -115,6 +131,10 @@
   OemPkg/Library/MsNVBootReasonLib/MsNVBootReasonLib.inf
   OemPkg/Library/MsUefiVersionLib/MsUefiVersionLib.inf
   OemPkg/Library/BootGraphicsProviderLib/BootGraphicsProviderLib.inf
+
+[Components.X64]
+  OemPkg/FrontPage/FrontPage.inf
+  OemPkg/BootMenu/BootMenu.inf
 
 [BuildOptions]
 #force deprecated interaces off
