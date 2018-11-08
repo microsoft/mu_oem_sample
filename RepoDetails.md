@@ -1,21 +1,16 @@
-# Project Mu Basecore Repository
+# Project Mu Oem Sample Repository
 
 ??? info "Git Details"
-    Repository Url: {{mu_basecore.url}}  
-    Branch:         {{mu_basecore.branch}}  
-    Commit:         [{{mu_basecore.commit}}]({{mu_basecore.commitlink}})  
-    Commit Date:    {{mu_basecore.date}}
+    Repository Url: {{mu_oem_sample.url}}  
+    Branch:         {{mu_oem_sample.branch}}  
+    Commit:         [{{mu_oem_sample.commit}}]({{mu_oem_sample.commitlink}})  
+    Commit Date:    {{mu_oem_sample.date}}
 
-This repository is considered foundational and fundamental to Project Mu. The guiding philosophy is that this any code within this repository should be one or more of the following
+This repository is considered sample code for any entity building devices using Project Mu.  It is likely that any device manufacturer will want to customize the device behavior by changing the modules in this package.  
 
-* Part of the build system
-* Common to any silicon architecture
-* Part of the "API layer" that contains protocol and library definitions including
-  * Industry Standards
-  * UEFI Specifications
-  * ACPI Specifications
-* Part of the "PI" layer that contains driver dispatch logic, event/signaling logic, or memory management logic
-  * This can also include central technologies like variable services
+* Numerous libraries to support UEFI Boot Device Selection phase (BDS) 
+* Firmware Version information
+* UI App / "Frontpage" application support as well as example
 
 ## More Info
 
@@ -36,9 +31,9 @@ Please follow the general Project Mu Pull Request process.  [More Details](https
 * [Code Requirements](/DeveloperDocs/code_requirements)
 * [Doc Requirements](/DeveloperDocs/doc_requirements)
 
-## Builds
+## PR-Gate Builds
 
-run MuBuild.py -c corebuild.mu.json
+[![Build Status](https://dev.azure.com/projectmu/mu/_apis/build/status/mu_oem_sample%20PR%20gate)](https://dev.azure.com/projectmu/mu/_build/latest?definitionId=7)
 
 ## Copyright & License
 
@@ -49,35 +44,3 @@ All rights reserved. Redistribution and use in source and binary forms, with or 
 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-### Upstream License (TianoCore)
-
-Copyright (c) 2004 - 2016, Intel Corporation. All rights reserved.
-Copyright (c) 2008 - 2010, Apple Inc. All rights reserved.
-Copyright (c) 2011 - 2015, ARM Limited. All rights reserved.
-Copyright (c) 2014 - 2015, Linaro Limited. All rights reserved.
-Copyright (c) 2013 - 2015, Red Hat, Inc.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions
-are met:
-
-* Redistributions of source code must retain the above copyright
-  notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright
-  notice, this list of conditions and the following disclaimer in
-  the documentation and/or other materials provided with the
-  distribution.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
