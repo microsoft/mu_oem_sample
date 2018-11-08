@@ -64,7 +64,6 @@
 #include <Library/ResetUtilityLib.h>
 #include <Library/MsColorTableLib.h>
 #include <Library/MsNVBootReasonLib.h>
-#include <Library/FmpHelperLib.h>
 
 #include <MsDisplayEngine.h>
 #include <UIToolKit/SimpleUIToolKit.h>
@@ -328,8 +327,10 @@ UpdateFormWithFirmwareVersions(IN EFI_HII_HANDLE  HiiHandle) {
   EFI_STRING_ID                 StringId;
   EFI_STRING_ID                 StringId1;
 
-  EFI_FIRMWARE_MANAGEMENT_PROTOCOL**              FmpList;
-  EFI_FIRMWARE_MANAGEMENT_PROTOCOL**              Fmp;
+  EFI_FIRMWARE_MANAGEMENT_PROTOCOL              **FmpList;
+  UINTN                                         FmpCount;
+  UINTN                                         Index;
+  EFI_FIRMWARE_MANAGEMENT_PROTOCOL              *Fmp;
   UINTN                                         DescriptorSize;
   EFI_FIRMWARE_IMAGE_DESCRIPTOR                 *FmpImageInfoBuf;
   UINT8                                         FmpImageInfoCount;
@@ -379,23 +380,24 @@ UpdateFormWithFirmwareVersions(IN EFI_HII_HANDLE  HiiHandle) {
     //
     // Get all FMP instances and then use the descriptor to get string name and version
     //
-    Status = GetAllFmp(&FmpList);
+    Status = EfiLocateProtocolBuffer(&gEfiFirmwareManagementProtocolGuid, &FmpCount, (VOID*)&FmpList);
     if (EFI_ERROR(Status))
     {
-      DEBUG((DEBUG_ERROR, "GetAllFmp returned error.  %r \n", Status));
+      DEBUG((DEBUG_ERROR, "EfiLocateProtocolBuffer(gEfiFirmwareManagementProtocolGuid) returned error.  %r \n", Status));
       break;
     }
 
-    for (Fmp = FmpList; *Fmp != NULL; Fmp++)
+    for (Index = 0; Index < FmpCount; Index++)
     {
+      Fmp = (EFI_FIRMWARE_MANAGEMENT_PROTOCOL*)(FmpList[Index]);
       //get the GetImageInfo for the FMP
 
       ImageInfoSize = 0;
       //
       // get necessary descriptor size
       // this should return TOO SMALL
-      Status = (*Fmp)->GetImageInfo(
-        (*Fmp),                       // FMP Pointer
+      Status = Fmp->GetImageInfo(
+        Fmp,                       // FMP Pointer
         &ImageInfoSize,               // Buffer Size (in this case 0)
         NULL,                         // NULL so we can get size
         &FmpImageInfoDescriptorVer,   // DescriptorVersion
@@ -418,8 +420,8 @@ UpdateFormWithFirmwareVersions(IN EFI_HII_HANDLE  HiiHandle) {
       }
 
       PackageVersionName = NULL;
-      Status = (*Fmp)->GetImageInfo(
-        (*Fmp),
+      Status = Fmp->GetImageInfo(
+        Fmp,
         &ImageInfoSize,               // ImageInfoSize
         FmpImageInfoBuf,              // ImageInfo
         &FmpImageInfoDescriptorVer,   // DescriptorVersion
@@ -674,7 +676,7 @@ CallFrontPage (IN UINT32    FormIndex)
     UINT16  Count, Index = 0;
     EFI_BROWSER_ACTION_REQUEST    ActionRequest;
 #define MAX_FORMSET_HANDLES 5
-    EFI_HII_HANDLE                Handles[MAX_FORMSET_HANDLES]; //Private, Boot, Dfci, Time, Vpro
+    EFI_HII_HANDLE                Handles[MAX_FORMSET_HANDLES];
     UINTN                         HandleCount;
 
 
@@ -818,10 +820,10 @@ CreateTopMenu(IN UINT32 OrigX,
                                    0,
                                    &FontInfo,
                                    CellTextXOffset,
-                                   &gMsColorTable.MsterFrameCellNormalColor,
-                                   &gMsColorTable.MsterFrameCellHoverColor,
-                                   &gMsColorTable.MsterFrameCellSelectColor,
-                                   &gMsColorTable.MsterFrameCellGrayoutColor,
+                                   &gMsColorTable.MasterFrameCellNormalColor,
+                                   &gMsColorTable.MasterFrameCellHoverColor,
+                                   &gMsColorTable.MasterFrameCellSelectColor,
+                                   &gMsColorTable.MasterFrameCellGrayoutColor,
                                    MenuOptions,
                                    NULL
                                   );

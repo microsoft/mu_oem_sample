@@ -52,7 +52,6 @@
   PcBdsPkg/PcBdsPkg.dec
   OemPkg/OemPkg.dec
   DfciPkg/DfciPkg.dec
-  MsCapsuleUpdatePkg/MsCapsuleUpdatePkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -73,7 +72,6 @@
   MsNVBootReasonLib
   GraphicConsoleHelperLib
   SwmDialogsLib
-  FmpHelperLib
 
 [Guids]
   gEfiGlobalVariableGuid                        ## SOMETIMES_PRODUCES ## Variable:L"BootNext" (The number of next boot option)
@@ -100,6 +98,7 @@
   gMsFrontPageAuthTokenProtocolGuid             ## PROTOCOL CONSUMES
   gDfciAuthenticationProtocolGuid               ## PROTOCOL CONSUMES
   gEdkiiFormBrowserEx2ProtocolGuid              ## PROTOCOL CONSUMES
+  gEfiFirmwareManagementProtocolGuid            ## PROTOCOL CONSUMES
 
 [FeaturePcd]
   gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLangDeprecate
