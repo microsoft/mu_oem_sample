@@ -59,7 +59,7 @@
 #include <Library/BmpSupportLib.h>
 #include <Library/BootGraphicsProviderLib.h>
 #include <Library/BootGraphicsLib.h>
-#include <Library/GraphicConsoleHelperLib.h>
+#include <Library/GraphicsConsoleHelperLib.h>
 #include <Library/MsUiThemeLib.h>
 #include <Library/ResetUtilityLib.h>
 #include <Library/MsColorTableLib.h>

@@ -75,7 +75,7 @@
   MsColorTableLib|MsGraphicsPkg/Library/MsColorTableLib/MsColorTableLib.inf
   SwmDialogsLib|MsGraphicsPkg/Library/SwmDialogsLib/SwmDialogs.inf
 
-  GraphicConsoleHelperLib|PcBdsPkg/Library/GraphicConsoleHelperLib/GraphicConsoleHelper.inf
+  GraphicsConsoleHelperLib|PcBdsPkg/Library/GraphicsConsoleHelperLib/GraphicsConsoleHelper.inf
   MsBootOptionsLib|PcBdsPkg/Library/MsBootOptionsLib/MsBootOptionsLib.inf
   MsPlatformDevicesLib|PcBdsPkg/Library/MsPlatformDevicesNullLib/MsPlatformDevicesNullLib.inf
 

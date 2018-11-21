@@ -58,7 +58,7 @@
 #include <Library/UefiHiiServicesLib.h>
 #include <Library/BootGraphicsProviderLib.h>
 #include <Library/BootGraphicsLib.h>
-#include <Library/GraphicConsoleHelperLib.h>
+#include <Library/GraphicsConsoleHelperLib.h>
 #include <Library/SwmDialogsLib.h>
 
 #include <Settings/BootMenuSettings.h>
