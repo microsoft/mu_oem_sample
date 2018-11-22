@@ -8,15 +8,6 @@
 
     # Other Repos that are dependencies
     "Dependencies": [
-        #FileSystem Path relative to workspace
-        #Url
-        #Branch
-        #Commit
-         {
-            "Path": "MU_BUILD",
-            "Url": "https://github.com/Microsoft/mu_build.git",
-            "Branch": "release/201808"
-        },
         { 
             "Path": "MU_BASECORE", 
             "Url": "https://github.com/Microsoft/mu_basecore.git",

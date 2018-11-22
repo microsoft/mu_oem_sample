@@ -33,7 +33,13 @@ Please follow the general Project Mu Pull Request process.  [More Details](https
 
 ## PR-Gate Builds
 
+```cmd
+pip install --upgrade -r requirements.txt
+mu_build -c corebuild.mu.json
+```
+
 [![Build Status](https://dev.azure.com/projectmu/mu/_apis/build/status/mu_oem_sample%20PR%20gate)](https://dev.azure.com/projectmu/mu/_build/latest?definitionId=7)
+
 
 ## Copyright & License
 
