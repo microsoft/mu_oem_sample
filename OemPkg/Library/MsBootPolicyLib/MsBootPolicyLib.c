@@ -78,7 +78,7 @@ VOID GetButtonServiceProtocol (VOID) {
     EFI_STATUS Status;
 
     if (gButtonService == NULL) {
-         Status = gBS->LocateProtocol(&gMsButtonServicesProtocolGuid, NULL, &gButtonService);
+        Status = gBS->LocateProtocol(&gMsButtonServicesProtocolGuid, NULL, (VOID**) &gButtonService);
         if (EFI_ERROR(Status)) {
             gButtonService = NULL;
         }
@@ -181,8 +181,7 @@ MsBootPolicyLibIsSettingsBoot(
     // Locate the Button Services protocol
     GetButtonServiceProtocol ();
     if (gButtonService == NULL) {
-        // This should never happen
-        DEBUG((DEBUG_WARN, "%a failed to locate ButtonServices protocol, assuming no presses. %r\n",__FUNCTION__, Status));
+        DEBUG((DEBUG_WARN, "%a failed to locate ButtonServices protocol, assuming no presses.\n", __FUNCTION__));
     } else {
         // Check if volume down was pressed before the power button when the system powered on
         Status = gButtonService->PreBootVolumeUpButtonThenPowerButtonCheck(gButtonService, &BootToSetup);
@@ -237,8 +236,7 @@ MsBootPolicyLibIsAltBoot(
     }
     GetButtonServiceProtocol();
     if (gButtonService == NULL) {
-        // This should never happen
-        DEBUG((DEBUG_WARN, "%a failed to locate ButtonServices protocol, assuming no presses. %r\n",__FUNCTION__, Status));
+        DEBUG((DEBUG_WARN, "%a failed to locate ButtonServices protocol, assuming no presses.\n", __FUNCTION__));
     } else {
         // Check if volume down was pressed before the power button when the system powered on
         Status = gButtonService->PreBootVolumeDownButtonThenPowerButtonCheck(gButtonService, &AltBoot);
@@ -310,7 +308,7 @@ MsBootPolicyLibIsDevicePathBootable(
     //    returns an SdCard device path
     // 2. THe platform setting for EnableUsbBoot can prevent USB devices from booting
 
-    DEBUG((DEBUG_INFO,__FUNCTION__ "  Checking if the following device path is permitted to boot:\n"));
+    DEBUG((DEBUG_INFO, "%a Checking if the following device path is permitted to boot:\n", __FUNCTION__));
 
     if (NULL == DevicePath) {
         DEBUG((DEBUG_ERROR,"NULL device path\n"));

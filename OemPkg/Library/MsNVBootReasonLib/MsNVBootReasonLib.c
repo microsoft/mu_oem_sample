@@ -105,9 +105,9 @@ SetRebootReason (
       RebootReason
       );
   if (EFI_ERROR(Status)) {
-    DEBUG((DEBUG_ERROR,__FUNCTION__ " unable to update RebootReason. Code=%r\n"));
+    DEBUG((DEBUG_ERROR, "%a unable to update RebootReason. Code=%r\n", __FUNCTION__, Status));
   }
-  DEBUG((DEBUG_INFO,__FUNCTION__ " new reboot reason is %a. Code=%r\n",RebootReason,Status));
+  DEBUG((DEBUG_INFO, "%a new reboot reason is %a. Code=%r\n", __FUNCTION__, RebootReason, Status));
 
   return Status;
 }
@@ -207,7 +207,7 @@ UpdateRebootReason (
               RebootReason
               );
   if (EFI_ERROR(Status) && (EFI_NOT_FOUND != Status)) {
-    DEBUG((DEBUG_ERROR,__FUNCTION__ " error reading RebootReason. Code = %r\n",Status));
+    DEBUG((DEBUG_ERROR, "%a error reading RebootReason. Code = %r\n", __FUNCTION__, Status));
   } else {
     if ((RebootReason[0] == 'B') && (RebootReason[1] == 'S')) {
       Status = UpdateSecureBootViolation(EFI_SECURITY_VIOLATION);
@@ -233,6 +233,6 @@ UpdateRebootReason (
     }
   }
 
-  DEBUG((DEBUG_INFO,__FUNCTION__ " current reboot reason is %a. Code=%r\n",RebootReason,Status));
+  DEBUG((DEBUG_INFO, "%a current reboot reason is %a. Code=%r\n", __FUNCTION__, RebootReason, Status));
   return Status;
 }

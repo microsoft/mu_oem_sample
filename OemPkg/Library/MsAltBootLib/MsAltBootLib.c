@@ -61,7 +61,7 @@ ClearAltBoot (
                     &AltBootFlag);
     if (EFI_ERROR(Status) && (Status != EFI_NOT_FOUND))
     {
-      DEBUG((DEBUG_ERROR, __FUNCTION__" - Failed to clear Alternate Boot Flag! %r\n", Status));
+      DEBUG((DEBUG_ERROR, "%a - Failed to clear Alternate Boot Flag! %r\n", __FUNCTION__, Status));
       ASSERT(FALSE);
     }
   }
