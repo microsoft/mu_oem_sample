@@ -194,7 +194,7 @@ SWMRegisteredCallback (IN  EFI_EVENT    Event,
                                    (VOID **)&mSWMProtocol
                                  );
     if (EFI_ERROR(Status)) {
-        DEBUG((DEBUG_ERROR, "Unable to locate SWM. Code=%r\n",Status));
+        DEBUG((DEBUG_ERROR, "Unable to locate SWM. Code=%r\n", Status));
     }
     return;
 }
@@ -219,7 +219,7 @@ SettingAccessCallback (IN  EFI_EVENT     Event,
                                    (VOID **)&mSettingAccess
                                  );
     if (EFI_ERROR(Status)) {
-        DEBUG((DEBUG_ERROR, "Unable to locate SettingAccess. Code=%r\n",Status));
+        DEBUG((DEBUG_ERROR, "Unable to locate SettingAccess. Code=%r\n", Status));
     }
     return;
 }
@@ -259,7 +259,7 @@ BOOLEAN IsDefaultBootOption (EFI_BOOT_MANAGER_LOAD_OPTION *BootOption) {
 
     mDefaultLoadOptions = MsBootOptionsLibGetDefaultOptions (&mDefaultLoadOptionCount);
     if (NULL == mDefaultLoadOptions) {
-        DEBUG((DEBUG_ERROR, __FUNCTION__ " Error obtaining default boot options\n"));
+        DEBUG((DEBUG_ERROR, "%a Error obtaining default boot options\n", __FUNCTION__));
         return FALSE;
     }
 
@@ -349,7 +349,7 @@ VOID RebuildOrderList (VOID) {
             NULL
             );
 
-        DEBUG((DEBUG_INFO,"%a Indx=%d, Hash=%x, Attr=%x, %s\n",__FUNCTION__,Index,mBootOptions[Index].OptionNumber,mBootOptions[Index].Attributes,mBootOptions[Index].Description));
+        DEBUG((DEBUG_INFO,"%a Indx=%d, Hash=%x, Attr=%x, %s\n",__FUNCTION__, Index, mBootOptions[Index].OptionNumber, mBootOptions[Index].Attributes, mBootOptions[Index].Description));
 
         OptionValue = (UINT32)(mBootOptions[Index].OptionNumber + 1);
         if ((mBootOptions[Index].Attributes & LOAD_OPTION_ACTIVE) == LOAD_OPTION_ACTIVE) {
@@ -396,7 +396,7 @@ VOID RebuildOrderList (VOID) {
         );
 
     if (EFI_ERROR(Status)) {
-        DEBUG((DEBUG_ERROR,__FUNCTION__ "Error in HiiUpdateform.  Code=%r\n",Status));
+        DEBUG((DEBUG_ERROR, "%a Error in HiiUpdateform.  Code=%r\n", __FUNCTION__, Status));
     }
     if (StartOpCodeHandle != NULL) {
         HiiFreeOpCodeHandle(StartOpCodeHandle);
@@ -440,14 +440,14 @@ BootMenuEntry(
                                    &mSWMRegisterEvent
                                   );
         if (EFI_ERROR (Status)) {
-            DEBUG((DEBUG_INFO, __FUNCTION__ ": Failed to create SWM registration event (%r).\r\n", Status));
+            DEBUG((DEBUG_INFO, "%a: Failed to create SWM registration event (%r).\r\n", __FUNCTION__, Status));
         } else {
             Status = gBS->RegisterProtocolNotify (&gMsSWMProtocolGuid,
                                                    mSWMRegisterEvent,
                                                   &mSWMRegistration
                                                  );
             if (EFI_ERROR (Status)) {
-                DEBUG((DEBUG_INFO, __FUNCTION__ ": Failed to register for SWM registration notifications (%r).\r\n", Status));
+                DEBUG((DEBUG_INFO, "%a: Failed to register for SWM registration notifications (%r).\r\n", __FUNCTION__, Status));
             }
         }
     }
@@ -465,14 +465,14 @@ BootMenuEntry(
                                    &mSettingAccessRegisterEvent
                                   );
         if (EFI_ERROR (Status)) {
-            DEBUG((DEBUG_INFO, __FUNCTION__ ": Failed to create SettingAccess registration event (%r).\r\n", Status));
+            DEBUG((DEBUG_INFO, "%a: Failed to create SettingAccess registration event (%r).\r\n", __FUNCTION__, Status));
         } else {
             Status = gBS->RegisterProtocolNotify (&gDfciSettingAccessProtocolGuid,
                                                    mSettingAccessRegisterEvent,
                                                   &mSettingAccessRegistration
                                                  );
             if (EFI_ERROR (Status)) {
-                DEBUG((DEBUG_INFO, __FUNCTION__ ": Failed to register for Setting Access notifications (%r).\r\n", Status));
+                DEBUG((DEBUG_INFO, "%a: Failed to register for Setting Access notifications (%r).\r\n", __FUNCTION__, Status));
             }
         }
     }
@@ -492,7 +492,7 @@ BootMenuEntry(
             &mAuthTokenRegisterEvent
             );
         if (EFI_ERROR(Status)) {
-            DEBUG((DEBUG_INFO, __FUNCTION__ ": Failed to create SettingAccess registration event (%r).\r\n", Status));
+            DEBUG((DEBUG_INFO, "%a: Failed to create SettingAccess registration event (%r).\r\n", __FUNCTION__, Status));
         }
         else{
             Status = gBS->RegisterProtocolNotify(&gMsFrontPageAuthTokenProtocolGuid,
@@ -500,7 +500,7 @@ BootMenuEntry(
                 &mAuthTokenRegistration
                 );
             if (EFI_ERROR(Status)) {
-                DEBUG((DEBUG_INFO, __FUNCTION__ ": Failed to register for SWM registration notifications (%r).\r\n", Status));
+                DEBUG((DEBUG_INFO, "%a: Failed to register for SWM registration notifications (%r).\r\n", __FUNCTION__, Status));
             }
         }
     }
@@ -523,7 +523,7 @@ BootMenuEntry(
         );
 
     if (EFI_ERROR(Status)) {
-        DEBUG((DEBUG_ERROR,__FUNCTION__ ": Error on InstallMultipleProtocol. Code=%r\n", Status));
+        DEBUG((DEBUG_ERROR, "%a: Error on InstallMultipleProtocol. Code=%r\n", __FUNCTION__, Status));
     }
 
     //
@@ -537,7 +537,7 @@ BootMenuEntry(
         NULL
         );
     if (mBootMenuPrivate.HiiHandle == NULL) {
-        DEBUG((DEBUG_ERROR,__FUNCTION__ ": Error on HiiAddPackages. Code=%r\n", Status));
+        DEBUG((DEBUG_ERROR, "%a: Error on HiiAddPackages. Code=%r\n", __FUNCTION__, Status));
 
         return EFI_OUT_OF_RESOURCES;
     }
@@ -583,7 +583,7 @@ DriverCallback (
     UINT32                  *BootOrder;
     UINTN                    Index;
 
-    DEBUG((DEBUG_INFO,"*HII* - Action=%d, Question=%d, Type=%d, Value=%d\n",Action,QuestionId,Type,Value->u64));
+    DEBUG((DEBUG_INFO,"*HII* - Action=%d, Question=%d, Type=%d, Value=%d\n",Action, QuestionId, Type, Value->u64));
 
     *ActionRequest = EFI_BROWSER_ACTION_REQUEST_NONE;
 
@@ -623,7 +623,7 @@ DriverCallback (
                     if (*BootOrder == 0) {
                         break;
                     }
-                    DEBUG((DEBUG_INFO,__FUNCTION__ " Order is %4.4x\n",*BootOrder - 1));
+                    DEBUG((DEBUG_INFO, "%a Order is %4.4x\n", __FUNCTION__, *BootOrder - 1));
                     BootOrder++;
                 }
             }
@@ -680,7 +680,7 @@ GetSetting (
                                  &Flags);
     if (EFI_ERROR(Status )) {
         *Data = TRUE;
-        DEBUG((DEBUG_ERROR,__FUNCTION__ " Internal error getting setting id %d - code=%r\n",Id,Status));
+        DEBUG((DEBUG_ERROR, "%a Internal error getting setting id %d - code=%r\n", __FUNCTION__, Id, Status));
     }
     return Status;
 }
@@ -721,7 +721,7 @@ GetSettingGrayoutFlag (
             *Data = TRUE;
         }
     } else {
-        DEBUG((DEBUG_ERROR,__FUNCTION__ " Internal error getting Grayout %d - code=%r\n",Id,Status));
+        DEBUG((DEBUG_ERROR, "%a Internal error getting Grayout %d - code=%r\n", __FUNCTION__, Id, Status));
     }
     return Status;
 }
@@ -760,7 +760,7 @@ GetSettingSuppressFlag (
     }  else {
         *Data = FALSE;
         if (EFI_ERROR(Status)) {
-            DEBUG((DEBUG_ERROR,__FUNCTION__ " Internal error getting Suppress %d - code=%r\n",Id,Status));
+            DEBUG((DEBUG_ERROR, "%a Internal error getting Suppress %d - code=%r\n", __FUNCTION__, Id, Status));
         }
     }
     return Status;
@@ -846,7 +846,7 @@ RouteConfig (
     SETTINGS_GRAYOUT_CONFIGURATION TempGrayoutConfiguration;
     SETTINGS_SUPPRESS_CONFIGURATION TempSuppressConfiguration;
 
-    DEBUG((DEBUG_INFO,__FUNCTION__ " - Configuration=%s\n",Configuration));
+    DEBUG((DEBUG_INFO, "%a - Configuration=%s\n", __FUNCTION__, Configuration));
     DEBUG((DEBUG_INFO,"%s",Configuration));
     DEBUG((DEBUG_INFO,"\n"));
 
@@ -865,7 +865,7 @@ RouteConfig (
         Status = GetSetting (DFCI_SETTING_ID__BOOT_ORDER_LOCK, &EnableBootOrderLock);
         if (!EFI_ERROR(Status) && EnableBootOrderLock) {
             Status = EFI_SUCCESS;
-            DEBUG((DEBUG_INFO,__FUNCTION__ " Boot Order is locked - skipping RouteConfig for BootOrderConfig\n"));
+            DEBUG((DEBUG_INFO, "%a Boot Order is locked - skipping RouteConfig for BootOrderConfig\n", __FUNCTION__));
         } else {
             BufferSize = sizeof(mOrderConfiguration);
 
@@ -939,7 +939,7 @@ RouteConfig (
                                         &ThisOption
                                         );
                                     if (EFI_ERROR(Status)) {
-                                        DEBUG((DEBUG_ERROR,__FUNCTION__ ": Error setting BootNext. Code=%r\n",Status));
+                                        DEBUG((DEBUG_ERROR, "%a: Error setting BootNext. Code=%r\n", __FUNCTION__, Status));
                                     } else {
                                         MsBootNext = TRUE;
                                         Status = gRT->SetVariable (
@@ -949,7 +949,7 @@ RouteConfig (
                                             sizeof(MsBootNext),
                                             &MsBootNext
                                             );
-                                        DEBUG((DEBUG_INFO,__FUNCTION__ "BootNext set to BOOT%4.4x\n",ThisOption));
+                                        DEBUG((DEBUG_INFO, "%a BootNext set to BOOT%4.4x\n", __FUNCTION__, ThisOption));
                                     }
                                     mBrowserEx2->SetScope (SystemLevel);
                                     mBrowserEx2->ExecuteAction (BROWSER_ACTION_EXIT, 0);  // Tell browser to Exit completely to follow the boot next action
@@ -1033,9 +1033,9 @@ RouteConfig (
                                     NULL
                                     );
                                 if (EFI_ERROR                                                                                                                                                   (Status)) {
-                                    DEBUG((DEBUG_ERROR,__FUNCTION__ " Error deleting %s. Code=%r\n",OptionName,Status));
+                                    DEBUG((DEBUG_ERROR, "%a Error deleting %s. Code=%r\n", __FUNCTION__, OptionName, Status));
                                 } else {
-                                    DEBUG((DEBUG_INFO,__FUNCTION__ " Variable %s deleted. Code=%r\n",OptionName,Status));
+                                    DEBUG((DEBUG_INFO, "%a Variable %s deleted. Code=%r\n", __FUNCTION__, OptionName, Status));
                                 }
                             }
 
@@ -1068,10 +1068,10 @@ RouteConfig (
                 FreePool(NewBootOrder);
                 RebuildOrderList();
             }
-            DEBUG((DEBUG_INFO,__FUNCTION__ " Size is %d, Requested is %d. Code=%r\n",sizeof(mOrderConfiguration),BufferSize,Status));
+            DEBUG((DEBUG_INFO, "%a Size is %d, Requested is %d. Code=%r\n", __FUNCTION__, sizeof(mOrderConfiguration), BufferSize, Status));
         }
     } else if (HiiIsConfigHdrMatch (Configuration, &gMsBootMenuFormsetGuid, L"BootGrayoutConfig")) {
-        DEBUG((DEBUG_INFO,__FUNCTION__ " for Grayout Settings\n"));
+        DEBUG((DEBUG_INFO, "%a for Grayout Settings\n", __FUNCTION__));
         BufferSize = sizeof(SETTINGS_GRAYOUT_CONFIGURATION);
         Status = gHiiConfigRouting->ConfigToBlock (
             gHiiConfigRouting,
@@ -1081,11 +1081,11 @@ RouteConfig (
             Progress
             );
         if (EFI_ERROR(Status)) {
-            DEBUG((DEBUG_ERROR,__FUNCTION__ ": ConfigToBlock GrayoutConfig error- code=%r\n",Status));
+            DEBUG((DEBUG_ERROR, "%a: ConfigToBlock GrayoutConfig error- code=%r\n", __FUNCTION__, Status));
         }
         // We don't really accept Grayout Settings changes.  This just moves Progress correctly.
     } else if (HiiIsConfigHdrMatch (Configuration, &gMsBootMenuFormsetGuid, L"BootSuppressConfig")) {
-        DEBUG((DEBUG_INFO,__FUNCTION__ " for SupressMenu Settings\n"));
+        DEBUG((DEBUG_INFO, "%a for SupressMenu Settings\n", __FUNCTION__));
         BufferSize = sizeof(SETTINGS_SUPPRESS_CONFIGURATION);
         Status = gHiiConfigRouting->ConfigToBlock (
             gHiiConfigRouting,
@@ -1095,11 +1095,11 @@ RouteConfig (
             Progress
             );
         if (EFI_ERROR(Status)) {
-            DEBUG((DEBUG_ERROR,__FUNCTION__ ": ConfigToBlock SuppressConfig error- code=%r\n",Status));
+            DEBUG((DEBUG_ERROR, "%a: ConfigToBlock SuppressConfig error- code=%r\n", __FUNCTION__, Status));
         }
         // We don't really accept Suppress Settings changes.  This just moves Progress correctly.
     } else if (HiiIsConfigHdrMatch (Configuration, &gMsBootMenuFormsetGuid, L"BootSettingsConfig")) {
-        DEBUG((DEBUG_INFO,__FUNCTION__ " for Menu Settings\n"));
+        DEBUG((DEBUG_INFO, "%a for Menu Settings\n", __FUNCTION__));
         BufferSize = sizeof(SETTINGS_MENU_CONFIGURATION);
         Status = gHiiConfigRouting->ConfigToBlock(
             gHiiConfigRouting,
@@ -1109,7 +1109,7 @@ RouteConfig (
             Progress
             );
         if (EFI_ERROR(Status)) {
-            DEBUG((DEBUG_ERROR,__FUNCTION__ ": ConfigToBlock SettingsConfig error- code=%r\n",Status));
+            DEBUG((DEBUG_ERROR, "%a: ConfigToBlock SettingsConfig error- code=%r\n", __FUNCTION__, Status));
         } else {
             DEBUG((DEBUG_INFO,"     EnableIPv6 = %d, EnableAltBoot = %d, EnableBootOrderLock = %d\n",
                               mSettingsConfiguration.IPv6,
@@ -1143,10 +1143,10 @@ RouteConfig (
         }
     } else {
         Status = EFI_UNSUPPORTED;
-        DEBUG((DEBUG_ERROR,__FUNCTION__ " Unsupported header.\n"));
+        DEBUG((DEBUG_ERROR, "%a Unsupported header.\n", __FUNCTION__));
     }
 
-    DEBUG((DEBUG_INFO,__FUNCTION__ " complete. Code = %r\n",Status));
+    DEBUG((DEBUG_INFO, "%a complete. Code = %r\n", __FUNCTION__, Status));
     return Status;
 }
 
@@ -1196,8 +1196,8 @@ ExtractConfig (
         return EFI_UNSUPPORTED;
     }
 
-    DEBUG((DEBUG_INFO,__FUNCTION__ " - Request=%s\n"));
-    DEBUG((DEBUG_INFO,"%s",Request));
+    DEBUG((DEBUG_INFO, "%a - Request=%s\n", __FUNCTION__));
+    DEBUG((DEBUG_INFO,"%s", Request));
     DEBUG((DEBUG_INFO,"\n"));
 
     //
@@ -1212,13 +1212,13 @@ ExtractConfig (
             Results,
             Progress
             );
-        DEBUG((DEBUG_INFO,__FUNCTION__ " Size is %d, Code=%r\n",sizeof(mOrderConfiguration),Status));
+        DEBUG((DEBUG_INFO, "%a Size is %d, Code=%r\n", __FUNCTION__, sizeof(mOrderConfiguration), Status));
     } else if (HiiIsConfigHdrMatch(Request, &gMsBootMenuFormsetGuid, L"BootSettingsConfig")) {
 
         // Do a similar process for both BootSettings and BootGrayout - cannot predict which will
         // come first.
 
-        DEBUG((DEBUG_INFO,__FUNCTION__ " for Menu Settings\n"));
+        DEBUG((DEBUG_INFO, "%a for Menu Settings\n", __FUNCTION__));
 
         Status = GetSetting (DFCI_SETTING_ID__IPV6,            &mSettingsConfiguration.IPv6);
         Status |= GetSetting (DFCI_SETTING_ID__ALT_BOOT,        &mSettingsConfiguration.AltBoot);
@@ -1249,7 +1249,7 @@ ExtractConfig (
         // Do the similar thing for both BootSettings and BootGrayout - cannot predict which will
         // come first.
         mSettingsGrayoutConfiguration.RestrictedAccessString = FALSE;
-        DEBUG((DEBUG_INFO,__FUNCTION__ " for Grayout Settings\n"));
+        DEBUG((DEBUG_INFO, "%a for Grayout Settings\n", __FUNCTION__));
 
         Status = GetSettingGrayoutFlag (DFCI_SETTING_ID__IPV6,            &mSettingsGrayoutConfiguration.IPv6);
         Status |= GetSettingGrayoutFlag (DFCI_SETTING_ID__ALT_BOOT,        &mSettingsGrayoutConfiguration.AltBoot);
@@ -1279,7 +1279,7 @@ ExtractConfig (
 
         // Do the similar thing for both BootSettings and BootGrayout - cannot predict which will
         // come first.
-        DEBUG((DEBUG_INFO,__FUNCTION__ " for Suppress Settings\n"));
+        DEBUG((DEBUG_INFO, "%a for Suppress Settings\n", __FUNCTION__));
 
         Status  = GetSettingSuppressFlag (DFCI_SETTING_ID__IPV6,            &mSettingsSuppressConfiguration.IPv6);
         Status |= GetSettingSuppressFlag (DFCI_SETTING_ID__ALT_BOOT,        &mSettingsSuppressConfiguration.AltBoot);
@@ -1312,7 +1312,7 @@ ExtractConfig (
         Status = EFI_UNSUPPORTED;
     }
 
-    DEBUG((DEBUG_INFO,__FUNCTION__ " complete. Code = %r\n",Status));
+    DEBUG((DEBUG_INFO, "%a complete. Code = %r\n", __FUNCTION__, Status));
     return Status;
 }
 

@@ -95,7 +95,6 @@ BOOLEAN                           mResetRequired;
 FRONT_PAGE_AUTH_TOKEN_PROTOCOL   *mFrontPageAuthTokenProtocol = NULL;
 DFCI_AUTHENTICATION_PROTOCOL     *mAuthProtocol = NULL;
 EFI_HII_CONFIG_ROUTING_PROTOCOL  *mHiiConfigRouting;
-DFCI_SETTING_ACCESS_PROTOCOL     *mSettingAccess;
 DFCI_AUTH_TOKEN                   mAuthToken;
 
 extern EFI_GUID  gMsEventMasterFrameNotifyGroupGuid;
@@ -447,16 +446,24 @@ UpdateFormWithFirmwareVersions(IN EFI_HII_HANDLE  HiiHandle) {
         DEBUG((DEBUG_INFO, "%a - Found %d descriptors.  For FrontPage we only show the 1st descriptor.\n", __FUNCTION__, FmpImageInfoCount));
       }
 
-      if ((StringId = HiiSetString(HiiHandle, 0, FmpImageInfoBuf->ImageIdName, NULL)) == 0)
-      {
-        DEBUG((DEBUG_ERROR, "%a - Failed to set string for fmp ImageIdName: %s. \n", __FUNCTION__, FmpImageInfoBuf->ImageIdName));
-        goto FmpCleanUp;
+      if (FmpImageInfoBuf->ImageIdName != NULL) {
+        if ((StringId = HiiSetString(HiiHandle, 0, FmpImageInfoBuf->ImageIdName, NULL)) == 0)
+        {
+          DEBUG((DEBUG_ERROR, "%a - Failed to set string for fmp ImageIdName: %s. \n", __FUNCTION__, FmpImageInfoBuf->ImageIdName));
+          goto FmpCleanUp;
+        }
+      } else {
+        DEBUG((DEBUG_ERROR, "%a - FMP ImageIdName is null\n"));
       }
 
-      if ((StringId1 = HiiSetString(HiiHandle, 0, FmpImageInfoBuf->VersionName, NULL)) == 0)
-      {
-        DEBUG((DEBUG_ERROR, "%a - Failed to set string for fmp VersionName: %s. \n", __FUNCTION__, FmpImageInfoBuf->VersionName));
-        goto FmpCleanUp;
+      if (FmpImageInfoBuf->VersionName != NULL) {
+        if ((StringId1 = HiiSetString(HiiHandle, 0, FmpImageInfoBuf->VersionName, NULL)) == 0)
+        {
+          DEBUG((DEBUG_ERROR, "%a - Failed to set string for fmp VersionName: %s. \n", __FUNCTION__, FmpImageInfoBuf->VersionName));
+          goto FmpCleanUp;
+        }
+      } else {
+        DEBUG((DEBUG_ERROR, "%a - FMP VersionName is null\n"));
       }
 
       // Create a Subtitle OpCode to group the Firmware version "key-value" pair that follows.
@@ -855,10 +862,10 @@ RenderTitlebar(VOID)
     EFI_FONT_DISPLAY_INFO     StringInfo;
     EFI_IMAGE_OUTPUT          *pBltBuffer;
     EFI_LOADED_IMAGE_PROTOCOL *ImageInfo;
-    CHAR8                     Parameter;
+    CHAR8                     Parameter = '\0';
     EFI_GUID                  *IconFile = NULL;
     UINTN                     DataSize;
-    CHAR8                     *RebootReason;
+    UINT8                     *RebootReason;
 
     // Draw the titlebar background.
     //
@@ -884,19 +891,19 @@ RenderTitlebar(VOID)
         DataSize = 0;
         Status = GetRebootReason(NULL, &DataSize);
         if (Status != EFI_BUFFER_TOO_SMALL) {
-            DEBUG((DEBUG_ERROR,__FUNCTION__ " error getting RebootReason size. Code = %r\n",Status));
+            DEBUG((DEBUG_ERROR, "%a error getting RebootReason size. Code = %r\n", __FUNCTION__, Status));
         }
         else {
             RebootReason = AllocatePool(DataSize);
             Status = GetRebootReason(RebootReason, &DataSize);
             if (EFI_ERROR(Status)) {
-                DEBUG((DEBUG_ERROR,__FUNCTION__ " error reading RebootReason. Code = %r\n",Status));
+                DEBUG((DEBUG_ERROR, "%a error reading RebootReason. Code = %r\n", __FUNCTION__, Status));
                 Parameter = 'B';
             } else {
                 Parameter = RebootReason[0];
                 Status = ClearRebootReason();
                 if (EFI_ERROR(Status)) {
-                    DEBUG((DEBUG_ERROR,__FUNCTION__ " error clearing RebootReason. Code = %r\n",Status));
+                    DEBUG((DEBUG_ERROR, "%a error clearing RebootReason. Code = %r\n", __FUNCTION__, Status));
                 }
             }
             FreePool(RebootReason);
@@ -904,7 +911,7 @@ RenderTitlebar(VOID)
     } else {
         Parameter = *((CHAR8 *) ImageInfo->LoadOptions);
     }
-    DEBUG((DEBUG_ERROR, __FUNCTION__ " Parameter = %c - LoadOption=%p\n",Parameter,ImageInfo->LoadOptions));
+    DEBUG((DEBUG_ERROR, "%a Parameter = %c - LoadOption=%p\n", __FUNCTION__, Parameter, ImageInfo->LoadOptions));
 
     switch (Parameter) {
     case 'V' :  // VOL+
@@ -1229,7 +1236,7 @@ ProcessBootNext ( VOID )
     EFI_BOOT_MANAGER_LOAD_OPTION    LoadOption;
     UINT64                          OsIndication;
 
-    DEBUG((DEBUG_INFO, __FUNCTION__ " entry\n"));
+    DEBUG((DEBUG_INFO, "%a entry\n", __FUNCTION__));
     //
     // Cache and remove the "BootNext" NV variable.
     //
@@ -1276,7 +1283,7 @@ ProcessBootNext ( VOID )
         if (EFI_ERROR(Status)) {
             DEBUG((DEBUG_ERROR,"Unable to set OsIndications\n"));
         }
-        DEBUG((DEBUG_INFO, __FUNCTION__ " Resetting system\n"));
+        DEBUG((DEBUG_INFO, "%a Resetting system\n", __FUNCTION__));
         gRT->ResetSystem(EfiResetWarm, EFI_SUCCESS, 0, NULL);
     }
 }
@@ -1314,16 +1321,6 @@ UefiMain(IN EFI_HANDLE        ImageHandle,
     gBS->SetWatchdogTimer (0, 0, 0, (CHAR16 *)NULL);
 
     mResetRequired = FALSE;
-
-    Status = gBS->LocateProtocol(&gDfciSettingAccessProtocolGuid,
-        NULL,
-        (VOID **)&mSettingAccess
-        );
-    if (EFI_ERROR(Status))
-    {
-        ASSERT_EFI_ERROR(Status);
-        DEBUG((DEBUG_ERROR, __FUNCTION__"Couldn't locate system setting access protocol\n"));
-    }
 
     // Force-connect all controllers.
     //
@@ -1565,11 +1562,11 @@ EFI_STATUS GetAuthToken(CHAR16 *PasswordBuffer){
     }
     if (PasswordBuffer != NULL){
         Status = mAuthProtocol->AuthWithPW(mAuthProtocol, PasswordBuffer, StrLen(PasswordBuffer), &mAuthToken);
-        DEBUG((DEBUG_INFO, __FUNCTION__"Auth Token Acquired %x\n", mAuthToken, Status));
+        DEBUG((DEBUG_INFO, "%a Auth Token Acquired %x\n", __FUNCTION__, mAuthToken, Status));
     }
     else{
         Status = mAuthProtocol->AuthWithPW(mAuthProtocol, NULL, 0, &mAuthToken);
-        DEBUG((DEBUG_INFO, __FUNCTION__"Auth Token Acquired with NULL Password %x\n", mAuthToken, Status));
+        DEBUG((DEBUG_INFO, "%a Auth Token Acquired with NULL Password %x\n", __FUNCTION__, mAuthToken, Status));
     }
     mFrontPageAuthTokenProtocol = (FRONT_PAGE_AUTH_TOKEN_PROTOCOL *) AllocateZeroPool(sizeof(mFrontPageAuthTokenProtocol));
 //regardless of the auth token value we install the protocol.
@@ -1583,7 +1580,7 @@ EFI_STATUS GetAuthToken(CHAR16 *PasswordBuffer){
         NULL);
 
     if (Status == EFI_SUCCESS){
-        DEBUG((DEBUG_INFO, __FUNCTION__" FrontPageAuthTokenProtocol was successfully installed %r\n", Status));
+        DEBUG((DEBUG_INFO, "%a FrontPageAuthTokenProtocol was successfully installed %r\n", __FUNCTION__, Status));
     }
 
     return Status;
