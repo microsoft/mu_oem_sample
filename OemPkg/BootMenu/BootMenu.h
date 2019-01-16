@@ -56,7 +56,6 @@
 #define MS_ENABLE_ALT_BOOT_QUESTION_ID          0x0062
 #define MS_ENABLE_BOOT_ORDER_LOCK_QUESTION_ID   0x0063
 #define MS_ENABLE_USB_BOOT_QUESTION_ID          0x0064
-#define MS_AUTO_POWERON_AFTER_LOSS_QUESTION_ID  0x0065
 //
 // These are the VFR compiler generated data representing our VFR data.
 //
@@ -96,7 +95,6 @@ typedef struct {
     BOOLEAN AltBoot;
     BOOLEAN BootOrderLock;
     BOOLEAN EnableUsbBoot;
-    BOOLEAN AutoPowerOnAfterLoss;
 } SETTINGS_MENU_CONFIGURATION;
 
 typedef struct {
@@ -106,7 +104,6 @@ typedef struct {
     BOOLEAN EnableUsbBoot;
     //
     BOOLEAN RestrictedAccessString;
-    BOOLEAN AutoPowerOnAfterLoss;
 } SETTINGS_GRAYOUT_CONFIGURATION;
 
 typedef struct {
@@ -114,7 +111,6 @@ typedef struct {
     BOOLEAN AltBoot;
     BOOLEAN BootOrderLock;
     BOOLEAN EnableUsbBoot;
-    BOOLEAN AutoPowerOnAfterLoss;
 } SETTINGS_SUPPRESS_CONFIGURATION;
 
 #endif // _BOOT_MENU_H_

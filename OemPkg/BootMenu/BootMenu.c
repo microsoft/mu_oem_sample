@@ -635,7 +635,6 @@ DriverCallback (
         case MS_ENABLE_ALT_BOOT_QUESTION_ID:
         case MS_ENABLE_BOOT_ORDER_LOCK_QUESTION_ID:
         case MS_ENABLE_USB_BOOT_QUESTION_ID:
-        case MS_AUTO_POWERON_AFTER_LOSS_QUESTION_ID:
             *ActionRequest = EFI_BROWSER_ACTION_REQUEST_FORM_APPLY;
             Status = EFI_SUCCESS;
             break;
@@ -1136,10 +1135,6 @@ RouteConfig (
             if (mSettingsGrayoutConfiguration.EnableUsbBoot) {
                 Status |= SetSetting (DFCI_SETTING_ID__ENABLE_USB_BOOT, &mSettingsConfiguration.EnableUsbBoot);
             }
-
-            if (mSettingsGrayoutConfiguration.AutoPowerOnAfterLoss) {
-                Status |= SetSetting (DFCI_SETTING_ID__AUTO_POWERON_AFTER_LOSS, &mSettingsConfiguration.AutoPowerOnAfterLoss);
-            }
         }
     } else {
         Status = EFI_UNSUPPORTED;
@@ -1224,17 +1219,12 @@ ExtractConfig (
         Status |= GetSetting (DFCI_SETTING_ID__ALT_BOOT,        &mSettingsConfiguration.AltBoot);
         Status |= GetSetting (DFCI_SETTING_ID__BOOT_ORDER_LOCK, &mSettingsConfiguration.BootOrderLock);
         Status |= GetSetting (DFCI_SETTING_ID__ENABLE_USB_BOOT, &mSettingsConfiguration.EnableUsbBoot);
-        Status |= GetSetting (DFCI_SETTING_ID__AUTO_POWERON_AFTER_LOSS, &mSettingsConfiguration.AutoPowerOnAfterLoss);
 
         DEBUG((DEBUG_INFO,"EnableIPv6 = %d, EnableAltBoot = %d, EnableBootOrderLock = %d, EnableUsbBoot = %d.\n",
                           mSettingsConfiguration.IPv6,
                           mSettingsConfiguration.AltBoot,
                           mSettingsConfiguration.BootOrderLock,
                           mSettingsConfiguration.EnableUsbBoot));
-
-        DEBUG((DEBUG_INFO,"AutoPowerOnAfterLoss = %d. Code = %r\n",
-                          mSettingsConfiguration.AutoPowerOnAfterLoss,
-                          Status));
 
         Status = gHiiConfigRouting->BlockToConfig (
             gHiiConfigRouting,
@@ -1255,17 +1245,12 @@ ExtractConfig (
         Status |= GetSettingGrayoutFlag (DFCI_SETTING_ID__ALT_BOOT,        &mSettingsGrayoutConfiguration.AltBoot);
         Status |= GetSettingGrayoutFlag (DFCI_SETTING_ID__BOOT_ORDER_LOCK, &mSettingsGrayoutConfiguration.BootOrderLock);
         Status |= GetSettingGrayoutFlag (DFCI_SETTING_ID__ENABLE_USB_BOOT, &mSettingsGrayoutConfiguration.EnableUsbBoot);
-        Status |= GetSettingGrayoutFlag (DFCI_SETTING_ID__AUTO_POWERON_AFTER_LOSS, &mSettingsGrayoutConfiguration.AutoPowerOnAfterLoss);
 
         DEBUG((DEBUG_INFO,"Grayout - EnableIPv6 = %d, EnableAltBoot = %d, EnableBootOrderLock = %d, EnableUsbBoot = %d.\n",
                           mSettingsGrayoutConfiguration.IPv6,
                           mSettingsGrayoutConfiguration.AltBoot,
                           mSettingsGrayoutConfiguration.BootOrderLock,
                           mSettingsGrayoutConfiguration.EnableUsbBoot));
-
-        DEBUG((DEBUG_INFO,"Grayout - AutoPowerOnAfterLoss = %d. Code=%r\n",
-                          mSettingsGrayoutConfiguration.AutoPowerOnAfterLoss,
-                          Status));
 
         Status = gHiiConfigRouting->BlockToConfig (
             gHiiConfigRouting,
@@ -1285,7 +1270,6 @@ ExtractConfig (
         Status |= GetSettingSuppressFlag (DFCI_SETTING_ID__ALT_BOOT,        &mSettingsSuppressConfiguration.AltBoot);
         Status |= GetSettingSuppressFlag (DFCI_SETTING_ID__BOOT_ORDER_LOCK, &mSettingsSuppressConfiguration.BootOrderLock);
         Status |= GetSettingSuppressFlag (DFCI_SETTING_ID__ENABLE_USB_BOOT, &mSettingsSuppressConfiguration.EnableUsbBoot);
-        Status |= GetSettingSuppressFlag (DFCI_SETTING_ID__AUTO_POWERON_AFTER_LOSS, &mSettingsSuppressConfiguration.AutoPowerOnAfterLoss);
         if (EFI_ERROR(Status)) {
             DEBUG((DEBUG_ERROR,"Error getting a Suppress setting\n"));
         }
@@ -1295,10 +1279,6 @@ ExtractConfig (
                           mSettingsSuppressConfiguration.AltBoot,
                           mSettingsSuppressConfiguration.BootOrderLock,
                           mSettingsSuppressConfiguration.EnableUsbBoot));
-
-        DEBUG((DEBUG_INFO,"Suppress - AutoPowerOnAfterLoss = %d. Code=%r\n",
-                          mSettingsSuppressConfiguration.AutoPowerOnAfterLoss,
-                          Status));
 
         Status = gHiiConfigRouting->BlockToConfig (
             gHiiConfigRouting,
