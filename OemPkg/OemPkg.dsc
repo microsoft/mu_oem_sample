@@ -82,7 +82,7 @@
   MsAltBootLib|OemPkg/Library/MsAltBootLib/MsAltBootLib.inf
   MsBootPolicyLib|OemPkg/Library/MsBootPolicyLib/MsBootPolicyLib.inf
   MsNVBootReasonLib|OemPkg/Library/MsNVBootReasonLib/MsNVBootReasonLib.inf
-  MsUefiVersionLib|OemPkg/Library/MsUefiVersionLib/MsUefiVersionLib.inf
+  MuUefiVersionLib|OemPkg/Library/MuUefiVersionLib/MuUefiVersionLib.inf
 
   DeviceStateLib|MsCorePkg/Library/DeviceStateLib/DeviceStateLib.inf
   DeviceBootManagerLib|MsCorePkg/Library/DeviceBootManagerLibNull/DeviceBootManagerLibNull.inf
@@ -128,7 +128,7 @@
   OemPkg/Library/MsAltBootLib/MsAltBootLib.inf
   OemPkg/Library/MsBootPolicyLib/MsBootPolicyLib.inf
   OemPkg/Library/MsNVBootReasonLib/MsNVBootReasonLib.inf
-  OemPkg/Library/MsUefiVersionLib/MsUefiVersionLib.inf
+  OemPkg/Library/MuUefiVersionLib/MuUefiVersionLib.inf
   OemPkg/Library/BootGraphicsProviderLib/BootGraphicsProviderLib.inf
 
 [Components.X64]

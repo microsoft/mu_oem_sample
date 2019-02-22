@@ -44,11 +44,6 @@
   #
   gAltBootGuid = {0x26D75FF0, 0xD5CD, 0x49EC, {0x80, 0x92, 0xF8, 0xEC, 0x4D, 0x18, 0xEF, 0x33}}
 
-  ## Guid for the Uefi Version Variable Namespace.
-  #  Include/Guid/UefiVersionVariable.h
-  #
-  gMsUefiVersionVariableNameSpace = { 0x62f417c1, 0xdb72, 0x4967, { 0xaf, 0x48, 0x65, 0x8d, 0xb3, 0xef, 0x88, 0x5b } }
-
   #
   # Guid for FrontPage NV variable
   # 9B09B8C1-3CC0-4F3B-A6CB-A0214B7F4C63
@@ -63,6 +58,7 @@
 
 [PcdsFixedAtBuild]
   gOemPkgTokenSpaceGuid.PcdUefiVersionNumber        |00000000|UINT32|0x00000001
+  gOemPkgTokenSpaceGuid.PcdUefiBuildDate            |00000000|UINT32|0x00000002
 
   ##
   # POST background color (default: black).

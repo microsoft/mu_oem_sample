@@ -27,7 +27,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <Uefi.h>
 #include <Library/DebugLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
-#include <Library/MsUefiVersionLib.h>
+#include <Library/MuUefiVersionLib.h>
 #include "MsAltBootVariables.h"
 
 /**
@@ -68,7 +68,7 @@ ClearAltBoot (
 }
 
 /**
-  Return Uefi version number defined by platform
+  Set the Alternate boot flag
 
   @retval  EFI_SUCCESS  Set AltBoot successfully
   @retval  !EFI_SUCCESS Failed to set AltBoot
