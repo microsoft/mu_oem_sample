@@ -81,6 +81,7 @@ SetAltBoot (
 {
   EFI_STATUS              Status;
   UINTN                   AltBootFlag, FlagSize;
+  FlagSize = sizeof(UINTN);
 
   Status = gRT->GetVariable(
                   kszAltBootFlagVariableName,
