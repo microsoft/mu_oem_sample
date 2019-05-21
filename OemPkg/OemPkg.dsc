@@ -130,7 +130,7 @@
   OemPkg/Library/MsNVBootReasonLib/MsNVBootReasonLib.inf
   OemPkg/Library/MuUefiVersionLib/MuUefiVersionLib.inf
   OemPkg/Library/BootGraphicsProviderLib/BootGraphicsProviderLib.inf
-
+  OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
 [Components.X64]
   OemPkg/FrontPage/FrontPage.inf
   OemPkg/BootMenu/BootMenu.inf

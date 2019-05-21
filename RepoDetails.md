@@ -14,11 +14,18 @@ This repository is considered sample code for any entity building devices using 
 
 ## More Info
 
+FrontpageDsc and FrontpageFdf that can be included so you don't have to unravel all of the libraries and protocols that are required to get started with FrontPage. A brief description of each MS component was added to FrontPageDsc to help explain how each piece of the puzzle fits in.
+
 Please see the Project Mu docs (https://github.com/Microsoft/mu) for more information.  
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+## Per Platform Libraries
+
+MsPlatformDevicesLib, DfciDeviceIdSupportLib, PlatformThemeLib.
+These three libraries need to be implemented per platform. An example can be found in the [NXP iMX8 platform](https://github.com/ms-iot/MU_PLATFORM_NXP).
 
 ## Issues
 
