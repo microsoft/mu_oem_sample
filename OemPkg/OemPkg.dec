@@ -1,39 +1,24 @@
 ## @file
 # Component declaration file for the oem sample package.
 #
-# Copyright (c) 2018, Microsoft Corporation
-
-# All rights reserved.
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-# 1. Redistributions of source code must retain the above copyright notice,
-# this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-# this list of conditions and the following disclaimer in the documentation
-# and/or other materials provided with the distribution.
+#  Copyright (C) Microsoft Corporation. All rights reserved.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ##
 
 [Defines]
-    DEC_SPECIFICATION   = 0x00010005
-    PACKAGE_NAME        = OemPkg
-    PACKAGE_GUID        = 394D14C6-8C75-4A83-BFE0-969EFB5AF0AA
-    PACKAGE_VERSION     = 0.1
+  DEC_SPECIFICATION   = 0x00010005
+  PACKAGE_NAME        = OemPkg
+  PACKAGE_GUID        = 394D14C6-8C75-4A83-BFE0-969EFB5AF0AA
+  PACKAGE_VERSION     = 0.1
 
 [Includes]
-    Include
+  Include
 
 [LibraryClasses]
+  ## @libraryclass Provides the password rules and hashing
+  #
+  PasswordPolicyLib|Include/Library/PasswordPolicyLib.h
 
 [Guids]
   # {394D14C6-8C75-4A83-BFE0-969EFB5AF0AA}
@@ -51,6 +36,9 @@
 
   gFrontPageResetGuid = {0xa6fa93d3, 0x9e09, 0x4192, {0x84, 0x79, 0xf0, 0x81, 0x29, 0x6f, 0x74, 0xde}}
 
+  # Include/Guid/PasswordStoreVariable.h
+  gOemPkgPasswordStoreVarGuid =  {0xa2ee0f0b, 0xac46, 0x436e, {0xaf, 0xe6, 0x40, 0x60, 0xee, 0x63, 0xd6, 0xa2} }
+
 [Protocols]
   gMsButtonServicesProtocolGuid     = { 0xe0084c50, 0x3efd, 0x43f7, { 0x88, 0xdf, 0x19, 0x4d, 0xf2, 0xd1, 0x60, 0xf0 }}
 
@@ -63,32 +51,38 @@
   ##
   # POST background color (default: black).
   #
-  gOemPkgTokenSpaceGuid.PcdPostBackgroundColor|0x0|UINT32|0x40000186
+  gOemPkgTokenSpaceGuid.PcdPostBackgroundColor|0x0|UINT32|0x00000003
 
   ## FFS filename to find the default BMP Logo file.
   # @Prompt FFS Name of Boot Logo File
-  gOemPkgTokenSpaceGuid.PcdLogoFile |{ 0x99, 0x8b, 0xB2, 0x7B, 0xBB, 0x61, 0xD5, 0x11, 0x9A, 0x5D, 0x00, 0x90, 0x27, 0x3F, 0xC1, 0x4D }|VOID*|0x40000128
+  gOemPkgTokenSpaceGuid.PcdLogoFile |{ 0x99, 0x8b, 0xB2, 0x7B, 0xBB, 0x61, 0xD5, 0x11, 0x9A, 0x5D, 0x00, 0x90, 0x27, 0x3F, 0xC1, 0x4D }|VOID*|0x00000004
 
   ## FFS filename to find the Too Hot BMP file.
   #  {7C3A8851-A6D2-445B-A53B-155F867AB4DA}
-  gOemPkgTokenSpaceGuid.PcdThermalFile |{ 0x51, 0x88, 0x3A, 0x7C, 0xD2, 0xA6, 0x5B, 0x44, 0xA5, 0x3B, 0x15, 0x5F, 0x86, 0x7A, 0xB4, 0xDA }|VOID*|0x20000030
+  gOemPkgTokenSpaceGuid.PcdThermalFile |{ 0x51, 0x88, 0x3A, 0x7C, 0xD2, 0xA6, 0x5B, 0x44, 0xA5, 0x3B, 0x15, 0x5F, 0x86, 0x7A, 0xB4, 0xDA }|VOID*|0x00000005
 
   ## FFS filename to find the Low Battery BMP file.
   #  {D2AF039E-9F1F-4616-97AF-BE4509A365EA}
-  gOemPkgTokenSpaceGuid.PcdLowBatteryFile |{ 0x9E, 0x03, 0xAF, 0xD2, 0x1F, 0x9F, 0x16, 0x46, 0x97, 0xAF, 0xBE, 0x45, 0x09, 0xA3, 0x65, 0xEA }|VOID*|0x20000031
+  gOemPkgTokenSpaceGuid.PcdLowBatteryFile |{ 0x9E, 0x03, 0xAF, 0xD2, 0x1F, 0x9F, 0x16, 0x46, 0x97, 0xAF, 0xBE, 0x45, 0x09, 0xA3, 0x65, 0xEA }|VOID*|0x00000006
 
   ## FFS filename to find the Front Page Title Bar BMP file.
   # {afdaeab5-3f81-934e-8ee3-228434ba283d}
-  gOemPkgTokenSpaceGuid.PcdFrontPageLogoFile         |{ 0xb5, 0xea, 0xda, 0xaf, 0x81, 0x3f, 0x93, 0x4e, 0x8e, 0xe3, 0x22, 0x84, 0x34, 0xba, 0x28, 0x3d } | VOID* | 0x20000033
-  
+  gOemPkgTokenSpaceGuid.PcdFrontPageLogoFile         |{ 0xb5, 0xea, 0xda, 0xaf, 0x81, 0x3f, 0x93, 0x4e, 0x8e, 0xe3, 0x22, 0x84, 0x34, 0xba, 0x28, 0x3d } | VOID* | 0x00000007
+
   ## FFS filename to find the No Boot BMP file.
   # {f1e7a352-46ae-4912-af92-36ab51781d8e}
-  gOemPkgTokenSpaceGuid.PcdBootFailIndicatorFile |{ 0x52, 0xa3, 0xe7, 0xf1, 0xae, 0x46, 0x12, 0x49, 0x92, 0xaf, 0x36, 0xab, 0x51, 0x78, 0x1d, 0x8e }|VOID*|0x20000034
+  gOemPkgTokenSpaceGuid.PcdBootFailIndicatorFile |{ 0x52, 0xa3, 0xe7, 0xf1, 0xae, 0x46, 0x12, 0x49, 0x92, 0xaf, 0x36, 0xab, 0x51, 0x78, 0x1d, 0x8e }|VOID*|0x00000008
 
   ## FFS filename to find the Firmware Settings BMP file.
   # {4f7fe6d5-b396-40f9-9246-7a8e4a821720 }
-  gOemPkgTokenSpaceGuid.PcdFirmwareSettingsIndicatorFile | { 0xd5, 0xe6, 0xfe, 0x4f, 0x96, 0xb3, 0xf9, 0x40, 0x92, 0x46, 0x7a, 0x8e, 0x4a, 0x82, 0x17, 0x20 }|VOID*|0x20000035
-  
+  gOemPkgTokenSpaceGuid.PcdFirmwareSettingsIndicatorFile | { 0xd5, 0xe6, 0xfe, 0x4f, 0x96, 0xb3, 0xf9, 0x40, 0x92, 0x46, 0x7a, 0x8e, 0x4a, 0x82, 0x17, 0x20 }|VOID*|0x00000009
+
   ## FFS filename to find the Volume Up BMP file.
   # {ae2d011c-4128-4960-a536-b424ccc3d1ea}
-  gOemPkgTokenSpaceGuid.PcdVolumeUpIndicatorFile |{ 0x1c, 0x01, 0x2d, 0xae, 0x28, 0x41, 0x60, 0x49, 0xa5, 0x36, 0xb4, 0x24, 0xcc, 0xc3, 0xd1, 0xea }|VOID*|0x20000036
+  gOemPkgTokenSpaceGuid.PcdVolumeUpIndicatorFile |{ 0x1c, 0x01, 0x2d, 0xae, 0x28, 0x41, 0x60, 0x49, 0xa5, 0x36, 0xb4, 0x24, 0xcc, 0xc3, 0xd1, 0xea }|VOID*|0x0000000A
+
+  # The number of attempts the user has to type in the password.
+  # If the number of attempts is exceeded, a message dialog is displayed, and
+  # then user can access the front page as a limited user.
+  # If set to 0 gives an unlimited number of attempts.
+  gOemPkgTokenSpaceGuid.PcdMaxPasswordAttempts|0x3|UINT8|0x0000000B

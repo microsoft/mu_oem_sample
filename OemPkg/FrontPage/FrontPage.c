@@ -2,32 +2,14 @@
 
   Implements the UEFI Front Page (Settings Menu).
 
-  Copyright (c) 2015 - 2018, Microsoft Corporation.
-  
-  All rights reserved.
-  Redistribution and use in source and binary forms, with or without 
-  modification, are permitted provided that the following conditions are met:
-  1. Redistributions of source code must retain the above copyright notice,
-  this list of conditions and the following disclaimer.
-  2. Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
-  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  Copyright (C) Microsoft Corporation. All rights reserved.
+  SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
 #include <Uefi.h>
 #include "FrontPage.h"
+#include "String.h"
 #include "FrontPageUi.h"
 #include "FrontPageConfigAccess.h"
 
@@ -37,6 +19,7 @@
 #include <Guid/MsBootMenuGuid.h>
 #include <Guid/MdeModuleHii.h>
 #include <Guid/DebugImageInfoTable.h>
+#include <Guid/MsNVBootReason.h>
 
 #include <Pi/PiFirmwareFile.h>
 
@@ -45,6 +28,7 @@
 #include <Protocol/OnScreenKeyboard.h>
 #include <Protocol/SimpleWindowManager.h>
 #include <Protocol/FirmwareManagement.h>
+#include <Protocol/VariablePolicy.h>
 
 #include <Library/DebugLib.h>
 #include <Library/BaseMemoryLib.h>
@@ -64,6 +48,8 @@
 #include <Library/ResetUtilityLib.h>
 #include <Library/MsColorTableLib.h>
 #include <Library/MsNVBootReasonLib.h>
+#include <Library/MsSecureBootLib.h>
+#include <Library/SwmDialogsLib.h>
 
 #include <MsDisplayEngine.h>
 #include <UIToolKit/SimpleUIToolKit.h>
@@ -95,8 +81,10 @@ BOOLEAN                           mResetRequired;
 FRONT_PAGE_AUTH_TOKEN_PROTOCOL   *mFrontPageAuthTokenProtocol = NULL;
 DFCI_AUTHENTICATION_PROTOCOL     *mAuthProtocol = NULL;
 EFI_HII_CONFIG_ROUTING_PROTOCOL  *mHiiConfigRouting;
+DFCI_SETTING_ACCESS_PROTOCOL     *mSettingAccess;
 DFCI_AUTH_TOKEN                   mAuthToken;
 
+extern EFI_HII_HANDLE gStringPackHandle;
 extern EFI_GUID  gMsEventMasterFrameNotifyGroupGuid;
 
 //
@@ -108,6 +96,7 @@ UINT32    mBootVerticalResolution      = 0;
 EFI_FORM_BROWSER2_PROTOCOL          *mFormBrowser2;
 MS_ONSCREEN_KEYBOARD_PROTOCOL       *mOSKProtocol;
 MS_SIMPLE_WINDOW_MANAGER_PROTOCOL   *mSWMProtocol;
+VARIABLE_POLICY_PROTOCOL            *mVariablePolicyProtocol;
 
 // Map Top Menu entries to HII Form IDs.
 //
@@ -125,13 +114,14 @@ struct
 //    Index (Full)  Index (Limited)     String                                      Formset Guid                       Form ID
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
     { 0,            0,                  STRING_TOKEN (STR_MF_MENU_OP_PCINFO),       FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_PCINFO   },  // PC info
-    { 1,            UNUSED_INDEX,       STRING_TOKEN (STR_MF_MENU_OP_BOOTORDER),    MS_BOOT_MENU_FORMSET_GUID,         MS_BOOT_ORDER_FORM_ID       },  // Boot Order
-    { 2,            1,                  STRING_TOKEN(STR_MF_MENU_OP_EXIT),          FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_EXIT     }   // Exit
+    { 1,            UNUSED_INDEX,       STRING_TOKEN (STR_MF_MENU_OP_SECURITY),     FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_SECURITY },  // Security
+    { 2,            UNUSED_INDEX,       STRING_TOKEN (STR_MF_MENU_OP_BOOTORDER),    MS_BOOT_MENU_FORMSET_GUID,         MS_BOOT_ORDER_FORM_ID       },  // Boot Order
+    { 3,            1,                  STRING_TOKEN(STR_MF_MENU_OP_EXIT),          FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_EXIT     }   // Exit
 };
 
 // Frontpage form set GUID
 //
-EFI_GUID gMsFrontPageConfigFormSetGuid = FRONT_PAGE_CONFIG_FORMSET_GUID;
+EFI_GUID gMuFrontPageConfigFormSetGuid = FRONT_PAGE_CONFIG_FORMSET_GUID;
 
 #pragma pack(1)
 
@@ -182,8 +172,6 @@ HII_VENDOR_DEVICE_PATH  mFrontPageHiiVendorDevicePath = {
 
 EFI_STATUS GetAndDisplayBitmap(EFI_GUID *FileGuid, UINTN XCoord, BOOLEAN XCoordAdj);
 
-EFI_STATUS GetAuthToken(CHAR16 *PasswordBuffer);
-
 /**
 
   Acquire the string associated with the Index from smbios structure and return it.
@@ -200,9 +188,9 @@ EFI_STATUS GetAuthToken(CHAR16 *PasswordBuffer);
 STATIC
 EFI_STATUS
 GetOptionalStringByIndex (
-  IN      CHAR8                   *OptionalStrStart,
-  IN      UINT8                   Index,
-  OUT     CHAR16                  **String
+  IN  CHAR8  *OptionalStrStart,
+      UINT8  Index,
+  OUT CHAR16 **String
   )
 {
   UINTN          StrSize;
@@ -245,7 +233,9 @@ GetOptionalStringByIndex (
 **/
 STATIC
 EFI_STATUS
-UpdateDisplayStrings (IN    EFI_HII_HANDLE  HiiHandle)
+UpdateDisplayStrings (
+  IN EFI_HII_HANDLE HiiHandle
+  )
 {
   EFI_STATUS                Status = EFI_SUCCESS;
   CHAR16                    *NewString;
@@ -317,7 +307,10 @@ found using FMP.
 
 **/
 VOID
-UpdateFormWithFirmwareVersions(IN EFI_HII_HANDLE  HiiHandle) {
+UpdateFormWithFirmwareVersions (
+  IN EFI_HII_HANDLE  HiiHandle
+  )
+{
   EFI_STATUS                    Status;
   VOID                         *StartOpCodeHandle;
   VOID                         *EndOpCodeHandle = NULL;
@@ -510,7 +503,7 @@ UpdateFormWithFirmwareVersions(IN EFI_HII_HANDLE  HiiHandle) {
     if (FmpList != NULL) { FreePool(FmpList); }
 
     Status = HiiUpdateForm(HiiHandle,     // HII handle
-      &gMsFrontPageConfigFormSetGuid,     // Formset GUID
+      &gMuFrontPageConfigFormSetGuid,     // Formset GUID
       FRONT_PAGE_FORM_ID_PCINFO,          // Form ID
       StartOpCodeHandle,                  // Label for where to insert opcodes
       EndOpCodeHandle                     // Replace data
@@ -538,8 +531,8 @@ UpdateFormWithFirmwareVersions(IN EFI_HII_HANDLE  HiiHandle) {
 **/
 EFI_STATUS
 InitializeFrontPage (
-                    IN BOOLEAN    InitializeHiiData
-                    )
+  BOOLEAN    InitializeHiiData
+  )
 {
     EFI_STATUS                  Status = EFI_SUCCESS;
     CHAR16                      *StringBuffer;
@@ -565,6 +558,12 @@ InitializeFrontPage (
         {
             return Status;
         }
+        Status = gBS->LocateProtocol (&gVariablePolicyProtocolGuid, NULL, (VOID **) &mVariablePolicyProtocol);
+        if (EFI_ERROR (Status))
+        {
+            return Status;
+        }
+
 
         //
         // Install Device Path Protocol and Config Access protocol to driver handle
@@ -584,7 +583,7 @@ InitializeFrontPage (
         // Publish our HII data
         //
         mFrontPagePrivate.HiiHandle = HiiAddPackages (
-                                                     &gMsFrontPageConfigFormSetGuid,
+                                                     &gMuFrontPageConfigFormSetGuid,
                                                      mFrontPagePrivate.DriverHandle,
                                                      FrontPageVfrBin,
                                                      FrontPageStrings,
@@ -601,7 +600,8 @@ InitializeFrontPage (
     // Update PC information display strings from EFI variables.
     //
     UpdateDisplayStrings (HiiHandle);
-    UpdateFormWithFirmwareVersions(HiiHandle);
+    UpdateFormWithFirmwareVersions (HiiHandle);
+    UpdateSecureBootStatusStrings (FALSE);
 
     return Status;
 }
@@ -619,8 +619,8 @@ InitializeFrontPage (
 **/
 EFI_STATUS
 UninitializeFrontPage (
-                      VOID
-                      )
+  VOID
+  )
 {
     EFI_STATUS Status = EFI_SUCCESS;
 
@@ -677,7 +677,9 @@ UninitializeFrontPage (
 
 **/
 EFI_STATUS
-CallFrontPage (IN UINT32    FormIndex)
+CallFrontPage (
+  UINT32 FormIndex
+  )
 {
     EFI_STATUS                    Status = EFI_SUCCESS;
     UINT16  Count, Index = 0;
@@ -773,21 +775,39 @@ Exit:
 **/
 STATIC
 ListBox*
-CreateTopMenu(IN UINT32 OrigX,
-              IN UINT32 OrigY,
-              IN UINT32 CellWidth,
-              IN UINT32 CellHeight,
-              IN UINT32 CellTextXOffset)
+CreateTopMenu (
+  UINT32 OrigX,
+  UINT32 OrigY,
+  UINT32 CellWidth,
+  UINT32 CellHeight,
+  UINT32 CellTextXOffset
+  )
 {
     EFI_FONT_INFO   FontInfo;
-    EFI_STATUS Status;
 
-    // If no password is set, show the full menu.
+    // Check whether there is a system password set.  If so, prompt the user for it before deciding the top-level menu list.
+    // If the user doesn't know the password, they can dismiss the dialog and will see a limited-functionality menu.
     //
-    // if no password is set still we need to get an auth token with a null password.
-    Status = GetAuthToken(NULL);
-    if ((Status == EFI_SUCCESS) && (mAuthToken != 0)){
-       mShowFullMenu = TRUE;
+    if (GetAuthToken (NULL) != EFI_SUCCESS)
+    {
+        if (TRUE == ChallengeUserPassword (PcdGet8 (PcdMaxPasswordAttempts)))
+        {
+            mShowFullMenu = TRUE;
+        }
+    }
+    else
+    {
+        // If no password is set, show the full menu.
+        //
+        // If no password is set we still need to make sure the token is valid
+        if (mAuthToken != DFCI_AUTH_TOKEN_INVALID){
+           mShowFullMenu = TRUE;
+        }
+    }
+
+    if (!mShowFullMenu)
+    {
+      PcdSetBoolS (PcdSetupUiReducedFunction, TRUE);
     }
 
     // Create a listbox with menu options.  The contents of the menu depend on whether a system password is
@@ -856,7 +876,9 @@ CreateTopMenu(IN UINT32 OrigX,
 
 **/
 EFI_STATUS
-RenderTitlebar(VOID)
+RenderTitlebar (
+  VOID
+  )
 {
     EFI_STATUS                Status = EFI_SUCCESS;
     EFI_FONT_DISPLAY_INFO     StringInfo;
@@ -1008,7 +1030,9 @@ Exit:
 
 **/
 EFI_STATUS
-RenderMasterFrame(VOID)
+RenderMasterFrame (
+  VOID
+  )
 {
     EFI_STATUS  Status      = EFI_SUCCESS;
     VOID        *pContext   = NULL;
@@ -1065,6 +1089,64 @@ Exit:
 
     return Status;
 }
+
+
+/**
+  Determines whether there are any pending messages for the user
+  and presents them if there are.
+
+  @retval     EFI_SUCCESS
+
+**/
+EFI_STATUS
+NotifyUserOfAlerts (
+  VOID
+  )
+{
+  EFI_STATUS      Status = EFI_SUCCESS, VarStatus;
+  CHAR16          *SbViolationVarName = SFP_SB_VIOLATION_SIGNAL_VAR_NAME, *SbViolationMessage;
+  BOOLEAN         SecViolation = FALSE;
+  UINTN           DataSize;
+  SWM_MB_RESULT   SwmResult           = 0;
+
+  // Check for SecureBoot notifications.
+  //
+  DataSize = sizeof( SecViolation );
+  VarStatus = gRT->GetVariable( SbViolationVarName,
+                                &gOemBootNVVarGuid,
+                                NULL,
+                                &DataSize,
+                                (UINT8*)&SecViolation );
+
+  // Inform the user if there was a SecureBoot violation.
+  //
+  if (SecViolation)
+  {
+    DEBUG ((DEBUG_INFO, "FrontPage::%a - SecureBoot violation detected! Warning user...\n", __FUNCTION__));
+    SbViolationMessage = (CHAR16*)HiiGetString (gStringPackHandle, STRING_TOKEN (STR_SB_VIOLATION_WARNING), NULL);
+    Status = SwmDialogsMessageBox ((CHAR16*)HiiGetString (gStringPackHandle, STRING_TOKEN (STR_SB_VIOLATION_TITLE), NULL),   // Dialog titlebar text.
+                                   SbViolationMessage,  // Dialog body text.
+                                   L"",                 // Dialog caption text.
+                                   SWM_MB_OK,           // Show Ok button only.
+                                   0,                   // No timeout
+                                   &SwmResult);         // Return result.
+  }
+
+  // If the variable was found successfully, let's delete it so
+  // that we don't continue popping up the message.
+  //
+  if (!EFI_ERROR( Status ) && !EFI_ERROR( VarStatus ))
+  {
+    Status = gRT->SetVariable( SbViolationVarName,
+                               &gOemBootNVVarGuid,
+                               0,
+                               0,
+                               NULL );
+  }
+
+  return Status;
+} // NotifyUserOfAlerts()
+
 
 /**
   Master Frame callback (signalled by Display Engine) for receiving user input data (i.e., key, touch, mouse, etc.).
@@ -1176,6 +1258,12 @@ InitializeFrontPageUI (VOID)
     UINT32 MasterFrameMenuOrigX = 0;
     UINT32 MasterFrameMenuOrigY = mTitleBarHeight;
     UINT32 CellTextXOffset      = ((mMasterFrameWidth * FP_MFRAME_MENU_TEXT_OFFSET_PERCENT) / 100);
+
+    // Determine whether there are any events that require user notification.
+    // NOTE: This should come before CreateTopMenu() because it needs to happen before the
+    //       Admin Password prompt.
+    //
+    NotifyUserOfAlerts();
 
     // Create the top-level menu in the Master Frame.
     //
@@ -1322,6 +1410,15 @@ UefiMain(IN EFI_HANDLE        ImageHandle,
 
     mResetRequired = FALSE;
 
+    Status = gBS->LocateProtocol(&gDfciSettingAccessProtocolGuid,
+        NULL,
+        (VOID **)&mSettingAccess
+        );
+    if (EFI_ERROR(Status))
+    {
+        ASSERT_EFI_ERROR(Status);
+        DEBUG((DEBUG_ERROR, "%a Couldn't locate system setting access protocol\n", __FUNCTION__));
+    }
     // Force-connect all controllers.
     //
     EfiBootManagerConnectAll();
@@ -1431,6 +1528,10 @@ UefiMain(IN EFI_HANDLE        ImageHandle,
         DEBUG((DEBUG_ERROR, "ERROR [FP]: Failed to initialize the UI toolkit (%r).\r\n", Status));
         goto Exit;
     }
+
+    // Register Front Page strings with the HII database.
+    //
+    InitializeStringSupport();
 
     // Initialize HII data (ex: register strings, etc.).
     //
@@ -1542,46 +1643,51 @@ EFI_STATUS  GetAndDisplayBitmap (EFI_GUID *FileGuid, UINTN XCoord, BOOLEAN XCoor
 }
 
 /**
-Acquire a Auth Token and save it in a protocol
+Acquire an Auth Token and save it in a protocol
 **/
-EFI_STATUS GetAuthToken(CHAR16 *PasswordBuffer){
+EFI_STATUS
+GetAuthToken (
+  CHAR16 *PasswordBuffer
+  )
+{
+  EFI_STATUS                            Status;
 
-    EFI_STATUS                            Status;
+  Status = gBS->LocateProtocol (&gDfciAuthenticationProtocolGuid,
+                                NULL,
+                                (VOID **)&mAuthProtocol);
 
-    Status = gBS->LocateProtocol(
-        &gDfciAuthenticationProtocolGuid,
-        NULL,
-        (VOID **)&mAuthProtocol
-        );
-
-    if (EFI_ERROR(Status))
-    {
-        DEBUG((DEBUG_ERROR, "%a - Failed to locate MsAuthProtocol. Can't use check auth. %r\n", __FUNCTION__, Status));
-        mAuthProtocol = NULL;
-        return Status;
-    }
-    if (PasswordBuffer != NULL){
-        Status = mAuthProtocol->AuthWithPW(mAuthProtocol, PasswordBuffer, StrLen(PasswordBuffer), &mAuthToken);
-        DEBUG((DEBUG_INFO, "%a Auth Token Acquired %x\n", __FUNCTION__, mAuthToken, Status));
-    }
-    else{
-        Status = mAuthProtocol->AuthWithPW(mAuthProtocol, NULL, 0, &mAuthToken);
-        DEBUG((DEBUG_INFO, "%a Auth Token Acquired with NULL Password %x\n", __FUNCTION__, mAuthToken, Status));
-    }
-    mFrontPageAuthTokenProtocol = (FRONT_PAGE_AUTH_TOKEN_PROTOCOL *) AllocateZeroPool(sizeof(mFrontPageAuthTokenProtocol));
-//regardless of the auth token value we install the protocol.
-//when system password is set, if user enters a invalid password, then the frontpage access will be restricted.
-//when there isno system password set, if auth token with a null request is returned invalid we
-//still allow only a restricted access of the menu. the protocol with invalid auth token will not be used.
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a - Failed to locate MsAuthProtocol. Can't use check auth. %r\n", __FUNCTION__, Status));
+    mAuthProtocol = NULL;
+    return Status;
+  }
+  if (PasswordBuffer != NULL) {
+    Status = mAuthProtocol->AuthWithPW (mAuthProtocol, PasswordBuffer, StrLen (PasswordBuffer), &mAuthToken);
+    DEBUG ((DEBUG_INFO, "%a Auth Token Acquired %x\n", __FUNCTION__, mAuthToken, Status));
+  } else {
+    Status = mAuthProtocol->AuthWithPW (mAuthProtocol, NULL, 0, &mAuthToken);
+    DEBUG ((DEBUG_INFO, "%a Auth Token Acquired with NULL Password %x\n", __FUNCTION__, mAuthToken, Status));
+  }
+  
+  if (!EFI_ERROR (Status) && mAuthToken != DFCI_AUTH_TOKEN_INVALID) {
+    mFrontPageAuthTokenProtocol = (FRONT_PAGE_AUTH_TOKEN_PROTOCOL *) AllocateZeroPool (sizeof(mFrontPageAuthTokenProtocol));
+    
+    //
+    // Regardless of the auth token value we install the protocol.
+    // When system password is set, if user enters a invalid password, then the frontpage access will be restricted.
+    // When there is no system password set, if auth token with a null request is returned invalid; we
+    // still allow only a restricted access of the menu. The protocol with invalid auth token will not be used.
+    //
     mFrontPageAuthTokenProtocol->AuthToken = (UINTN)mAuthToken;
-    Status = gBS->InstallMultipleProtocolInterfaces(&mImageHandle,
-        &gMsFrontPageAuthTokenProtocolGuid,
-        mFrontPageAuthTokenProtocol,
-        NULL);
+    Status = gBS->InstallMultipleProtocolInterfaces (&mImageHandle,
+                                                     &gMsFrontPageAuthTokenProtocolGuid,
+                                                     mFrontPageAuthTokenProtocol,
+                                                     NULL);
 
     if (Status == EFI_SUCCESS){
-        DEBUG((DEBUG_INFO, "%a FrontPageAuthTokenProtocol was successfully installed %r\n", __FUNCTION__, Status));
+        DEBUG ((DEBUG_INFO, "%a FrontPageAuthTokenProtocol was successfully installed %r\n", __FUNCTION__, Status));
     }
+  }
 
-    return Status;
+  return Status;
 }

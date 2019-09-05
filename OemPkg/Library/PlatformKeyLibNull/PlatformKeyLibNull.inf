@@ -1,0 +1,26 @@
+## @file - PlatformKeyLibNull.inf
+#  Copyright (C) Microsoft Corporation. All rights reserved.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+
+[Defines]
+  INF_VERSION    = 0x00010005
+  BASE_NAME      = PlatformKeyLib
+  FILE_GUID      = 699A6E9B-1510-49E0-A2B0-14A02B6EF00C
+  VERSION_STRING = 1.0
+  MODULE_TYPE    = BASE
+  LIBRARY_CLASS  = PlatformKeyLib
+
+# 
+# The following information is for reference only and not required by the build tools.
+# 
+# VALID_ARCHITECTURES = IA32 X64 AARCH64
+# 
+
+[Packages]
+  MdePkg/MdePkg.dec
+  OemPkg/OemPkg.dec
+
+[Sources]
+  PlatformKeyLibNull.c
+

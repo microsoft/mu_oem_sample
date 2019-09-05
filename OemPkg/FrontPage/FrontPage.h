@@ -2,15 +2,8 @@
   FrontPage routines to handle the callbacks and browser calls
 
 Copyright (c) 2004 - 2012, Intel Corporation. All rights reserved.<BR>
-Copyright (c) 2015 - 2018, Microsoft Corporation. All rights reserved.<BR>
-
-This program and the accompanying materials
-are licensed and made available under the terms and conditions of the BSD License
-which accompanies this distribution.  The full text of the license may be found at
-http://opensource.org/licenses/bsd-license.php
-
-THE PROGRAM IS DISTRIBUTED UNDER THE BSD LICENSE ON AN "AS IS" BASIS,
-WITHOUT WARRANTIES OR REPRESENTATIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+Copyright (c), Microsoft Corporation. All rights reserved.<BR>
+SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
@@ -53,6 +46,9 @@ typedef struct {
   EFI_HII_CONFIG_ACCESS_PROTOCOL  ConfigAccess;
 } FRONT_PAGE_CALLBACK_DATA;
 
+extern FRONT_PAGE_CALLBACK_DATA  mFrontPagePrivate;
+extern EFI_GUID                  gMuFrontPageConfigFormSetGuid;
+
 /**
   Initialize HII information for the FrontPage
 
@@ -65,9 +61,16 @@ typedef struct {
 **/
 EFI_STATUS
 InitializeFrontPage (
-  IN BOOLEAN    InitializeHiiData
+  BOOLEAN  InitializeHiiData
   );
 
+/**
+  Acquire an Auth Token and save it in a protocol
+**/
+EFI_STATUS
+GetAuthToken (
+  CHAR16  *PasswordBuffer
+  );
 
 #endif // _FRONT_PAGE_H_
 

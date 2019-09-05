@@ -1,27 +1,9 @@
 ## @file
 # Oem Sample Package Localized Libraries and Content
 #
-# Copyright (c) 2018, Microsoft Corporation
-
-# All rights reserved.
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-# 1. Redistributions of source code must retain the above copyright notice,
-# this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-# this list of conditions and the following disclaimer in the documentation
-# and/or other materials provided with the distribution.
+#  Copyright (C) Microsoft Corporation. All rights reserved.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ##
 
 [Defines]
@@ -68,6 +50,7 @@
   ResetUtilityLib|MdeModulePkg/Library/ResetUtilityLib/ResetUtilityLib.inf
   ResetSystemLib|MdeModulePkg/Library/DxeResetSystemLib/DxeResetSystemLib.inf
   TimerLib|MdePkg/Library/BaseTimerLibNullTemplate/BaseTimerLibNullTemplate.inf
+  MuVariablePolicyHelperLib|MdeModulePkg/Library/MuVariablePolicyHelperLib/MuVariablePolicyHelperLib.inf
 
   UIToolKitLib|MsGraphicsPkg/Library/SimpleUIToolKit/SimpleUIToolKit.inf
   MsUiThemeLib|MsGraphicsPkg/Library/MsUiThemeLib/Dxe/MsUiThemeLib.inf
@@ -84,6 +67,10 @@
   MsBootPolicyLib|OemPkg/Library/MsBootPolicyLib/MsBootPolicyLib.inf
   MsNVBootReasonLib|OemPkg/Library/MsNVBootReasonLib/MsNVBootReasonLib.inf
   MuUefiVersionLib|OemPkg/Library/MuUefiVersionLib/MuUefiVersionLib.inf
+  PasswordStoreLib|OemPkg/Library/PasswordStoreLib/PasswordStoreLib.inf
+  MsSecureBootLib|OemPkg/Library/MsSecureBootLib/MsSecureBootLib.inf
+  PlatformKeyLib|OemPkg/Library/PlatformKeyLibNull/PlatformKeyLibNull.inf
+  PasswordPolicyLib|OemPkg/Library/PasswordPolicyLibNull/PasswordPolicyLibNull.inf
 
   DeviceStateLib|MsCorePkg/Library/DeviceStateLib/DeviceStateLib.inf
   DeviceBootManagerLib|MsCorePkg/Library/DeviceBootManagerLibNull/DeviceBootManagerLibNull.inf
@@ -131,7 +118,14 @@
   OemPkg/Library/MsNVBootReasonLib/MsNVBootReasonLib.inf
   OemPkg/Library/MuUefiVersionLib/MuUefiVersionLib.inf
   OemPkg/Library/BootGraphicsProviderLib/BootGraphicsProviderLib.inf
+  OemPkg/Library/PasswordStoreLib/PasswordStoreLib.inf
+  OemPkg/Library/PasswordPolicyLib/PasswordPolicyLib.inf
+  OemPkg/Library/PasswordPolicyLibNull/PasswordPolicyLibNull.inf
+  OemPkg/Library/MsSecureBootLib/MsSecureBootLib.inf
+  OemPkg/Library/MsSecureBootModeSettingDxeLib/MsSecureBootModeSettingDxeLib.inf
+  OemPkg/Library/PlatformKeyLibNull/PlatformKeyLibNull.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
+
 [Components.X64]
   OemPkg/FrontPage/FrontPage.inf
   OemPkg/BootMenu/BootMenu.inf

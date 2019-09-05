@@ -1,27 +1,8 @@
 ## @file
 # Application that presents & manages the Front Page.
 #
-# Copyright (c) 2014 - 2018, Microsoft Corporation.
-#
-# All rights reserved.
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 1. Redistributions of source code must retain the above copyright notice,
-# this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-# this list of conditions and the following disclaimer in the documentation
-# and/or other materials provided with the distribution.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-# IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-# OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
-# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
 [Defines]
@@ -44,11 +25,13 @@
   FrontPageUi.c
   FrontPageStrings.uni
   FrontPageVfr.Vfr
+  String.c
 
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   MsGraphicsPkg/MsGraphicsPkg.dec
+  MsCorePkg/MsCorePkg.dec
   PcBdsPkg/PcBdsPkg.dec
   OemPkg/OemPkg.dec
   DfciPkg/DfciPkg.dec
@@ -61,6 +44,7 @@
   UefiApplicationEntryPoint
   PcdLib
   UefiBootManagerLib
+  PasswordPolicyLib
   UIToolKitLib
   DxeServicesLib
   BmpSupportLib
@@ -72,6 +56,8 @@
   MsNVBootReasonLib
   GraphicsConsoleHelperLib
   SwmDialogsLib
+  MsSecureBootLib
+  SafeIntLib
 
 [Guids]
   gEfiGlobalVariableGuid                        ## SOMETIMES_PRODUCES ## Variable:L"BootNext" (The number of next boot option)
@@ -99,24 +85,27 @@
   gDfciAuthenticationProtocolGuid               ## PROTOCOL CONSUMES
   gEdkiiFormBrowserEx2ProtocolGuid              ## PROTOCOL CONSUMES
   gEfiFirmwareManagementProtocolGuid            ## PROTOCOL CONSUMES
+  gVariablePolicyProtocolGuid                   ## PROTOCOL CONSUMES
 
 [FeaturePcd]
-  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLangDeprecate
+  #gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLangDeprecate
 
 [Pcd]
-  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLangCodes
-  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLang
-  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultPlatformLangCodes
-  gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultPlatformLang
-  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow
-  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn
-  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution
-  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution
+  #gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLangCodes
+  #gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLang
+  #gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultPlatformLangCodes
+  #gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultPlatformLang
+  #gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow
+  #gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn
+  #gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution
+  #gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution
   gOemPkgTokenSpaceGuid.PcdVolumeUpIndicatorFile
   gOemPkgTokenSpaceGuid.PcdFirmwareSettingsIndicatorFile
   gOemPkgTokenSpaceGuid.PcdFrontPageLogoFile
-  gMsGraphicsPkgTokenSpaceGuid.PcdCurrentPointerState
   gOemPkgTokenSpaceGuid.PcdBootFailIndicatorFile
+  gOemPkgTokenSpaceGuid.PcdMaxPasswordAttempts
+  gMsGraphicsPkgTokenSpaceGuid.PcdCurrentPointerState
+  gDfciPkgTokenSpaceGuid.PcdSetupUiReducedFunction
 
 [Depex]
   TRUE

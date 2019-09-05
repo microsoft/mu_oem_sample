@@ -1,27 +1,8 @@
 /** @file
   User interaction functions for the FrontPage.
 
-  Copyright (c) 2015 - 2018, Microsoft Corporation.
-  
-  All rights reserved.
-  Redistribution and use in source and binary forms, with or without 
-  modification, are permitted provided that the following conditions are met:
-  1. Redistributions of source code must retain the above copyright notice,
-  this list of conditions and the following disclaimer.
-  2. Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
-  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
-  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  Copyright (C) Microsoft Corporation. All rights reserved.
+  SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
@@ -52,9 +33,77 @@ UiCallback (
   IN  CONST EFI_HII_CONFIG_ACCESS_PROTOCOL   *This,
   IN  EFI_BROWSER_ACTION                     Action,
   IN  EFI_QUESTION_ID                        QuestionId,
-  IN  UINT8                                  Type,
+      UINT8                                  Type,
   IN  EFI_IFR_TYPE_VALUE                     *Value,
   OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
   );
 
+STATIC
+EFI_STATUS
+SetSystemPassword (
+  IN  EFI_IFR_TYPE_VALUE                     *Value,
+  OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
+  );
+
+/**
+  Presents the user with a (hopefully) helpful dialog
+  with more info about a particular subject.
+
+  NOTE: Subject is determined by the state of mCallbackKey.
+
+  @retval   EFI_SUCCESS     Message successfully displayed.
+  @retval   EFI_NOT_FOUND   mCallbackKey not recognized or string could not be loaded.
+  @retval   Others          Return value of mSWMProtocol->MessageBox().
+
+**/
+STATIC
+EFI_STATUS
+HandleInfoPopup(
+              IN  EFI_IFR_TYPE_VALUE                     *Value,
+              OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
+              );
+
+/**
+  Handle a request to change the SecureBoot configuration.
+
+  @retval EFI_SUCCESS         Successfully installed SecureBoot default variables.
+  @retval Others              Failed to install. SecureBoot is still disabled.
+
+**/
+STATIC
+EFI_STATUS
+HandleSecureBootChange (
+  IN  EFI_IFR_TYPE_VALUE                     *Value,
+  OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
+  );
+
+
+/**
+  Determines the current SecureBoot state and updates the status strings accordingly.
+
+  @param[in]  RefreshScreen     BOOLEAN indicating whether to force a screen refresh after updating the strings.
+
+**/
+VOID
+UpdateSecureBootStatusStrings (
+  BOOLEAN        RefreshScreen
+  );
+
+/**
+  Present user with password prompt and attempt to validate password.
+
+  NOTE: If user enters password incorrectly too many times, return FALSE.
+
+  @param  MaxAttempts   The number of invalid password attempts before the
+                        system will halt with an appropriate message.
+                        If 0, user receives unlimited opportunites.
+
+  @retval     TRUE    User entered the password correctly.
+  @retval     FALSE   User cancelled password attempt or failed to authenticate.
+
+**/
+BOOLEAN
+ChallengeUserPassword (
+  UINT8  MaxAttempts
+  );
 #endif // _FRONT_PAGE_UI_H_

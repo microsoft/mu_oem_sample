@@ -1,0 +1,53 @@
+## @file MsSecureBootModeSettingDxeLib.inf
+#
+#  Copyright (C) Microsoft Corporation. All rights reserved.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#  Library to support Secure Boot Settings  (get/set)
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010017
+  BASE_NAME                      = MsSecureBootModeSettingDxeLib
+  FILE_GUID                      = A5498DCA-6F34-4080-ABCF-DE9C05C334DE
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0 
+  LIBRARY_CLASS                  = MsSecureBootModeSettingDxeLib|DXE_DRIVER UEFI_APPLICATION UEFI_DRIVER
+  CONSTRUCTOR                    = MsSecureBootModeSettingDxeLibConstructor
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 AARCH64
+#
+
+[Sources]
+  SecureBootModeSetting.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  OemPkg/OemPkg.dec
+  DfciPkg/DfciPkg.dec
+   
+[LibraryClasses]
+  DebugLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  BaseLib
+  BaseMemoryLib
+  UefiLib
+  PcdLib
+  MsSecureBootLib
+  
+[Guids]
+
+[Protocols]
+  gDfciSettingsProviderSupportProtocolGuid
+
+[FeaturePcd]
+  gDfciPkgTokenSpaceGuid.PcdSettingsManagerInstallProvider
+
+[Pcd]  
+
+[Depex]
+  TRUE
