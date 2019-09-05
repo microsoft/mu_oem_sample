@@ -4,6 +4,8 @@
 # This will cause FrontPage to be selected on each boot.
 # Not to be used in production.
 #
+# Copyright (C) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
 [Defines]
