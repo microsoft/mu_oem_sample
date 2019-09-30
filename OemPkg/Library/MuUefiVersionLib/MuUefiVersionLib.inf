@@ -9,7 +9,7 @@
 [Defines]
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = MuUefiVersionLib
-  FILE_GUID                      = 7D346383-45E2-43E9-88F9-AA2D006AEBB9
+  FILE_GUID                      = 287318BB-52BD-427A-929F-C4B6A0AD3E7E
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = MuUefiVersionLib

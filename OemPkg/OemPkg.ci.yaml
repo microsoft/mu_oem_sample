@@ -1,0 +1,50 @@
+{
+    "CompilerPlugin": {
+        "DscPath": "OemPkg.dsc"
+    },
+    "HostUnitTestCompilerPlugin": {
+        #"DscPath":
+    },
+    "HostUnitTestDscCompleteCheck": {
+        "IgnoreInf": []
+    },
+    "CharEncodingCheck": {
+        "IgnoreFiles": []
+    },
+    "DependencyCheck": {
+        "AcceptableDependencies": [
+            "MdePkg/MdePkg.dec",
+            "MdeModulePkg/MdeModulePkg.dec",
+            "MsCorePkg/MsCorePkg.dec",
+            "MsGraphicsPkg/MsGraphicsPkg.dec",
+            "PcBdsPkg/PcBdsPkg.dec",
+            "DfciPkg/DfciPkg.dec",
+            "SecurityPkg/SecurityPkg.dec",
+            "CryptoPkg/CryptoPkg.dec",
+            "OemPkg/OemPkg.dec"
+        ],
+        "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
+            "MdePkg/MdePkg.dec",
+            "MdeModulePkg/MdeModulePkg.dec",
+            "MsCorePkg/MsCorePkg.dec",
+            "MsGraphicsPkg/MsGraphicsPkg.dec",
+            "PcBdsPkg/PcBdsPkg.dec",
+            "OemPkg/OemPkg.dec"
+        ],
+        "IgnoreInf": []
+    },
+    "DscCompleteCheck": {
+        "IgnoreInf": [
+        ],
+    },
+    "GuidCheck": {
+        "IgnoreGuidName": [],
+        "IgnoreGuidValue": ["00000000-0000-0000-0000-000000000000"],
+        "IgnoreFoldersAndFiles": [],
+        "IgnoreDuplicates": []
+    },
+    "LibraryClassCheck": {
+        "IgnoreLibraryClass": [],
+        "IgnoreHeaderFile": []
+    }
+}

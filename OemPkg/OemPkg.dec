@@ -9,7 +9,7 @@
 [Defines]
   DEC_SPECIFICATION   = 0x00010005
   PACKAGE_NAME        = OemPkg
-  PACKAGE_GUID        = 394D14C6-8C75-4A83-BFE0-969EFB5AF0AA
+  PACKAGE_GUID        = 1CF89F9A-7C15-4702-A4D9-933B6C49D9AF
   PACKAGE_VERSION     = 0.1
 
 [Includes]
@@ -19,10 +19,12 @@
   ## @libraryclass Provides the password rules and hashing
   #
   PasswordPolicyLib|Include/Library/PasswordPolicyLib.h
+  PlatformKeyLib|Include/Library/PlatformKeyLib.h
+  MsSecureBootLib|Include/Library/MsSecureBootLib.h
 
 [Guids]
-  # {394D14C6-8C75-4A83-BFE0-969EFB5AF0AA}
-  gOemPkgTokenSpaceGuid = { 0x394D14C6, 0x8C75, 0x4A83, { 0xBF, 0xE0, 0x96, 0x9E, 0xFB, 0x5A, 0xF0, 0xAA } }
+  # {B20F1063-8C75-4A83-BFE0-969EFB5AF0AA}
+  gOemPkgTokenSpaceGuid = { 0xB20F1063, 0x8C75, 0x4A83, { 0xBF, 0xE0, 0x96, 0x9E, 0xFB, 0x5A, 0xF0, 0xAA } }
 
   #
   # Guid for Alt Boot tracking variables namespace

@@ -9,7 +9,7 @@
 [Defines]
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = MsNVBootReasonLib
-  FILE_GUID                      = 8532FF36-7788-4BDF-B7F7-1865927273CF
+  FILE_GUID                      = 4D3B9FF6-5790-4781-8D72-257A006C842A
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = MsNVBootReasonLib|DXE_DRIVER UEFI_APPLICATION
@@ -40,4 +40,3 @@
   gOemBootNVVarGuid
 
 [Pcd]
-
