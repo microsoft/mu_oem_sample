@@ -66,6 +66,7 @@
   gEfiCertPkcs7Guid                             ## CONSUMES
   gMsEventMasterFrameNotifyGroupGuid            ## CONSUMES
   gFrontPageResetGuid                           ## CONSUMES ## Used to signal a specific reset type, in case anyone wants to handle it.
+  gDfciMenuFormsetGuid                          ## CONSUMES
 
 [Protocols]
   gEfiSmbiosProtocolGuid                        ## PROTOCOL CONSUMES
@@ -106,6 +107,7 @@
   gOemPkgTokenSpaceGuid.PcdMaxPasswordAttempts
   gMsGraphicsPkgTokenSpaceGuid.PcdCurrentPointerState
   gDfciPkgTokenSpaceGuid.PcdSetupUiReducedFunction
+  gDfciPkgTokenSpaceGuid.PcdDfciEnabled
 
 [Depex]
   TRUE

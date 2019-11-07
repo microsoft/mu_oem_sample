@@ -1,0 +1,48 @@
+## @file DfciUiSupportLib.inf
+#
+# Library Instance for UI support functions for DFCI.
+#
+# Copyright (C) Microsoft Corporation. All rights reserved.
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+
+[Defines]
+  INF_VERSION         = 0x00010017
+  BASE_NAME           = DfciUiSupportLib
+  FILE_GUID           = 522EBB9A-D224-40CF-BD3D-700C2D2E789C
+  VERSION_STRING      = 1.0
+  MODULE_TYPE         = DXE_DRIVER
+  LIBRARY_CLASS       = DfciUiSupportLib | DXE_DRIVER
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = ANY
+#
+
+
+[Sources]
+  DfciUiSupportLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  DfciPkg/DfciPkg.dec
+  MsGraphicsPkg/MsGraphicsPkg.dec
+  OemPkg/OemPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  MemoryAllocationLib
+  SwmDialogsLib
+  UefiBootServicesTableLib
+  UefiLib
+
+[Protocols]
+  gMsSWMProtocolGuid   #sometimes consumes
+
+[Guids]
+  gEfiEventPreReadyToBootGuid
+

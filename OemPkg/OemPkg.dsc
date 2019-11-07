@@ -124,6 +124,9 @@
   OemPkg/Library/MsSecureBootLib/MsSecureBootLib.inf
   OemPkg/Library/MsSecureBootModeSettingDxeLib/MsSecureBootModeSettingDxeLib.inf
   OemPkg/Library/PlatformKeyLibNull/PlatformKeyLibNull.inf
+  OemPkg/Library/DfciUiSupportLib/DfciUiSupportLib.inf
+  OemPkg/Library/DfciGroupLib/DfciGroups.inf
+  OemPkg/Library/DfciDeviceIdSupportLib/DfciDeviceIdSupportLib.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
 
 [Components.X64]

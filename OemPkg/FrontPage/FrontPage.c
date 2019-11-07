@@ -20,6 +20,7 @@
 #include <Guid/MdeModuleHii.h>
 #include <Guid/DebugImageInfoTable.h>
 #include <Guid/MsNVBootReason.h>
+#include <Guid/DfciMenuGuid.h>
 
 #include <Pi/PiFirmwareFile.h>
 
@@ -116,7 +117,8 @@ struct
     { 0,            0,                  STRING_TOKEN (STR_MF_MENU_OP_PCINFO),       FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_PCINFO   },  // PC info
     { 1,            UNUSED_INDEX,       STRING_TOKEN (STR_MF_MENU_OP_SECURITY),     FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_SECURITY },  // Security
     { 2,            UNUSED_INDEX,       STRING_TOKEN (STR_MF_MENU_OP_BOOTORDER),    MS_BOOT_MENU_FORMSET_GUID,         MS_BOOT_ORDER_FORM_ID       },  // Boot Order
-    { 3,            1,                  STRING_TOKEN(STR_MF_MENU_OP_EXIT),          FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_EXIT     }   // Exit
+    { 3,            1,                  STRING_TOKEN(STR_MF_MENU_OP_DFCI),          DFCI_MENU_FORMSET_GUID,            DFCI_MENU_FORM_ID           },  // DFCI
+    { 4,            2,                  STRING_TOKEN(STR_MF_MENU_OP_EXIT),          FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_EXIT     }   // Exit
 };
 
 // Frontpage form set GUID
@@ -693,13 +695,20 @@ CallFrontPage (
     //
     EFI_GUID          BootMenu = MS_BOOT_MENU_FORMSET_GUID;
     EFI_HII_HANDLE    *BootHandle  = HiiGetHiiHandles(&BootMenu);
+    EFI_HII_HANDLE    *DfciHandle  = HiiGetHiiHandles(&gDfciMenuFormsetGuid);
 
 
     Handles[0] = mFrontPagePrivate.HiiHandle;
     HandleCount = 1;
 
-    if (BootHandle != NULL)
+    if (BootHandle != NULL) {
         Handles[HandleCount++] = BootHandle[0];
+        FreePool (BootHandle);
+    }
+    if (DfciHandle != NULL) {
+        Handles[HandleCount++] = DfciHandle[0];
+        FreePool (DfciHandle);
+    }
 
     DEBUG((DEBUG_INFO,"MAX_FORMSET_HANDLES=%d, CurrentFormsetHandles=%d\n",MAX_FORMSET_HANDLES,HandleCount ));
     ASSERT(HandleCount < MAX_FORMSET_HANDLES);
@@ -755,6 +764,63 @@ CallFrontPage (
 Exit:
 
     return Status;
+}
+
+/**
+  IsDfciEnabledForDisplay
+
+  The DFCI dialog will not be present when not enabled.  When DFCI is
+  enabled, then enable the DFCI tab of OemFrontPage.
+
+  returns FALSE - do not display DFCI page
+  returns TRUE  - display DFCI page
+*/
+BOOLEAN IsDfciEnabledForDisplay (VOID) {
+    EFI_STATUS  Status;
+    VOID       *dummy;  // There is no protocol interface - just the existence that is is published
+    BOOLEAN     DfciEnabled = FALSE;
+
+    if (FeaturePcdGet(PcdDfciEnabled)) {
+        Status = gBS->LocateProtocol (&gDfciMenuFormsetGuid, NULL, (VOID **) &dummy);
+        DfciEnabled = !EFI_ERROR(Status);
+    }
+
+    return DfciEnabled;
+}
+
+/**
+  RemoveMenuFromList -
+    Updates mFormMap so that the menu item specified by MenuId is omitted.
+    The item in question will have FullMenuIndex and LimitedMenuIndex set
+    to UNUSED_INDEX, and the other indexes in the list are adjusted accordingly.
+*/
+VOID RemoveMenuFromList (UINT16 MenuId) {
+    BOOLEAN FullMenuRemoved = FALSE;
+    BOOLEAN LimitedMenuRemoved = FALSE;
+    UINTN   Count;
+
+    UINT16  MenuOptionCount  = (sizeof(mFormMap) / sizeof(mFormMap[0]));
+
+    for (Count=0 ; Count < MenuOptionCount ; Count++)
+    {
+        if (mFormMap[Count].MenuString == MenuId)
+        {
+            if (mFormMap[Count].FullMenuIndex != UNUSED_INDEX) {
+                FullMenuRemoved = TRUE;
+                mFormMap[Count].FullMenuIndex = UNUSED_INDEX;
+            }
+            if (mFormMap[Count].LimitedMenuIndex != UNUSED_INDEX) {
+                LimitedMenuRemoved = TRUE;
+                mFormMap[Count].LimitedMenuIndex = UNUSED_INDEX;
+            }
+        }
+        if (FullMenuRemoved && mFormMap[Count].FullMenuIndex != UNUSED_INDEX) {
+            mFormMap[Count].FullMenuIndex -= 1;
+        }
+        if (LimitedMenuRemoved && mFormMap[Count].LimitedMenuIndex != UNUSED_INDEX) {
+            mFormMap[Count].LimitedMenuIndex -= 1;
+        }
+    }
 }
 
 /**
@@ -823,6 +889,15 @@ CreateTopMenu (
     if (NULL == MenuOptions)
     {
         return NULL;
+    }
+
+    //
+    // If Dfci is Enabled, always display the DfciMenu.
+    // If Dfci is Disabled, only display the Dfci menu if Dfci Enrolled
+    //
+    if (!IsDfciEnabledForDisplay())
+    {
+        RemoveMenuFromList (STRING_TOKEN(STR_MF_MENU_OP_DFCI));
     }
 
     for (Count=0 ; Count < MenuOptionCount ; Count++)
