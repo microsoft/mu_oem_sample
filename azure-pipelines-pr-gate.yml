@@ -30,19 +30,19 @@ steps:
   displayName: Setup $(Build.Pkgs)
   inputs:
     filename: stuart_ci_setup
-    arguments: -c CISettings.py --force-git -p $(Build.Pkgs)
+    arguments: -c CISettings.py --force-git TOOL_CHAIN_TAG=$(tool_chain_selection)
 
 - task: CmdLine@1
   displayName: Update $(Build.Pkgs)
   inputs:
     filename: stuart_update
-    arguments: -c CISettings.py -p $(Build.Pkgs) TOOL_CHAIN_TAG=$(tool_chain_selection)
+    arguments: -c CISettings.py TOOL_CHAIN_TAG=$(tool_chain_selection)
 
 - task: CmdLine@1
   displayName: Build and Test $(Build.Pkgs)
   inputs:
     filename: stuart_ci_build
-    arguments: -c CISettings.py -p $(Build.Pkgs) TOOL_CHAIN_TAG=$(tool_chain_selection)
+    arguments: -c CISettings.py TOOL_CHAIN_TAG=$(tool_chain_selection) -p $(Build.Pkgs)
 
 # Publish Test Results to Azure Pipelines/TFS
 - task: PublishTestResults@2

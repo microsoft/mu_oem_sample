@@ -4,6 +4,7 @@
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 import os
+import logging
 from edk2toolext.environment import shell_environment
 from edk2toolext.invocables.edk2_ci_build import CiBuildSettingsManager
 from edk2toolext.invocables.edk2_ci_setup import CiSetupSettingsManager
@@ -105,7 +106,7 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
 
     def GetActiveScopes(self):
         ''' return tuple containing scopes that should be active for this process '''
-        scopes = ("corebuild", "project_mu")
+        scopes = ("corebuild", "project_mu", "cibuild")
         self.ActualToolChainTag = shell_environment.GetBuildVars().GetValue("TOOL_CHAIN_TAG", "")
 
         if (GetHostInfo().os == "Linux" and "AARCH64" in self.ActualArchitectures and self.ActualToolChainTag.upper().startswith("GCC")):
@@ -117,7 +118,7 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
         return scopes
 
     def GetName(self):
-        return "MuPlus"
+        return "MuOemSample"
 
     def GetDependencies(self):
         ''' Return Git Repository Dependencies
