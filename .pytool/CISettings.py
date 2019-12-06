@@ -137,17 +137,17 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
             {
                 "Path": "MU_BASECORE",
                 "Url": "https://github.com/Microsoft/mu_basecore.git",
-                "Branch": "dev/201908"
+                "Branch": "release/201911"
             },
             {
                 "Path": "Common/MU",
                 "Url": "https://github.com/Microsoft/mu_plus.git",
-                "Branch": "dev/201908"
+                "Branch": "release/201911"
             },
             {
                 "Path": "Common/MU_TIANO",
                 "Url": "https://github.com/Microsoft/mu_tiano_plus.git",
-                "Branch": "dev/201908"
+                "Branch": "release/201911"
             }
         ]
 
