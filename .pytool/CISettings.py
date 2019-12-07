@@ -1,6 +1,6 @@
 # @file
 #
-# Copyright (c), Microsoft Corporation
+# Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 import os
@@ -8,11 +8,13 @@ import logging
 from edk2toolext.environment import shell_environment
 from edk2toolext.invocables.edk2_ci_build import CiBuildSettingsManager
 from edk2toolext.invocables.edk2_ci_setup import CiSetupSettingsManager
+from edk2toolext.invocables.edk2_setup import SetupSettingsManager, RequiredSubmodule
 from edk2toolext.invocables.edk2_update import UpdateSettingsManager
+from edk2toolext.invocables.edk2_pr_eval import PrEvalSettingsManager
 from edk2toollib.utility_functions import GetHostInfo
 
 
-class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsManager):
+class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsManager, SetupSettingsManager, PrEvalSettingsManager):
 
     def __init__(self):
         self.ActualPackages = []
@@ -106,16 +108,24 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
 
     def GetActiveScopes(self):
         ''' return tuple containing scopes that should be active for this process '''
-        scopes = ("corebuild", "project_mu", "cibuild")
+        scopes = ("cibuild","edk2-build")
+
         self.ActualToolChainTag = shell_environment.GetBuildVars().GetValue("TOOL_CHAIN_TAG", "")
 
-        if (GetHostInfo().os == "Linux" and "AARCH64" in self.ActualArchitectures and self.ActualToolChainTag.upper().startswith("GCC")):
-            scopes += ("gcc_aarch64_linux",)
-
-        if GetHostInfo().os == "Windows":
-            scopes += ("host-test-win",)
+        if GetHostInfo().os.upper() == "LINUX" and self.ActualToolChainTag.upper().startswith("GCC"):
+            if "AARCH64" in self.ActualArchitectures:
+                scopes += ("gcc_aarch64_linux",)
+            if "ARM" in self.ActualArchitectures:
+                scopes += ("gcc_arm_linux",)
 
         return scopes
+
+    def GetRequiredSubmodules(self):
+        ''' return iterable containing RequiredSubmodule objects.
+        If no RequiredSubmodules return an empty iterable
+        '''
+        rs=[]
+        return rs
 
     def GetName(self):
         return "MuOemSample"
@@ -151,6 +161,7 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
             }
         ]
 
+
     def GetPackagesPath(self):
         ''' Return a list of workspace relative paths that should be mapped as edk2 PackagesPath '''
         result = []
@@ -160,4 +171,9 @@ class Settings(CiBuildSettingsManager, CiSetupSettingsManager, UpdateSettingsMan
 
     def GetWorkspaceRoot(self):
         ''' get WorkspacePath '''
-        return os.path.dirname(os.path.abspath(__file__))
+        return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    def FilterPackagesToTest(self, changedFilesList: list, potentialPackagesList: list) -> list:
+        ''' Filter potential packages to test based on changed files. '''
+        return []
+

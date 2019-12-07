@@ -105,7 +105,7 @@ InstallSecureBootVariable (
                                    If NULL, a new timestamp will be generated using GetTime().
 
   @retval EFI_SUCCESS              Create time based payload successfully.
-  @retval EFI_OUT_OF_RESOURCES     There are not enough memory resourses to create time based payload.
+  @retval EFI_OUT_OF_RESOURCES     There are not enough memory resources to create time based payload.
   @retval EFI_INVALID_PARAMETER    The parameter is invalid.
   @retval Others                   Unexpected error happens.
 
@@ -207,7 +207,7 @@ Arguments:
 
 Return Value:
 
-    EFI_SUCCESS or undlerlying failure code.
+    EFI_SUCCESS or underlying failure code.
 
 --*/
 {
@@ -706,7 +706,7 @@ SetDefaultSecureBootVariables (
   proper authenticated variable structure, and install it in the
   EFI variable space.
 
-  NOTE: Does not actaully sign anything. Requires system to be in setup mode.
+  NOTE: Does not actually sign anything. Requires system to be in setup mode.
 
   @param[in]  VariableName  Same name parameter that would be passed to SetVariable.
   @param[in]  VendorGuid    Same GUID parameter that would be passed to SetVariable.

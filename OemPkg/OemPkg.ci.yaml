@@ -60,6 +60,16 @@
         "IgnoreFiles": [             # use gitignore syntax to ignore errors in matching files
         ],
         "ExtendWords": [           # words to extend to the dictionary for this package
+            "IDCANCEL",     # Used in FrontPage dialogs.
+            "OKCANCEL",
+            "IDTRYAGAIN",
+            "blitting",
+            "FrontPage",
+            "fltused",
+            "MSLOGO",
+            "PCINFO",
+            "MFRAME",
+            "Passw"         # Partial string for password name. Actual name is Passw0rd.
         ],
         "AdditionalIncludePaths": [] # Additional paths to spell check relative to package root (wildcards supported)
     }

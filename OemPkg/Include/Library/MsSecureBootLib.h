@@ -32,7 +32,7 @@ enum {
 
 
 /**
-    This fucntion will delete the secure boot keys, thus
+    This function will delete the secure boot keys, thus
     disabling it.
 
 
@@ -61,7 +61,7 @@ DeleteSecureBootVariables();
                                    If NULL, a new timestamp will be generated using GetTime().
 
   @retval EFI_SUCCESS              Create time based payload successfully.
-  @retval EFI_OUT_OF_RESOURCES     There are not enough memory resourses to create time based payload.
+  @retval EFI_OUT_OF_RESOURCES     There are not enough memory resources to create time based payload.
   @retval EFI_INVALID_PARAMETER    The parameter is invalid.
   @retval Others                   Unexpected error happens.
 

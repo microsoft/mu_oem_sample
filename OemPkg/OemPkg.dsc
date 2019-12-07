@@ -134,5 +134,5 @@
   OemPkg/BootMenu/BootMenu.inf
 
 [BuildOptions]
-#force deprecated interaces off
+#force deprecated interfaces off
   *_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES

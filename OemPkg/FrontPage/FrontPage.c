@@ -256,7 +256,7 @@ UpdateDisplayStrings (
   }
 
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED; // Reset handle
-  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbio type1
+  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbios type1
   Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR(Status))
   {
@@ -282,7 +282,7 @@ UpdateDisplayStrings (
   }
 
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED; // Reset handle
-  Type = SMBIOS_TYPE_SYSTEM_ENCLOSURE;      // Smbio type3
+  Type = SMBIOS_TYPE_SYSTEM_ENCLOSURE;      // Smbios type3
   Status = SmbiosProtocol->GetNext(SmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR(Status))
   {

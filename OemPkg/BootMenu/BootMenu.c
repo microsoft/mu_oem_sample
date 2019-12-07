@@ -964,7 +964,7 @@ RouteConfig (
                     // On the delete path, only allow setting the boot order if confirmation is YES.
                     AllowSetBootorder = FALSE;
 
-                    // First, mark entries as Unassiged that are in the new BootOrder list
+                    // First, mark entries as Unassigned that are in the new BootOrder list
                     for (Index = 0; Index < mBootOptionLimit; Index++) {
                         for (Index2 = 0; Index2 < NewBootOrderCount; Index2++) {
                             if (mBootOptions[Index].OptionNumber == NewBootOrder[Index2]) {
@@ -1065,7 +1065,7 @@ RouteConfig (
         }
         // We don't really accept Grayout Settings changes.  This just moves Progress correctly.
     } else if (HiiIsConfigHdrMatch (Configuration, &gMsBootMenuFormsetGuid, L"BootSuppressConfig")) {
-        DEBUG((DEBUG_INFO, "%a for SupressMenu Settings\n", __FUNCTION__));
+        DEBUG((DEBUG_INFO, "%a for SuppressMenu Settings\n", __FUNCTION__));
         BufferSize = sizeof(SETTINGS_SUPPRESS_CONFIGURATION);
         Status = gHiiConfigRouting->ConfigToBlock (
             gHiiConfigRouting,

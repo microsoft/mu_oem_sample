@@ -1,4 +1,4 @@
-/** @file DfciDeviceidSupportLib.c
+/** @file DfciDeviceIdSupportLib.c
 
 This library provides access to platform data that becomes the DFCI DeviceId.
 
@@ -102,7 +102,7 @@ DfciIdSupportV1GetSerialNumber(
   SMBIOS_TABLE_TYPE1        *Type1Record;
 
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED; // Reset handle
-  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbio type1
+  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbios type1
   Status = mSmbiosProtocol->GetNext(mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR(Status))
   {
@@ -145,7 +145,7 @@ DfciIdSupportGetManufacturer (
   }
 
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED; // Reset handle
-  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbio type1
+  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbios type1
   Status = mSmbiosProtocol->GetNext(mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR(Status))
   {
@@ -184,7 +184,7 @@ DfciIdSupportGetProductName (
   }
 
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED; // Reset handle
-  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbio type1
+  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbios type1
   Status = mSmbiosProtocol->GetNext(mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR(Status))
   {
@@ -223,7 +223,7 @@ DfciIdSupportGetSerialNumber (
   }
 
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED; // Reset handle
-  Type = SMBIOS_TYPE_SYSTEM_ENCLOSURE;    // Smbio type3
+  Type = SMBIOS_TYPE_SYSTEM_ENCLOSURE;    // Smbios type3
   Status = mSmbiosProtocol->GetNext(mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR(Status))
   {
@@ -263,7 +263,7 @@ DfciIdSupportGetUuid (
   }
 
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED; // Reset handle
-  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbio type1
+  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbios type1
   Status = mSmbiosProtocol->GetNext(mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR(Status))
   {
@@ -287,7 +287,7 @@ DfciIdSupportGetUuid (
 }
 
 /**
-  Register image authenticaion status check handler.
+  Register image authentication status check handler.
 
   @param  ImageHandle   ImageHandle of the loaded driver.
   @param  SystemTable   Pointer to the EFI System Table.

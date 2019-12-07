@@ -1,5 +1,5 @@
 /** @file
-  Header file to support the Reboot Reason non volatile varialbles
+  Header file to support the Reboot Reason non volatile variables
 
   Copyright (C) Microsoft Corporation. All rights reserved.
   SPDX-License-Identifier: BSD-2-Clause-Patent
