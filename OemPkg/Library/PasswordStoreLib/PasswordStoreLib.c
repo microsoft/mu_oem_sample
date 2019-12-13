@@ -218,11 +218,11 @@ PasswordStoreAuthenticatePassword (
     Result = (CompareMem( CurStore, NewStore, DataSize ) == 0);
   }
 
-  if (NULL == CurStore)
+  if (NULL != CurStore)
   {
     FreePool (CurStore);
   }
-  if (NULL == NewStore)
+  if (NULL != NewStore)
   {
     FreePool (NewStore);
   }
