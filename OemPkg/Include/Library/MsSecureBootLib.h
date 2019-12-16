@@ -45,59 +45,6 @@ DeleteSecureBootVariables();
 
 
 /**
-  NOTE: Copied from SecureBootConfigImpl.c, then modified.
-
-  Create a time based data payload by concatenating the EFI_VARIABLE_AUTHENTICATION_2
-  descriptor with the input data. NO authentication is required in this function.
-
-  @param[in, out]   DataSize       On input, the size of Data buffer in bytes.
-                                   On output, the size of data returned in Data
-                                   buffer in bytes.
-  @param[in, out]   Data           On input, Pointer to data buffer to be wrapped or
-                                   pointer to NULL to wrap an empty payload.
-                                   On output, Pointer to the new payload date buffer allocated from pool,
-                                   it's caller's responsibility to free the memory when finish using it.
-  @param[in]        Time           [Optional] If provided, will be used as the timestamp for the payload.
-                                   If NULL, a new timestamp will be generated using GetTime().
-
-  @retval EFI_SUCCESS              Create time based payload successfully.
-  @retval EFI_OUT_OF_RESOURCES     There are not enough memory resources to create time based payload.
-  @retval EFI_INVALID_PARAMETER    The parameter is invalid.
-  @retval Others                   Unexpected error happens.
-
-**/
-STATIC
-EFI_STATUS
-CreateTimeBasedPayload (
-  IN OUT UINTN            *DataSize,
-  IN OUT UINT8            **Data,
-  IN     EFI_TIME         *Time OPTIONAL
-  );
-
-
-/**
-  Signals the SMM Variable services that an "authorized" PK
-  modification is about to occur. Before ReadyToBoot this
-  *should* allow an update to the PK without validating the
-  full signature.
-
-  @param[in]  State   TRUE = PK update is authorized. Set indication tokens appropriately.
-                      FALSE = PK update is not authorized. Clear all indication tokens.
-
-  @retval     EFI_SUCCESS             State has been successfully updated.
-  @retval     EFI_INVALID_PARAMETER   State is something other than TRUE or FALSE.
-  @retval     EFI_SECURITY_VIOLATION  Attempting to an invalid state at an invalid time (eg. post-ReadyToBoot).
-  @retval     Others                  Error returned from SetVariable.
-
-**/
-STATIC
-EFI_STATUS
-SetAuthorizedPkUpdateState (
-  IN  BOOLEAN   State
-  );
-
-
-/**
   Helper function to quickly determine whether SecureBoot is enabled.
 
   @retval     TRUE    SecureBoot is verifiably enabled.

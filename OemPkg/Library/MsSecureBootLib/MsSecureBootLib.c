@@ -188,7 +188,97 @@ CreateTimeBasedPayload (
   *DataSize = DescriptorSize + PayloadSize;
   *Data     = NewData;
   return EFI_SUCCESS;
-}
+} // CreateTimeBasedPayload()
+
+
+/**
+  Signals the Variable services that an "authorized" PK
+  modification is about to occur. Before ReadyToBoot this
+  *should* allow an update to the PK without validating the
+  full signature.
+
+  @param[in]  State   TRUE = PK update is authorized. Set indication tokens appropriately.
+                      FALSE = PK update is not authorized. Clear all indication tokens.
+
+  @retval     EFI_SUCCESS             State has been successfully updated.
+  @retval     EFI_INVALID_PARAMETER   State is something other than TRUE or FALSE.
+  @retval     EFI_SECURITY_VIOLATION  Attempting to an invalid state at an invalid time (eg. post-ReadyToBoot).
+  @retval     Others                  Error returned from LocateProtocol or DisableVariablePolicy.
+
+**/
+STATIC
+EFI_STATUS
+SetAuthorizedPkUpdateState (
+  IN  BOOLEAN   State
+  )
+{
+  EFI_STATUS                        TempStatus, Status = EFI_SUCCESS;
+  UINT32                            Attributes;
+  PHASE_INDICATOR                   PhaseIndicator;
+  UINTN                             DataSize;
+  VARIABLE_POLICY_PROTOCOL          *VariablePolicy;
+
+  DEBUG(( DEBUG_INFO, "[SB] %a()\n", __FUNCTION__ ));
+
+  // Make sure that the State makes sense (because BOOL can technically be neither TRUE nor FALSE).
+  if (State != PK_UPDATE_NOT_AUTHORIZED && State != PK_UPDATE_AUTHORIZED)
+  {
+    DEBUG(( DEBUG_ERROR, "%a - Invalid State passed: %d\n", __FUNCTION__, State ));
+    return EFI_INVALID_PARAMETER;
+  }
+
+  //
+  // Step 1: Determine whether we are post-ReadyToBoot.
+  //  If so, only allow the state to be cleared, not set.
+  //
+  DataSize = sizeof( PhaseIndicator );
+  TempStatus = gRT->GetVariable( READY_TO_BOOT_INDICATOR_VAR_NAME,
+                                 &gMuVarPolicyDxePhaseGuid,
+                                 &Attributes,
+                                 &DataSize,
+                                 &PhaseIndicator );
+
+  // If we're past ReadyToBoot, make sure we're not attempting to allow an update.
+  // Assume we are post-ReadyToBoot as long as the variable is not "missing".
+  // This leaves the possibility of other errors tripping this mechanism, but
+  //   if the variables infrastructure is failing, what else are we to do?
+  if (TempStatus != EFI_NOT_FOUND && State == PK_UPDATE_AUTHORIZED)
+  {
+    DEBUG(( DEBUG_ERROR, "%a - Cannot set state to %d when ReadyToBoot indicator test returns %r.\n", __FUNCTION__, State, Status ));
+    return EFI_SECURITY_VIOLATION;
+  }
+
+  //
+  // Step 2: If we are enabling, let's do that.
+  //
+  // NOTE: This is fine if it's called twice in a row.
+  if (State == PK_UPDATE_AUTHORIZED)
+  {
+    // IMPORTANT NOTE: This operation is sticky and leaves variable protections disabled.
+    //                  The system *MUST* be reset after performing this operation.
+    Status = gBS->LocateProtocol( &gVariablePolicyProtocolGuid, NULL, (VOID **) &VariablePolicy );
+    if (!EFI_ERROR( Status )) {
+      Status = VariablePolicy->DisableVariablePolicy();
+      // EFI_ALREADY_STARTED means that everything is currently disabled.
+      // This should be considered SUCCESS.
+      if (Status == EFI_ALREADY_STARTED) {
+        Status = EFI_SUCCESS;
+      }
+    }
+  }
+
+  //
+  // Step 3: If we are disabling, let's do that.
+  //
+  else
+  {
+    // NOTE: Currently, there's no way to disable the suspension of protections.
+    //        This will be revisited in later versions of the VariablePolicy protocol.
+    //        For now, the caller is responsible for resetting the system after attempting.
+  }
+
+  return Status;
+} // SetAuthorizedPkUpdateState()
 
 
 EFI_STATUS
@@ -323,95 +413,6 @@ Return Value:
 
   return Status;
 }//DeleteSecureBootVariables()
-
-/**
-  Signals the Variable services that an "authorized" PK
-  modification is about to occur. Before ReadyToBoot this
-  *should* allow an update to the PK without validating the
-  full signature.
-
-  @param[in]  State   TRUE = PK update is authorized. Set indication tokens appropriately.
-                      FALSE = PK update is not authorized. Clear all indication tokens.
-
-  @retval     EFI_SUCCESS             State has been successfully updated.
-  @retval     EFI_INVALID_PARAMETER   State is something other than TRUE or FALSE.
-  @retval     EFI_SECURITY_VIOLATION  Attempting to an invalid state at an invalid time (eg. post-ReadyToBoot).
-  @retval     Others                  Error returned from LocateProtocol or DisableVariablePolicy.
-
-**/
-STATIC
-EFI_STATUS
-SetAuthorizedPkUpdateState (
-  IN  BOOLEAN   State
-  )
-{
-  EFI_STATUS                        TempStatus, Status = EFI_SUCCESS;
-  UINT32                            Attributes;
-  PHASE_INDICATOR                   PhaseIndicator;
-  UINTN                             DataSize;
-  VARIABLE_POLICY_PROTOCOL          *VariablePolicy;
-
-  DEBUG(( DEBUG_INFO, "[SB] %a()\n", __FUNCTION__ ));
-
-  // Make sure that the State makes sense (because BOOL can technically be neither TRUE nor FALSE).
-  if (State != PK_UPDATE_NOT_AUTHORIZED && State != PK_UPDATE_AUTHORIZED)
-  {
-    DEBUG(( DEBUG_ERROR, "%a - Invalid State passed: %d\n", __FUNCTION__, State ));
-    return EFI_INVALID_PARAMETER;
-  }
-
-  //
-  // Step 1: Determine whether we are post-ReadyToBoot.
-  //  If so, only allow the state to be cleared, not set.
-  //
-  DataSize = sizeof( PhaseIndicator );
-  TempStatus = gRT->GetVariable( READY_TO_BOOT_INDICATOR_VAR_NAME,
-                                 &gMuVarPolicyDxePhaseGuid,
-                                 &Attributes,
-                                 &DataSize,
-                                 &PhaseIndicator );
-
-  // If we're past ReadyToBoot, make sure we're not attempting to allow an update.
-  // Assume we are post-ReadyToBoot as long as the variable is not "missing".
-  // This leaves the possibility of other errors tripping this mechanism, but
-  //   if the variables infrastructure is failing, what else are we to do?
-  if (TempStatus != EFI_NOT_FOUND && State == PK_UPDATE_AUTHORIZED)
-  {
-    DEBUG(( DEBUG_ERROR, "%a - Cannot set state to %d when ReadyToBoot indicator test returns %r.\n", __FUNCTION__, State, Status ));
-    return EFI_SECURITY_VIOLATION;
-  }
-
-  //
-  // Step 2: If we are enabling, let's do that.
-  //
-  // NOTE: This is fine if it's called twice in a row.
-  if (State == PK_UPDATE_AUTHORIZED)
-  {
-    // IMPORTANT NOTE: This operation is sticky and leaves variable protections disabled.
-    //                  The system *MUST* be reset after performing this operation.
-    Status = gBS->LocateProtocol( &gVariablePolicyProtocolGuid, NULL, (VOID **) &VariablePolicy );
-    if (!EFI_ERROR( Status )) {
-      Status = VariablePolicy->DisableVariablePolicy();
-      // EFI_ALREADY_STARTED means that everything is currently disabled.
-      // This should be considered SUCCESS.
-      if (Status == EFI_ALREADY_STARTED) {
-        Status = EFI_SUCCESS;
-      }
-    }
-  }
-
-  //
-  // Step 3: If we are disabling, let's do that.
-  //
-  else
-  {
-    // NOTE: Currently, there's no way to disable the suspension of protections.
-    //        This will be revisited in later versions of the VariablePolicy protocol.
-    //        For now, the caller is responsible for resetting the system after attempting.
-  }
-
-  return Status;
-} // SetAuthorizedPkUpdateState()
 
 
 /**

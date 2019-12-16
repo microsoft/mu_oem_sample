@@ -11,7 +11,8 @@
 //
 // Test/Development Secure Boot PK Certificate 
 //
-CONST UINT8 DevelopmentPlatformKeyCertificate[1] = {0};
+CONST UINT8  kaDevelopmentPlatformKeyCertificate[1] = {0};
+CONST UINT8  *DevelopmentPlatformKeyCertificate = kaDevelopmentPlatformKeyCertificate;
 CONST UINT32 DevelopmentSizeOfPlatformKeyCertificate = 0;
 
 
@@ -22,5 +23,6 @@ CONST UINT32 DevelopmentSizeOfPlatformKeyCertificate = 0;
 //
 // Production Secure Boot PK Certificate 
 //
-CONST UINT8  ProductionPlatformKeyCertificate[1] = {0};
+CONST UINT8   kaProductionPlatformKeyCertificate[1] = {0};
+CONST UINT8   *ProductionPlatformKeyCertificate = kaProductionPlatformKeyCertificate;
 CONST UINT32  ProductionSizeOfPlatformKeyCertificate=0;

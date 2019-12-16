@@ -49,6 +49,24 @@ extern DFCI_SETTING_ACCESS_PROTOCOL         *mSettingAccess;
 extern UINTN                                mAuthToken;
 extern VARIABLE_POLICY_PROTOCOL             *mVariablePolicyProtocol;
 
+STATIC
+EFI_STATUS
+SetSystemPassword(
+    IN EFI_IFR_TYPE_VALUE *Value,
+    OUT EFI_BROWSER_ACTION_REQUEST *ActionRequest);
+
+STATIC
+EFI_STATUS
+HandleInfoPopup(
+    IN EFI_IFR_TYPE_VALUE *Value,
+    OUT EFI_BROWSER_ACTION_REQUEST *ActionRequest);
+
+STATIC
+EFI_STATUS
+HandleSecureBootChange(
+    IN EFI_IFR_TYPE_VALUE *Value,
+    OUT EFI_BROWSER_ACTION_REQUEST *ActionRequest);
+
 /**
  * RefreshSecurityForm - Notify browser that the form has changes
  *

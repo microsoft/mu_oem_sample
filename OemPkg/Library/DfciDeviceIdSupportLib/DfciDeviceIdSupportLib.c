@@ -235,59 +235,7 @@ DfciIdSupportGetSerialNumber (
 }
 
 /**
- * Get the Uuid
- *
- * @param Uuid
- * @param UuidSize
- *
- * It is the callers responsibility to free the buffer returned.
- *
- * @return EFI_STATUS EFIAPI
- */
-EFI_STATUS
-EFIAPI
-DfciIdSupportGetUuid (
-    CHAR8   **Uuid,
-    UINTN    *UuidSize  OPTIONAL
-  ) {
-  EFI_STATUS                Status;
-  EFI_SMBIOS_HANDLE         SmbiosHandle;
-  EFI_SMBIOS_TABLE_HEADER   *Record;
-  SMBIOS_TYPE               Type;
-  SMBIOS_TABLE_TYPE1        *Type1Record;
-
-  UINTN                     RetSize;
-
-  if (Uuid == NULL) {
-    return EFI_INVALID_PARAMETER;
-  }
-
-  SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED; // Reset handle
-  Type = SMBIOS_TYPE_SYSTEM_INFORMATION;    // Smbios type1
-  Status = mSmbiosProtocol->GetNext(mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
-  if (!EFI_ERROR(Status))
-  {
-    Type1Record = (SMBIOS_TABLE_TYPE1 *) Record;
-  }
-
-  *Uuid = AllocatePool(GUID_STRING_LENGTH + 1);
-  if (*Uuid != NULL) {
-    RetSize = AsciiSPrint (*Uuid, GUID_STRING_LENGTH, "%g", PcdGetPtr(PcdSystemFmpCapsuleImageTypeIdGuid));
-
-    if (UuidSize != NULL) {
-      *UuidSize = RetSize;
-    }
-
-  }
-  else {
-    Status = EFI_OUT_OF_RESOURCES;
-  }
-
-  return Status;
-}
-
-/**
-  Register image authentication status check handler.
+  Constructor for DfciIdSupportLib.
 
   @param  ImageHandle   ImageHandle of the loaded driver.
   @param  SystemTable   Pointer to the EFI System Table.

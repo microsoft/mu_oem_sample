@@ -38,45 +38,6 @@ UiCallback (
   OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
   );
 
-STATIC
-EFI_STATUS
-SetSystemPassword (
-  IN  EFI_IFR_TYPE_VALUE                     *Value,
-  OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
-  );
-
-/**
-  Presents the user with a (hopefully) helpful dialog
-  with more info about a particular subject.
-
-  NOTE: Subject is determined by the state of mCallbackKey.
-
-  @retval   EFI_SUCCESS     Message successfully displayed.
-  @retval   EFI_NOT_FOUND   mCallbackKey not recognized or string could not be loaded.
-  @retval   Others          Return value of mSWMProtocol->MessageBox().
-
-**/
-STATIC
-EFI_STATUS
-HandleInfoPopup(
-              IN  EFI_IFR_TYPE_VALUE                     *Value,
-              OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
-              );
-
-/**
-  Handle a request to change the SecureBoot configuration.
-
-  @retval EFI_SUCCESS         Successfully installed SecureBoot default variables.
-  @retval Others              Failed to install. SecureBoot is still disabled.
-
-**/
-STATIC
-EFI_STATUS
-HandleSecureBootChange (
-  IN  EFI_IFR_TYPE_VALUE                     *Value,
-  OUT EFI_BROWSER_ACTION_REQUEST             *ActionRequest
-  );
-
 
 /**
   Determines the current SecureBoot state and updates the status strings accordingly.

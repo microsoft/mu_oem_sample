@@ -239,6 +239,7 @@ PasswordStoreAuthenticatePassword (
 
 **/
 EFI_STATUS
+EFIAPI
 PasswordStoreResetPasswordLib (
   VOID
   )
