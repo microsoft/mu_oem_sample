@@ -1,0 +1,63 @@
+## @file
+#  This module produces Boot Manager Policy protocol.
+#
+#  Copyright (c) 2015 - 2018, Intel Corporation. All rights reserved.<BR>
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BootManagerPolicyDxe
+  MODULE_UNI_FILE                = BootManagerPolicyDxe.uni
+  FILE_GUID                      = A1BB8452-623A-410F-A72F-53A7E98EC94B
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = BootManagerPolicyInitialize
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 EBC
+#
+
+# This driver 1. satisfies the NetworkDependency Protocol, 2. does a ConnectAll to insure the network stack and related devices start.
+# The override is here in case TianoCore changes the other functionality of the original driver.
+#Override : 00000001 | MdeModulePkg/Universal/BootManagerPolicyDxe/BootManagerPolicyDxe.inf | 029b556f0af0b2e16daea70054922387 | 2019-04-08T18-57-46
+
+
+[Sources]
+  BootManagerPolicyDxe.c
+
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  PcBdsPkg/PcBdsPkg.dec
+
+[LibraryClasses]
+  BaseMemoryLib
+  MemoryAllocationLib
+  UefiLib
+  DevicePathLib
+  DebugLib
+  UefiDriverEntryPoint
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  UefiBootManagerLib
+
+[Guids]
+  gEfiBootManagerPolicyConnectAllGuid           ## CONSUMES ## GUID
+  gEfiBootManagerPolicyNetworkGuid              ## CONSUMES ## GUID
+  gEfiBootManagerPolicyConsoleGuid              ## CONSUMES ## GUID
+
+[Protocols]
+  gEfiManagedNetworkServiceBindingProtocolGuid  ## CONSUMES
+  gEfiBootManagerPolicyProtocolGuid             ## PRODUCES
+  gMsNetworkDelayProtocolGuid                   ## PRODUCES  ## MS_CHANGE
+
+[Depex]
+  TRUE
+
+[UserExtensions.TianoCore."ExtraFiles"]
+  BootManagerPolicyDxeExtra.uni

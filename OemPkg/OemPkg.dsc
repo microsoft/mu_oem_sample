@@ -135,6 +135,7 @@
 [Components.X64]
   OemPkg/FrontPage/FrontPage.inf
   OemPkg/BootMenu/BootMenu.inf
+  OemPkg/Override/MdeModulePkg/Universal/BootManagerPolicyDxe/BootManagerPolicyDxe.inf
 
 [BuildOptions]
 #force deprecated interfaces off
