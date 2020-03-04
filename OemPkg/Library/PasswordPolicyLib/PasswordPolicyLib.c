@@ -156,19 +156,37 @@ GenerateSalt (
 
   //
   // Step 1: Locate the RNG protocol.
-  Status = gBS->LocateProtocol( &gEfiRngProtocolGuid, NULL, (VOID**)&EfiRngProtocol );
+  Status = gBS->LocateProtocol (&gEfiRngProtocolGuid, NULL, (VOID**)&EfiRngProtocol);
 
   //
   // Step 2: Attempt to generate the random.
-  if (!EFI_ERROR( Status ))
-  {
-    Status = EfiRngProtocol->GetRNG( EfiRngProtocol,                      // This
+  if (!EFI_ERROR (Status)) {
+    Status = EfiRngProtocol->GetRNG (EfiRngProtocol,                      // This
                                      &gEfiRngAlgorithmSp80090Ctr256Guid,  // RNGAlgorithm
                                      SaltBufferSize,                      // RNGValueLength
-                                     SaltBuffer );                        // RNGValue
+                                     SaltBuffer                           // RNGValue
+                                     );
+    if (!EFI_ERROR(Status)) {
+      return TRUE;
+    }
+
+    Status = EfiRngProtocol->GetRNG (EfiRngProtocol,                       // This
+                                     &gEfiRngAlgorithmSp80090Hmac256Guid,  // RNGAlgorithm
+                                     SaltBufferSize,                       // RNGValueLength
+                                     SaltBuffer                            // RNGValue
+                                     );
+    if (!EFI_ERROR(Status)) {
+      return TRUE;
+    }
+
+    Status = EfiRngProtocol->GetRNG (EfiRngProtocol,                       // This
+                                     &gEfiRngAlgorithmSp80090Hash256Guid,  // RNGAlgorithm
+                                     SaltBufferSize,                       // RNGValueLength
+                                     SaltBuffer                            // RNGValue
+                                     );
   }
 
-  return !EFI_ERROR( Status );
+  return !EFI_ERROR (Status);
 } // GenerateSalt()
 
 /**
