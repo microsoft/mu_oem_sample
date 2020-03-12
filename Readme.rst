@@ -2,24 +2,24 @@
 Project Mu Oem Sample Repository
 ================================
 
-.. |build_status_windows| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/mu_oem_sample%20PR%20gate?branchName=release/201911
+.. |build_status_windows| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/mu_oem_sample%20PR%20gate?branchName=release/202002
 
-|build_status_windows| Current build status for release/201911
+|build_status_windows| Current build status for release/202002
 
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
-Branch Status - release/201911
+Branch Status - release/202002
 ==============================
 
 Status:
   In Development
 
 Anticipated Stabilization:
-  January 2020
+  May 2020
 
 
-Branch Changes - release/201911
+Branch Changes - release/202002
 ===============================
 
 Breaking Changes-dev
