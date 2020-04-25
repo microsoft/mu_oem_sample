@@ -31,6 +31,7 @@
   PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
   ReportStatusCodeLib|MdePkg/Library/BaseReportStatusCodeLibNull/BaseReportStatusCodeLibNull.inf
   UefiApplicationEntryPoint|MdePkg/Library/UefiApplicationEntryPoint/UefiApplicationEntryPoint.inf
+  FltUsedLib|MdePkg/Library/FltUsedLib/FltUsedLib.inf
 
   PrintLib|MdePkg/Library/BasePrintLib/BasePrintLib.inf
   HiiLib|MdeModulePkg/Library/UefiHiiLib/UefiHiiLib.inf
@@ -75,7 +76,6 @@
 
   DeviceBootManagerLib|MsCorePkg/Library/DeviceBootManagerLibNull/DeviceBootManagerLibNull.inf
   MathLib|MsCorePkg/Library/MathLib/MathLib.inf
-  FltUsedLib|MsCorePkg/Library/FltUsedLib/FltUsedLib.inf
 
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
 
