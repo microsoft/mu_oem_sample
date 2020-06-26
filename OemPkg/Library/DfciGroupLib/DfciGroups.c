@@ -29,8 +29,8 @@ STATIC DFCI_SETTING_ID_STRING mExternalMediaSettings[] = {
 };
 
 STATIC DFCI_GROUP_ENTRY mMyGroups[] = {
-    { DFCI_SETTING_ID__EXTERNAL_MEDIA,  (DFCI_SETTING_ID_STRING *) &mExternalMediaSettings },
-    { NULL,                             NULL }
+    { DFCI_STD_SETTING_ID__EXTERNAL_MEDIA,  (DFCI_SETTING_ID_STRING *) &mExternalMediaSettings },
+    { NULL,                                 NULL }
 };
 
 /**
