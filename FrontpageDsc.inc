@@ -40,7 +40,7 @@
   # Backwards compatibility with DFCI V1 functions.
   #
   DfciV1SupportLib|DfciPkg/Library/DfciV1SupportLibNull/DfciV1SupportLibNull.inf
-  FltUsedLib|MsCorePkg/Library/FltUsedLib/FltUsedLib.inf
+  FltUsedLib|MdePkg/Library/FltUsedLib/FltUsedLib.inf
   #
   # Library instance that understands the MsXml Settings Schema and providers helper functions
   #

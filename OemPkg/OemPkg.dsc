@@ -75,7 +75,7 @@
 
   DeviceBootManagerLib|MsCorePkg/Library/DeviceBootManagerLibNull/DeviceBootManagerLibNull.inf
   MathLib|MsCorePkg/Library/MathLib/MathLib.inf
-  FltUsedLib|MsCorePkg/Library/FltUsedLib/FltUsedLib.inf
+  FltUsedLib|MdePkg/Library/FltUsedLib/FltUsedLib.inf
 
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
 
