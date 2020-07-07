@@ -13,27 +13,27 @@ Branch Status - release/202002
 ==============================
 
 Status:
-  In Development
+  Stabilized
 
-Anticipated Stabilization:
-  May 2020
+Stabilized:
+  2020/07/06
 
 
 Branch Changes - release/202002
 ===============================
 
-Breaking Changes-dev
---------------------
-
-- None
-
-Main Changes-dev
+Breaking Changes
 ----------------
 
 - None
 
-Bug Fixes-dev
--------------
+Main Changes
+------------
+
+- None
+
+Bug Fixes
+---------
 
 - None
 
