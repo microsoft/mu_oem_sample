@@ -84,6 +84,9 @@
 
 [LibraryClasses.X64]
 
+[LibraryClasses.common.PEIM]
+  PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
+
 !if $(TARGET) == DEBUG
 !if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
   #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
