@@ -25,7 +25,7 @@
   For Project Mu Code if the PK is set then Secure Boot is enforced (there is no
   SetupMode)
 
-  @retval     TRUE if secure boot is ebabled, FALSE otherwise.
+  @retval     TRUE if secure boot is enabled, FALSE otherwise.
 **/
 BOOLEAN
 IsSecureBootOn()

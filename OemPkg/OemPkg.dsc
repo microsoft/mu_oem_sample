@@ -131,6 +131,7 @@
   OemPkg/Library/DfciGroupLib/DfciGroups.inf
   OemPkg/Library/DfciDeviceIdSupportLib/DfciDeviceIdSupportLib.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
+  OemPkg/DeviceStatePee/DeviceStatePei.inf
 
 [Components.X64]
   OemPkg/FrontPage/FrontPage.inf
