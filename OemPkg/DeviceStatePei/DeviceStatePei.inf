@@ -6,9 +6,10 @@
 #  This driver currently implements the following bits in a standard method:
 #    DEVICE_STATE_SECUREBOOT_OFF
 #
+#  Copyright (C) Microsoft Corporation.
 #
-#  Copyright (C) Microsoft Corporation. All rights reserved.
 #
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
 [Defines]

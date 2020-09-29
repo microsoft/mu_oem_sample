@@ -139,7 +139,7 @@
   OemPkg/Library/DfciDeviceIdSupportLib/DfciDeviceIdSupportLib.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
 
-  [Components.IA32]
+[Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
 
 [Components.X64]

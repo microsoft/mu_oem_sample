@@ -8,8 +8,9 @@
   This library can either mask those bits (force low) or add other bits.  See the
   MdeModulePkg/Include/Library/DeviceStateLib.h file for bit definitions.
 
-  Copyright (C) Microsoft Corporation. All rights reserved.
+  Copyright (C) Microsoft Corporation.
 
+  SPDX-License-Identifier: BSD-2-Clause-Patent
 **/
 #include <PiPei.h>
 #include <Library/DebugLib.h>
