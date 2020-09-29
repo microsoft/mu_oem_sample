@@ -84,11 +84,9 @@
 
 [LibraryClasses.X64]
 
-[LibraryClasses.common.PEIM]
-  PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
 
 !if $(TARGET) == DEBUG
-!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2015 or $(TOOL_CHAIN_TAG) == VS2019
+!if $(TOOL_CHAIN_TAG) == VS2017 or $(TOOL_CHAIN_TAG) == VS2019
   #if debug is enabled provide StackCookie support lib so that we can link to /GS exports
   NULL|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
   BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibRng/BaseBinSecurityLibRng.inf
@@ -100,6 +98,12 @@
 
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
 
+[LibraryClasses.common.PEIM]
+  PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
+  PeiServicesLib|MdePkg/Library/PeiServicesLib/PeiServicesLib.inf
+  PeiServicesTablePointerLib|MdePkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
+  HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
+  MemoryAllocationLib|MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf
 ###############################################################
 #
 # Components Section - list of the modules and components that will be processed by compilation
@@ -134,6 +138,8 @@
   OemPkg/Library/DfciGroupLib/DfciGroups.inf
   OemPkg/Library/DfciDeviceIdSupportLib/DfciDeviceIdSupportLib.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
+
+  [Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
 
 [Components.X64]
