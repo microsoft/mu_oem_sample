@@ -1,0 +1,45 @@
+## @file DeviceStatePei.inf
+#
+#  This module checks a device state platform conditions and sets the state
+#  accordingly.
+#
+#  This driver currently implements the following bits in a standard method:
+#    DEVICE_STATE_SECUREBOOT_OFF
+#
+#  Copyright (C) Microsoft Corporation.
+#
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010017
+  BASE_NAME                      = DeviceStatePei
+  FILE_GUID                      = 974931ef-cf18-4b45-bcbf-4b62d5c9a061
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = DeviceStatePeiEntry
+
+[Sources]
+  DeviceStatePei.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  DebugLib
+  DeviceStateLib
+
+[Ppis]
+  gEfiPeiReadOnlyVariable2PpiGuid
+
+[Guids]
+  gEfiGlobalVariableGuid
+
+[Pcd]
+
+[Depex]
+  gEfiPeiReadOnlyVariable2PpiGuid     # Needed to query variable storage
