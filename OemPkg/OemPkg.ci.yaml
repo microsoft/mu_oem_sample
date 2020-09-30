@@ -69,7 +69,8 @@
             "MSLOGO",
             "PCINFO",
             "MFRAME",
-            "Passw"         # Partial string for password name. Actual name is Passw0rd.
+            "Passw",         # Partial string for password name. Actual name is Passw0rd.
+            "SECUREBOOT"
         ],
         "AdditionalIncludePaths": [] # Additional paths to spell check relative to package root (wildcards supported)
     }
