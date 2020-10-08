@@ -2,24 +2,28 @@
 Project Mu Oem Sample Repository
 ================================
 
-.. |build_status_windows| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/mu_oem_sample%20PR%20gate?branchName=release/202002
-
-|build_status_windows| Current build status for release/202002
-
+============================= ================= =============== ===================
+ Host Type & Toolchain        Build Status      Test Status     Code Coverage
+============================= ================= =============== ===================
+Windows_VS2019_               |WindowsCiBuild|  |WindowsCiTest| |WindowsCiCoverage|
+Ubuntu_GCC5_                  |UbuntuCiBuild|   |UbuntuCiTest|  |UbuntuCiCoverage|
+============================= ================= =============== ===================
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
-Branch Status - release/202002
+Branch Status - release/202008
 ==============================
 
 Status:
   In Development
 
+Entered Development:
+  2020/10/05
+
 Anticipated Stabilization:
-  May 2020
+  November 2020
 
-
-Branch Changes - release/202002
+Branch Changes - release/202008
 ===============================
 
 Breaking Changes-dev
@@ -55,5 +59,23 @@ Please open any issues in the Project Mu GitHub tracker and read https://microso
 Copyright & License
 ===================
 
-Copyright (C) Microsoft Corporation. All rights reserved.
+Copyright (c) Microsoft Corporation. All rights reserved.
 SPDX-License-Identifier: BSD-2-Clause-Patent
+
+.. ===================================================================
+.. This is a bunch of directives to make the README file more readable
+.. ===================================================================
+
+.. CoreCI
+
+.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/
+.. |WindowsCiBuild| image:: https://img.shields.io/badge/build-coming_soon-red
+.. |WindowsCiTest| image:: https://img.shields.io/badge/tests-coming_soon-green
+.. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
+
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/
+.. |UbuntuCiBuild| image:: https://img.shields.io/badge/build-coming_soon-red
+.. |UbuntuCiTest| image:: https://img.shields.io/badge/tests-coming_soon-green
+.. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
+
+.. |build_status_windows| image:: https://img.shields.io/badge/build-coming_soon-red
