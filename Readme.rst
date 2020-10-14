@@ -14,13 +14,13 @@ This repository is part of Project Mu.  Please see Project Mu for details https:
 Branch Status - release/202008
 ==============================
 
-Status:
+:Status:
   In Development
 
-Entered Development:
+:Entered Development:
   2020/10/05
 
-Anticipated Stabilization:
+:Anticipated Stabilization:
   November 2020
 
 Branch Changes - release/202008
@@ -59,8 +59,8 @@ Please open any issues in the Project Mu GitHub tracker and read https://microso
 Copyright & License
 ===================
 
-Copyright (c) Microsoft Corporation. All rights reserved.
-SPDX-License-Identifier: BSD-2-Clause-Patent
+| Copyright (C) Microsoft Corporation
+| SPDX-License-Identifier: BSD-2-Clause-Patent
 
 .. ===================================================================
 .. This is a bunch of directives to make the README file more readable
