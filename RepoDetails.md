@@ -16,11 +16,16 @@ This repository is considered sample code for any entity building devices using 
 
 FrontpageDsc and FrontpageFdf that can be included so you don't have to unravel all of the libraries and protocols that are required to get started with FrontPage. A brief description of each MS component was added to FrontPageDsc to help explain how each piece of the puzzle fits in.
 
-Please see the Project Mu docs (https://github.com/Microsoft/mu) for more information.  
+Please see the Project Mu docs (<https://github.com/Microsoft/mu>) for more
+information.  
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+This project has adopted the [Microsoft Open Source Code of
+Conduct](https://opensource.microsoft.com/codeofconduct/).
 
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+For more information see the [Code of Conduct
+FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact
+[opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional
+questions or comments.
 
 ## Per Platform Libraries
 
@@ -29,18 +34,21 @@ These three libraries need to be implemented per platform. An example can be fou
 
 ## Issues
 
-Please open any issues in the Project Mu GitHub tracker. [More Details](https://microsoft.github.io/mu/How/contributing/)
+Please open any issues in the Project Mu GitHub tracker. [More
+Details](https://microsoft.github.io/mu/How/contributing/)
 
 ## Contributing Code or Docs
 
-Please follow the general Project Mu Pull Request process.  [More Details](https://microsoft.github.io/mu/How/contributing/)
+Please follow the general Project Mu Pull Request process.  [More
+Details](https://microsoft.github.io/mu/How/contributing/)
 
 * [Code Requirements](https://microsoft.github.io/mu/CodeDevelopment/requirements/)
 * [Doc Requirements](https://microsoft.github.io/mu/DeveloperDocs/requirements/)
 
 ## Builds
 
-For information about building just this repo locally, see [pytool instructions](/.pytool/Readme.md#running-ci-locally)
+Please follow the steps in the Project Mu docs to build for CI and local
+testing. [More Details](https://microsoft.github.io/mu/CodeDevelopment/compile/)
 
 ## Copyright & License
 
