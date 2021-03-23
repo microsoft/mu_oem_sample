@@ -86,7 +86,7 @@
   gDfciAuthenticationProtocolGuid               ## PROTOCOL CONSUMES
   gEdkiiFormBrowserEx2ProtocolGuid              ## PROTOCOL CONSUMES
   gEfiFirmwareManagementProtocolGuid            ## PROTOCOL CONSUMES
-  gVariablePolicyProtocolGuid                   ## PROTOCOL CONSUMES
+  gEdkiiVariablePolicyProtocolGuid              ## PROTOCOL CONSUMES
 
 [FeaturePcd]
   #gEfiMdePkgTokenSpaceGuid.PcdUefiVariableDefaultLangDeprecate

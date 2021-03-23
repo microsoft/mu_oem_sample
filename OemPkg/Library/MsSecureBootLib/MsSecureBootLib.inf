@@ -40,7 +40,7 @@
 
 [Protocols]
   gEfiRealTimeClockArchProtocolGuid             ## PROTOCOL CONSUMES
-  gVariablePolicyProtocolGuid                   # CONSUMES
+  gEdkiiVariablePolicyProtocolGuid                   # CONSUMES
 
   
 [Guids]
@@ -53,4 +53,4 @@
 
 [Depex]
   gEfiRealTimeClockArchProtocolGuid AND
-  gVariablePolicyProtocolGuid
+  gEdkiiVariablePolicyProtocolGuid

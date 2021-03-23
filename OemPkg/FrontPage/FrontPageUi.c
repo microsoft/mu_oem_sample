@@ -47,7 +47,7 @@ extern EFI_HII_HANDLE                       gStringPackHandle;
 extern BOOLEAN                              mResetRequired;
 extern DFCI_SETTING_ACCESS_PROTOCOL         *mSettingAccess;
 extern UINTN                                mAuthToken;
-extern VARIABLE_POLICY_PROTOCOL             *mVariablePolicyProtocol;
+extern EDKII_VARIABLE_POLICY_PROTOCOL             *mVariablePolicyProtocol;
 
 STATIC
 EFI_STATUS
