@@ -97,7 +97,7 @@ UINT32    mBootVerticalResolution      = 0;
 EFI_FORM_BROWSER2_PROTOCOL          *mFormBrowser2;
 MS_ONSCREEN_KEYBOARD_PROTOCOL       *mOSKProtocol;
 MS_SIMPLE_WINDOW_MANAGER_PROTOCOL   *mSWMProtocol;
-VARIABLE_POLICY_PROTOCOL            *mVariablePolicyProtocol;
+EDKII_VARIABLE_POLICY_PROTOCOL            *mVariablePolicyProtocol;
 
 // Map Top Menu entries to HII Form IDs.
 //
@@ -557,7 +557,7 @@ InitializeFrontPage (
         {
             return Status;
         }
-        Status = gBS->LocateProtocol (&gVariablePolicyProtocolGuid, NULL, (VOID **) &mVariablePolicyProtocol);
+        Status = gBS->LocateProtocol (&gEdkiiVariablePolicyProtocolGuid, NULL, (VOID **) &mVariablePolicyProtocol);
         if (EFI_ERROR (Status))
         {
             return Status;
