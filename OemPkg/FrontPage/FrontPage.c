@@ -21,6 +21,7 @@
 #include <Guid/DebugImageInfoTable.h>
 #include <Guid/MsNVBootReason.h>
 #include <Guid/DfciMenuGuid.h>
+#include <Guid/HwhMenuGuid.h>
 
 #include <Pi/PiFirmwareFile.h>
 
@@ -118,8 +119,9 @@ struct
     { 1,            UNUSED_INDEX,       STRING_TOKEN (STR_MF_MENU_OP_SECURITY),     FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_SECURITY },  // Security
     { 2,            UNUSED_INDEX,       STRING_TOKEN (STR_MF_MENU_OP_BOOTORDER),    MS_BOOT_MENU_FORMSET_GUID,         MS_BOOT_ORDER_FORM_ID       },  // Boot Order
     { 3,            1,                  STRING_TOKEN(STR_MF_MENU_OP_DFCI),          DFCI_MENU_FORMSET_GUID,            DFCI_MENU_FORM_ID           },  // DFCI
-    { 4,            2,                  STRING_TOKEN(STR_MF_MENU_OP_EXIT),          FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_EXIT     }   // Exit
-};
+    { 4,            UNUSED_INDEX,       STRING_TOKEN (STR_MF_MENU_OP_HWH),          HWH_MENU_FORMSET_GUID,             HWH_MENU_FORM_ID            },  // HWH
+    { 5,            2,                  STRING_TOKEN (STR_MF_MENU_OP_EXIT),         FRONT_PAGE_CONFIG_FORMSET_GUID,    FRONT_PAGE_FORM_ID_EXIT     }   // Exit
+ };
 
 // Frontpage form set GUID
 //
@@ -693,6 +695,7 @@ CallFrontPage (
     EFI_GUID          BootMenu = MS_BOOT_MENU_FORMSET_GUID;
     EFI_HII_HANDLE    *BootHandle  = HiiGetHiiHandles(&BootMenu);
     EFI_HII_HANDLE    *DfciHandle  = HiiGetHiiHandles(&gDfciMenuFormsetGuid);
+    EFI_HII_HANDLE    *HwhHandle  =  HiiGetHiiHandles(&gHwhMenuFormsetGuid);
 
 
     Handles[0] = mFrontPagePrivate.HiiHandle;
@@ -705,6 +708,10 @@ CallFrontPage (
     if (DfciHandle != NULL) {
         Handles[HandleCount++] = DfciHandle[0];
         FreePool (DfciHandle);
+    }
+    if (HwhHandle != NULL) {
+        Handles[HandleCount++] = HwhHandle[0];
+        FreePool (HwhHandle);
     }
 
     DEBUG((DEBUG_INFO,"MAX_FORMSET_HANDLES=%d, CurrentFormsetHandles=%d\n",MAX_FORMSET_HANDLES,HandleCount ));
@@ -783,6 +790,24 @@ BOOLEAN IsDfciEnabledForDisplay (VOID) {
     }
 
     return DfciEnabled;
+}
+
+/**
+  IsHwhEnabledForDisplay
+
+  The HWH dialog will not be present if the formset protocol has not been published.
+
+  returns FALSE - do not display HWH page
+  returns TRUE  - display HWH page
+*/
+BOOLEAN IsHwhEnabledForDisplay (VOID) {
+
+    EFI_STATUS  Status;
+    VOID       *dummy;
+   
+    Status = gBS->LocateProtocol (&gHwhMenuFormsetGuid, NULL, (VOID **) &dummy);
+
+    return !EFI_ERROR(Status);
 }
 
 /**
@@ -895,6 +920,11 @@ CreateTopMenu (
     if (!IsDfciEnabledForDisplay())
     {
         RemoveMenuFromList (STRING_TOKEN(STR_MF_MENU_OP_DFCI));
+    }
+
+    if(!IsHwhEnabledForDisplay()) 
+    {
+      RemoveMenuFromList (STRING_TOKEN(STR_MF_MENU_OP_HWH));
     }
 
     for (Count=0 ; Count < MenuOptionCount ; Count++)
