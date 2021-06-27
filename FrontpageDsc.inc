@@ -8,7 +8,7 @@
   ShellCEntryLib|ShellPkg/Library/UefiShellCEntryLib/UefiShellCEntryLib.inf
   HandleParsingLib|ShellPkg/Library/UefiHandleParsingLib/UefiHandleParsingLib.inf
   BcfgCommandLib|ShellPkg/Library/UefiShellBcfgCommandLib/UefiShellBcfgCommandLib.inf
-  NetLib|MdeModulePkg/Library/DxeNetLib/DxeNetLib.inf
+  NetLib|NetworkPkg/Library/DxeNetLib/DxeNetLib.inf
   #
   # Contains intrinsics for crypto operations
   #
@@ -28,7 +28,7 @@
   #
   # Stubs functions that should contain base logic for querying, setting, and verifying user passwords.
   #
-  DfciPasswordLib|DfciPkg/Library/DfciPasswordLibNull/DfciPasswordLibNull.inf
+  DfciPasswordLib|DfciPkg/Library/DfciPasswordProvider/DfciPasswordProvider.inf
   BaseCryptLib|CryptoPkg/Library/BaseCryptLib/BaseCryptLib.inf
   #
   # Supports DFCI Groups.
@@ -107,7 +107,7 @@
   # Library to help set the console to known points (low res, native res)
   #
   GraphicsConsoleHelperLib|PcBdsPkg/Library/GraphicsConsoleHelperLib/GraphicsConsoleHelper.inf
-  DeviceStateLib|MsCorePkg/Library/DeviceStateLib/DeviceStateLib.inf
+  MdeModulePkg|MsCorePkg/Library/DeviceStateLib/DeviceStateLib.inf
   #
   # Device specific actions in support of PlatformBootManagerLib.
   # Sort of a wrapper for MsPlatformDevicesLib, which needs to be written for each platform.
