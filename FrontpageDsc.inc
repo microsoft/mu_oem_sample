@@ -107,7 +107,7 @@
   # Library to help set the console to known points (low res, native res)
   #
   GraphicsConsoleHelperLib|PcBdsPkg/Library/GraphicsConsoleHelperLib/GraphicsConsoleHelper.inf
-  MdeModulePkg|MsCorePkg/Library/DeviceStateLib/DeviceStateLib.inf
+  DeviceStateLib|MdeModulePkg/Library/DeviceStateLib/DeviceStateLib.inf
   #
   # Device specific actions in support of PlatformBootManagerLib.
   # Sort of a wrapper for MsPlatformDevicesLib, which needs to be written for each platform.
