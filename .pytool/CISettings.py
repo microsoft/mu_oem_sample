@@ -36,7 +36,7 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         group.add_argument("-no_piptools", "--npt", dest="no_piptools", action="store_true", default=False, help="Force the system to not use pip tools")
 
     def RetrieveCommandLineOptions(self, args):
-        super().RetrieveCommandLineOptions(args)
+		# MU_CHANGE - Don't call super....lots of issues...see pytools docs...super().RetrieveCommandLineOptions(args)
         if args.force_piptools:
             self.UseBuiltInBaseTools = True
         if args.no_piptools:
@@ -156,7 +156,7 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
         ''' return iterable containing RequiredSubmodule objects.
         If no RequiredSubmodules return an empty iterable
         '''
-        rs=[]
+        rs = []
         return rs
 
     def GetName(self):
