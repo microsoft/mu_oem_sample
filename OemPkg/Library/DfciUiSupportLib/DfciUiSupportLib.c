@@ -20,7 +20,6 @@ Library Instance for UI support functions for DFCI.
 #include <Protocol/OnScreenKeyboard.h>
 #include <Protocol/SimpleWindowManager.h>
 
-
 /**
  * DfciUiDisplayDfciAuthDialog
  *
@@ -40,96 +39,101 @@ Library Instance for UI support functions for DFCI.
 EFI_STATUS
 EFIAPI
 DfciUiDisplayAuthDialog (
-  IN  CHAR16                              *TitleText,
-  IN  CHAR16                              *CaptionText,
-  IN  CHAR16                              *BodyText,
-  IN  CHAR16                              *CertText,
-  IN  CHAR16                              *ConfirmText,
-  IN  CHAR16                              *ErrorText,
-  IN  BOOLEAN                             PasswordType,
-  IN  CHAR16                              *Thumbprint,
-  OUT DFCI_MB_RESULT                      *Result,
-  OUT CHAR16                              **Password OPTIONAL
+  IN  CHAR16          *TitleText,
+  IN  CHAR16          *CaptionText,
+  IN  CHAR16          *BodyText,
+  IN  CHAR16          *CertText,
+  IN  CHAR16          *ConfirmText,
+  IN  CHAR16          *ErrorText,
+  IN  BOOLEAN         PasswordType,
+  IN  CHAR16          *Thumbprint,
+  OUT DFCI_MB_RESULT  *Result,
+  OUT CHAR16          **Password OPTIONAL
   )
 {
-    EFI_STATUS  Status;
-    CHAR16     *ThumbprintFromUser;
+  EFI_STATUS  Status;
+  CHAR16      *ThumbprintFromUser;
 
-    if (DfciUiIsManufacturingMode()) {
-        *Result = DFCI_MB_IDOK;
-        return EFI_SUCCESS;
-    }
+  if (DfciUiIsManufacturingMode ()) {
+    *Result = DFCI_MB_IDOK;
+    return EFI_SUCCESS;
+  }
 
-    ThumbprintFromUser = NULL;
+  ThumbprintFromUser = NULL;
 
-    Status = SwmDialogsVerifyThumbprintPrompt (
-                 TitleText,
-                 CaptionText,
-                 BodyText,
-                 CertText,
-                 ConfirmText,
-                 ErrorText,
-                 PasswordType ? SWM_THMB_TYPE_ALERT_PASSWORD : SWM_THMB_TYPE_ALERT_THUMBPRINT,
-                 (SWM_MB_RESULT*)Result,
-                 Password,
-                &ThumbprintFromUser);
+  Status = SwmDialogsVerifyThumbprintPrompt (
+             TitleText,
+             CaptionText,
+             BodyText,
+             CertText,
+             ConfirmText,
+             ErrorText,
+             PasswordType ? SWM_THMB_TYPE_ALERT_PASSWORD : SWM_THMB_TYPE_ALERT_THUMBPRINT,
+             (SWM_MB_RESULT *)Result,
+             Password,
+             &ThumbprintFromUser
+             );
 
-    if (!EFI_ERROR(Status)) {
-        if (*Result == DFCI_MB_IDOK) {
-            if (NULL == ThumbprintFromUser) {
-                DEBUG((DEBUG_ERROR, "%a: Failed to get Thumbprint from Dialog"));
-                *Result = DFCI_MB_IDTRYAGAIN;
-                ASSERT(ThumbprintFromUser != NULL);
-            }  else {
-                if (StrCmp(ThumbprintFromUser, Thumbprint) != 0) {
-                    *Result = DFCI_MB_IDTRYAGAIN;
-                }
-                FreePool (ThumbprintFromUser);
-            }
+  if (!EFI_ERROR (Status)) {
+    if (*Result == DFCI_MB_IDOK) {
+      if (NULL == ThumbprintFromUser) {
+        DEBUG ((DEBUG_ERROR, "%a: Failed to get Thumbprint from Dialog"));
+        *Result = DFCI_MB_IDTRYAGAIN;
+        ASSERT (ThumbprintFromUser != NULL);
+      } else {
+        if (StrCmp (ThumbprintFromUser, Thumbprint) != 0) {
+          *Result = DFCI_MB_IDTRYAGAIN;
         }
+
+        FreePool (ThumbprintFromUser);
+      }
     }
-    return Status;
+  }
+
+  return Status;
 }
 
 EFI_STATUS
 EFIAPI
 DfciUiDisplayPasswordDialog (
-  IN  CHAR16                              *TitleText,
-  IN  CHAR16                              *CaptionText,
-  IN  CHAR16                              *BodyText,
-  IN  CHAR16                              *ErrorText,
-  OUT DFCI_MB_RESULT                      *Result,
-  OUT CHAR16                              **Password
+  IN  CHAR16          *TitleText,
+  IN  CHAR16          *CaptionText,
+  IN  CHAR16          *BodyText,
+  IN  CHAR16          *ErrorText,
+  OUT DFCI_MB_RESULT  *Result,
+  OUT CHAR16          **Password
   )
 {
-
-    return SwmDialogsPasswordPrompt (TitleText,
-                                     CaptionText,
-                                     BodyText,
-                                     ErrorText,
-                                     SWM_PWD_TYPE_ALERT_PASSWORD,
-                                     (SWM_MB_RESULT*)Result,
-                                     Password);
+  return SwmDialogsPasswordPrompt (
+           TitleText,
+           CaptionText,
+           BodyText,
+           ErrorText,
+           SWM_PWD_TYPE_ALERT_PASSWORD,
+           (SWM_MB_RESULT *)Result,
+           Password
+           );
 }
 
 EFI_STATUS
 EFIAPI
 DfciUiDisplayMessageBox (
-    IN  CHAR16          *TitleBarText,
-    IN  CHAR16          *Text,
-    IN  CHAR16          *Caption,
-    IN  UINT32          Type,
-    IN  UINT64          Timeout,
-    OUT DFCI_MB_RESULT   *Result
-    )
+  IN  CHAR16          *TitleBarText,
+  IN  CHAR16          *Text,
+  IN  CHAR16          *Caption,
+  IN  UINT32          Type,
+  IN  UINT64          Timeout,
+  OUT DFCI_MB_RESULT  *Result
+  )
 {
-
-    return SwmDialogsMessageBox (TitleBarText,
-                                 Text,
-                                 Caption,
-                                 Type,
-                                 Timeout,
-                                 (SWM_MB_RESULT *) Result);
+  return SwmDialogsMessageBox (
+           TitleBarText,
+           Text,
+           Caption,
+           Type,
+           Timeout,
+           (SWM_MB_RESULT *)Result
+           );
 }
 
 /**
@@ -144,8 +148,9 @@ BOOLEAN
 EFIAPI
 DfciUiIsManufacturingMode (
   VOID
-  ) {
-    return FALSE;
+  )
+{
+  return FALSE;
 }
 
 /**
@@ -161,18 +166,19 @@ DfciUiIsUiAvailable (
   VOID
   )
 {
-    EFI_STATUS  Status;
-    VOID       *Ptr;
+  EFI_STATUS  Status;
+  VOID        *Ptr;
 
-    // Locate the Simple Window Manager protocol.
-    //
-    Status = gBS->LocateProtocol (&gMsSWMProtocolGuid,
-                                  NULL,
-                                  &Ptr);
+  // Locate the Simple Window Manager protocol.
+  //
+  Status = gBS->LocateProtocol (
+                  &gMsSWMProtocolGuid,
+                  NULL,
+                  &Ptr
+                  );
 
-    return (Status == EFI_SUCCESS);
+  return (Status == EFI_SUCCESS);
 }
-
 
 /**
     DfciUiExitSecurityBoundary
@@ -187,43 +193,43 @@ DfciUiIsUiAvailable (
 **/
 VOID
 EFIAPI
-DfciUiExitSecurityBoundary (VOID) {
+DfciUiExitSecurityBoundary (
+  VOID
+  )
+{
+  UINT32                         OSKMode;
+  MS_ONSCREEN_KEYBOARD_PROTOCOL  *OSKProtocol;
+  EFI_STATUS                     Status;
 
-    UINT32                         OSKMode;
-    MS_ONSCREEN_KEYBOARD_PROTOCOL *OSKProtocol;
-    EFI_STATUS                     Status;
+  // Platform Late Locking event.  For now, just signal
+  // PreReadyToBoot() to exit the trust boundary.
+  //
+  // All exits from now on should restart the system to get back
+  // inside the security boundary to continue making changes.
+  EfiEventGroupSignal (&gEfiEventPreReadyToBootGuid);
 
+  // This also enables auto keyboard enable, so turn it back off:
 
-    // Platform Late Locking event.  For now, just signal
-    // PreReadyToBoot() to exit the trust boundary.
-    //
-    // All exits from now on should restart the system to get back
-    // inside the security boundary to continue making changes.
-    EfiEventGroupSignal (&gEfiEventPreReadyToBootGuid);
-
-    // This also enables auto keyboard enable, so turn it back off:
-
-    // Locate the on-screen keyboard (OSK) protocol.  It may be used for input on a touch-only device.
-    //
+  // Locate the on-screen keyboard (OSK) protocol.  It may be used for input on a touch-only device.
+  //
+  OSKProtocol = NULL;
+  Status      = gBS->LocateProtocol (
+                       &gMsOSKProtocolGuid,
+                       NULL,
+                       (VOID **)&OSKProtocol
+                       );
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_WARN, "%a: Failed to locate on-screen keyboard protocol (%r).\r\n", __FUNCTION__, Status));
     OSKProtocol = NULL;
-    Status = gBS->LocateProtocol (&gMsOSKProtocolGuid,
-                                  NULL,
-                                  (VOID **)&OSKProtocol
-                                 );
-    if (EFI_ERROR (Status))
-    {
-        DEBUG((DEBUG_WARN, "%a: Failed to locate on-screen keyboard protocol (%r).\r\n", __FUNCTION__, Status));
-        OSKProtocol = NULL;
-    }
+  }
 
-    if (NULL != OSKProtocol)
-    {
-        // Disable OSK icon auto-activation and self-refresh, and ensure keyboard is disabled.
-        //
-        OSKProtocol->GetKeyboardMode(OSKProtocol, &OSKMode);
-        OSKMode &= ~(OSK_MODE_AUTOENABLEICON | OSK_MODE_SELF_REFRESH);
-        OSKProtocol->ShowKeyboard(OSKProtocol, FALSE);
-        OSKProtocol->ShowKeyboardIcon(OSKProtocol, FALSE);
-        OSKProtocol->SetKeyboardMode(OSKProtocol, OSKMode);
-    }
+  if (NULL != OSKProtocol) {
+    // Disable OSK icon auto-activation and self-refresh, and ensure keyboard is disabled.
+    //
+    OSKProtocol->GetKeyboardMode (OSKProtocol, &OSKMode);
+    OSKMode &= ~(OSK_MODE_AUTOENABLEICON | OSK_MODE_SELF_REFRESH);
+    OSKProtocol->ShowKeyboard (OSKProtocol, FALSE);
+    OSKProtocol->ShowKeyboardIcon (OSKProtocol, FALSE);
+    OSKProtocol->SetKeyboardMode (OSKProtocol, OSKMode);
+  }
 }

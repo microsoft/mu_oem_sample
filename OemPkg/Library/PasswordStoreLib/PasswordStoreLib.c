@@ -32,14 +32,13 @@
     0x68e6a3c8, 0x2138, 0x4846, {0xa0, 0x85, 0x73, 0xea, 0xb4, 0xc3, 0x44, 0xe0 } \
   }
 
-CONST CHAR16    *mPasswordName = {
+CONST CHAR16  *mPasswordName = {
   PASSWORD_STORE_ADMIN_VARIABLE_NAME
 };
 
 STATIC       EFI_GUID       mPasswordStoreInstalledGuid = PASSWORD_STORE_LIB_INSTALLED_GUID;
 STATIC       PASSWORD_HASH  mNullPasswordHash;
 STATIC       UINTN          mNullPasswordHashSize;
-
 
 /**
   Set the password variable.
@@ -53,36 +52,36 @@ STATIC       UINTN          mNullPasswordHashSize;
 EFI_STATUS
 EFIAPI
 PasswordStoreSetPassword (
-  IN  CONST UINT8     *PasswordHashValue,
-  IN        UINTN      PasswordHashSize
-)
+  IN  CONST UINT8  *PasswordHashValue,
+  IN        UINTN  PasswordHashSize
+  )
 {
   EFI_STATUS     Status;
   PASSWORD_HASH  PasswordHash;
 
-  if (PasswordHashValue == NULL)
-  {
+  if (PasswordHashValue == NULL) {
     return EFI_INVALID_PARAMETER;
   }
 
-  PasswordHash = (PASSWORD_HASH) PasswordHashValue;
-  Status = PasswordPolicyValidatePasswordHash (PasswordHash, PasswordHashSize);
-  if (EFI_ERROR(Status)) {
+  PasswordHash = (PASSWORD_HASH)PasswordHashValue;
+  Status       = PasswordPolicyValidatePasswordHash (PasswordHash, PasswordHashSize);
+  if (EFI_ERROR (Status)) {
     return Status;
   }
 
-  Status = gRT->SetVariable(PASSWORD_STORE_ADMIN_VARIABLE_NAME,
-    &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
-    PASSWORD_STORE_ADMIN_VARIABLE_ATTRS,
-    PasswordHashSize,
-    (VOID *) PasswordHash);
-  if (EFI_ERROR(Status))
-  {
+  Status = gRT->SetVariable (
+                  PASSWORD_STORE_ADMIN_VARIABLE_NAME,
+                  &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
+                  PASSWORD_STORE_ADMIN_VARIABLE_ATTRS,
+                  PasswordHashSize,
+                  (VOID *)PasswordHash
+                  );
+  if (EFI_ERROR (Status)) {
     Status = EFI_ABORTED;
   }
+
   return Status;
 }
-
 
 /**
   Public interface for determining whether a given password is set.
@@ -99,41 +98,39 @@ EFIAPI
 PasswordStoreIsPasswordSet (
   )
 {
-  EFI_STATUS          Status;
-  BOOLEAN             Result = FALSE;
-  UINTN               BufferSize;
-  PASSWORD_HASH       Store = NULL;
+  EFI_STATUS     Status;
+  BOOLEAN        Result = FALSE;
+  UINTN          BufferSize;
+  PASSWORD_HASH  Store = NULL;
 
   // Attempt to retrieve the password.
-  Status = GetVariable2( PASSWORD_STORE_ADMIN_VARIABLE_NAME,
-                            &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
-                         (VOID **) &Store,
-                        &BufferSize);
+  Status = GetVariable2 (
+             PASSWORD_STORE_ADMIN_VARIABLE_NAME,
+             &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
+             (VOID **)&Store,
+             &BufferSize
+             );
 
   // If it's missing entirely, we need to set it.
-  if (Status == EFI_NOT_FOUND || BufferSize == 0)
-  {
-    Status = PasswordStoreSetPassword(mNullPasswordHash, mNullPasswordHashSize);
+  if ((Status == EFI_NOT_FOUND) || (BufferSize == 0)) {
+    Status = PasswordStoreSetPassword (mNullPasswordHash, mNullPasswordHashSize);
   }
   // Determine whether the current password is valid.
-  else if (!EFI_ERROR( Status ) && BufferSize > 0)
-  {
+  else if (!EFI_ERROR (Status) && (BufferSize > 0)) {
     // Determine whether the current password is the NULL password.
-    if (BufferSize != mNullPasswordHashSize &&
-        CompareMem( Store, mNullPasswordHash, mNullPasswordHashSize ) != 0)
+    if ((BufferSize != mNullPasswordHashSize) &&
+        (CompareMem (Store, mNullPasswordHash, mNullPasswordHashSize) != 0))
     {
       Result = TRUE;
     }
   }
 
-  if (NULL != Store)
-  {
+  if (NULL != Store) {
     FreePool (Store);
   }
 
   return Result;
 } // IsPasswordSet()
-
 
 /**
   Public interface for validating a password against the current password.
@@ -156,19 +153,18 @@ PasswordStoreIsPasswordSet (
 BOOLEAN
 EFIAPI
 PasswordStoreAuthenticatePassword (
-  IN  CONST CHAR16   *Password
+  IN  CONST CHAR16  *Password
   )
 {
-  EFI_STATUS          Status = EFI_SUCCESS;
-  BOOLEAN             Result = FALSE;
-  UINTN               DataSize;
-  CHAR16              TempPassword[PW_MAX_LENGTH + 1];  // Maximum password length plus a NULL terminator.
-  PASSWORD_HASH       CurStore = NULL;
-  PASSWORD_HASH       NewStore = NULL;
+  EFI_STATUS     Status = EFI_SUCCESS;
+  BOOLEAN        Result = FALSE;
+  UINTN          DataSize;
+  CHAR16         TempPassword[PW_MAX_LENGTH + 1];       // Maximum password length plus a NULL terminator.
+  PASSWORD_HASH  CurStore = NULL;
+  PASSWORD_HASH  NewStore = NULL;
 
   // If there is no password set, all accesses should authenticate.
-  if (!PasswordStoreIsPasswordSet())
-  {
+  if (!PasswordStoreIsPasswordSet ()) {
     return TRUE;
   }
 
@@ -178,52 +174,54 @@ PasswordStoreAuthenticatePassword (
   //       that the user doesn't have to enter their password half a dozen times).
   //       This should be replaced with a more robust "Session token" if this system
   //       is leveraged for anything more complicated than FrontPage admin password.
-  if (Password == NULL || Password[0] == '\0')
-  {
-     return FALSE; // if or not a null password is set is checked in IsPasswordSet
+  if ((Password == NULL) || (Password[0] == '\0')) {
+    return FALSE;  // if or not a null password is set is checked in IsPasswordSet
   }
 
   // Prep the password for evaluation.
-  PasswordPolicySafeCopyPassword(TempPassword,
-    ARRAY_SIZE(TempPassword),
-    Password);
+  PasswordPolicySafeCopyPassword (
+    TempPassword,
+    ARRAY_SIZE (TempPassword),
+    Password
+    );
 
   //
   // Step 1: Retrieve the current store.
-  Status = GetVariable2( PASSWORD_STORE_ADMIN_VARIABLE_NAME,
-                        &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
-                         (VOID **) &CurStore,
-                        &DataSize);
+  Status = GetVariable2 (
+             PASSWORD_STORE_ADMIN_VARIABLE_NAME,
+             &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
+             (VOID **)&CurStore,
+             &DataSize
+             );
   // NOTE: DataSize should now reflect the size of the variable when it was saved.
 
   //
   // Step 2: If the current store was retrieved, build a new store to compare it to.
-  if (!EFI_ERROR( Status ))
-  {
+  if (!EFI_ERROR (Status)) {
     // Build out the rest of the store so that we can compare the keys.
-    Status = PasswordPolicyGeneratePasswordHash( CurStore,      // Use existing Version and Salt
-                                                 TempPassword,  // Password
-                                                &NewStore,      // Store
-                                                &DataSize);
+    Status = PasswordPolicyGeneratePasswordHash (
+               CurStore,                                        // Use existing Version and Salt
+               TempPassword,                                    // Password
+               &NewStore,                                       // Store
+               &DataSize
+               );
   }
 
   // Always put away your toys.
-  PasswordPolicyCleansePwBuffer(TempPassword, sizeof( TempPassword ));
+  PasswordPolicyCleansePwBuffer (TempPassword, sizeof (TempPassword));
 
   //
   // Step 3: Compare the store.
   // NOTE: Sure, it would be faster to just compare the key, but I don't think this hurts anything.
-  if (!EFI_ERROR( Status ))
-  {
-    Result = (CompareMem( CurStore, NewStore, DataSize ) == 0);
+  if (!EFI_ERROR (Status)) {
+    Result = (CompareMem (CurStore, NewStore, DataSize) == 0);
   }
 
-  if (NULL != CurStore)
-  {
+  if (NULL != CurStore) {
     FreePool (CurStore);
   }
-  if (NULL != NewStore)
-  {
+
+  if (NULL != NewStore) {
     FreePool (NewStore);
   }
 
@@ -244,29 +242,29 @@ PasswordStoreResetPasswordLib (
   VOID
   )
 {
-  EFI_STATUS    Status;
-  CHAR16        *PasswordName;
+  EFI_STATUS  Status;
+  CHAR16      *PasswordName;
 
   // Attempt to delete the password.
-  PasswordName  = (CHAR16*)mPasswordName;
-  Status        = gRT->SetVariable( PasswordName,
-                                    &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
-                                    0,
-                                    0,
-                                    NULL );
-  if (Status == EFI_NOT_FOUND)
-  {
+  PasswordName = (CHAR16 *)mPasswordName;
+  Status       = gRT->SetVariable (
+                        PasswordName,
+                        &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
+                        0,
+                        0,
+                        NULL
+                        );
+  if (Status == EFI_NOT_FOUND) {
     Status = EFI_SUCCESS;
   }
-  if (EFI_ERROR( Status ))
-  {
-    DEBUG(( DEBUG_ERROR, "%a - Failed to properly reset password! Status = %r.\n", __FUNCTION__, Status ));
-    ASSERT( FALSE );
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a - Failed to properly reset password! Status = %r.\n", __FUNCTION__, Status));
+    ASSERT (FALSE);
   }
 
   return Status;
 } // ResetPasswordLib()
-
 
 /**
   Performs any initialization that is necessary for the functions in this
@@ -285,39 +283,38 @@ PasswordStoreInitializeLib (
   VOID
   )
 {
-  EFI_STATUS                    Status;
-  CHAR16                        *PasswordName;
-  UINT32                        Attributes;
-  UINTN                         DataSize;
-  PASSWORD_HASH                 Store;
+  EFI_STATUS     Status;
+  CHAR16         *PasswordName;
+  UINT32         Attributes;
+  UINTN          DataSize;
+  PASSWORD_HASH  Store;
 
-  PasswordName  = (CHAR16*)mPasswordName;
-  //1. Load Variable
-  Status = GetVariable3( PasswordName,
-                        &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
-                         (VOID **) &Store,
-                        &DataSize,
-                        &Attributes);
-  if (!EFI_ERROR(Status))
-  {
+  PasswordName = (CHAR16 *)mPasswordName;
+  // 1. Load Variable
+  Status = GetVariable3 (
+             PasswordName,
+             &PASSWORD_STORE_ADMIN_NAMESPACE_GUID,
+             (VOID **)&Store,
+             &DataSize,
+             &Attributes
+             );
+  if (!EFI_ERROR (Status)) {
     FreePool (Store);
   }
 
   // Make sure that password is found and has the correct attributes.
-  if (Status == EFI_NOT_FOUND || Attributes != PASSWORD_STORE_ADMIN_VARIABLE_ATTRS)
-  {
+  if ((Status == EFI_NOT_FOUND) || (Attributes != PASSWORD_STORE_ADMIN_VARIABLE_ATTRS)) {
     // If invalid, initialize it.
     Status = PasswordStoreSetPassword (mNullPasswordHash, mNullPasswordHashSize);
   }
-  if (EFI_ERROR( Status ))
-  {
-    DEBUG(( DEBUG_ERROR, "%a - Failed to properly initialize password! Status = %r.\n", __FUNCTION__, Status ));
-    ASSERT( FALSE );
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a - Failed to properly initialize password! Status = %r.\n", __FUNCTION__, Status));
+    ASSERT (FALSE);
   }
 
   return Status;
 } // PasswordStoreInitializePasswordLib()
-
 
 /**
 The constructor function initializes the Lib for Dxe.
@@ -338,34 +335,34 @@ It will ASSERT() if one of these operations fails and it will always return EFI_
 **/
 EFI_STATUS
 EFIAPI
-PasswordStoreLibConstructor
-(
+PasswordStoreLibConstructor (
   IN EFI_HANDLE        ImageHandle,
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
 {
-
-  EFI_STATUS                    Status;
-  VOID                         *Dummy;
+  EFI_STATUS  Status;
+  VOID        *Dummy;
 
   Status = PasswordPolicyGeneratePasswordHash (NULL, NULL, &mNullPasswordHash, &mNullPasswordHashSize);
 
-  Status = gBS->LocateProtocol(&mPasswordStoreInstalledGuid,
-                               NULL,
-                               (VOID **)&Dummy);
+  Status = gBS->LocateProtocol (
+                  &mPasswordStoreInstalledGuid,
+                  NULL,
+                  (VOID **)&Dummy
+                  );
 
-  if (Status == EFI_NOT_FOUND)
-  {
+  if (Status == EFI_NOT_FOUND) {
     // Only initialize the library once regardless of the number of instances of this
     // library
 
-    Status = gBS->InstallProtocolInterface (&gImageHandle,
-                                            &mPasswordStoreInstalledGuid,
-                                             EFI_NATIVE_INTERFACE,
-                                             NULL);
-    if (EFI_ERROR(Status))
-    {
-      DEBUG(( DEBUG_ERROR, "%a: - Unable to install already-installed protocol- %r\n", __FUNCTION__, Status ));
+    Status = gBS->InstallProtocolInterface (
+                    &gImageHandle,
+                    &mPasswordStoreInstalledGuid,
+                    EFI_NATIVE_INTERFACE,
+                    NULL
+                    );
+    if (EFI_ERROR (Status)) {
+      DEBUG ((DEBUG_ERROR, "%a: - Unable to install already-installed protocol- %r\n", __FUNCTION__, Status));
     }
 
     PasswordStoreInitializeLib ();

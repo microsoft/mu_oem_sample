@@ -31,11 +31,10 @@ EFI_STATUS
 EFIAPI
 PasswordPolicySafeCopyPassword (
   OUT CHAR16        *Buffer,
-  IN  UINTN          BufferLength,
+  IN  UINTN         BufferLength,
   IN  CONST CHAR16  *Password
   )
 {
-
   return EFI_UNSUPPORTED;
 } // PasswordPolicySafeCopyPassword()
 
@@ -50,10 +49,9 @@ VOID
 EFIAPI
 PasswordPolicyCleansePwBuffer (
   IN  CHAR16  *Data,
-  IN  UINTN    Size
+  IN  UINTN   Size
   )
 {
-
   return;
 } // PasswordPolicyCleansePwBuffer()
 
@@ -82,11 +80,8 @@ PasswordPolicyIsPwStringValid (
   OUT       PW_TEST_BITMAP  *Failures OPTIONAL
   )
 {
-
-
   return FALSE;
 } // PasswordPolicyIsPwStringValid()
-
 
 /**
   Public interface for validating a password hash.
@@ -105,13 +100,12 @@ PasswordPolicyIsPwStringValid (
 EFI_STATUS
 EFIAPI
 PasswordPolicyValidatePasswordHash (
-  IN  CONST PASSWORD_HASH   PasswordHash,
-  IN        UINTN           PasswordHashSize)
+  IN  CONST PASSWORD_HASH  PasswordHash,
+  IN        UINTN          PasswordHashSize
+  )
 {
-
   return EFI_UNSUPPORTED;
 }
-
 
 /**
   Public interface for generating the password hash.
@@ -136,12 +130,11 @@ PasswordPolicyValidatePasswordHash (
 EFI_STATUS
 EFIAPI
 PasswordPolicyGeneratePasswordHash (
-  IN   CONST PASSWORD_HASH   OldSalt   OPTIONAL,
+  IN   CONST PASSWORD_HASH  OldSalt   OPTIONAL,
   IN   CONST CHAR16         *Password  OPTIONAL,
   OUT        PASSWORD_HASH  *PasswordHash,
   OUT        UINTN          *PasswordHashSize
   )
 {
-
   return EFI_UNSUPPORTED;
 } // PasswordSupportGeneratePasswordHash()

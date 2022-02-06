@@ -9,20 +9,19 @@
 #ifndef SHIP_MODE
 
 //
-// Test/Development Secure Boot PK Certificate 
+// Test/Development Secure Boot PK Certificate
 //
-CONST UINT8  kaDevelopmentPlatformKeyCertificate[1] = {0};
-CONST UINT8  *DevelopmentPlatformKeyCertificate = kaDevelopmentPlatformKeyCertificate;
-CONST UINT32 DevelopmentSizeOfPlatformKeyCertificate = 0;
-
+CONST UINT8   kaDevelopmentPlatformKeyCertificate[1]  = { 0 };
+CONST UINT8   *DevelopmentPlatformKeyCertificate      = kaDevelopmentPlatformKeyCertificate;
+CONST UINT32  DevelopmentSizeOfPlatformKeyCertificate = 0;
 
 #endif
 
 /** PRODUCTION KEYS  **/
 
 //
-// Production Secure Boot PK Certificate 
+// Production Secure Boot PK Certificate
 //
-CONST UINT8   kaProductionPlatformKeyCertificate[1] = {0};
-CONST UINT8   *ProductionPlatformKeyCertificate = kaProductionPlatformKeyCertificate;
-CONST UINT32  ProductionSizeOfPlatformKeyCertificate=0;
+CONST UINT8   kaProductionPlatformKeyCertificate[1]  = { 0 };
+CONST UINT8   *ProductionPlatformKeyCertificate      = kaProductionPlatformKeyCertificate;
+CONST UINT32  ProductionSizeOfPlatformKeyCertificate = 0;

@@ -13,7 +13,7 @@
 //
 // Security settings
 //
-#define DFCI_SETTING_ID__SECURE_BOOT_KEYS_ENUM              "Device.SecureBootKeys.Enum"
-#define DFCI_SETTING_ID__PASSWORD                           "Device.Password.Password"
+#define DFCI_SETTING_ID__SECURE_BOOT_KEYS_ENUM  "Device.SecureBootKeys.Enum"
+#define DFCI_SETTING_ID__PASSWORD               "Device.Password.Password"
 
 #endif //  __FRONT_PAGE_SETTINGS_H__

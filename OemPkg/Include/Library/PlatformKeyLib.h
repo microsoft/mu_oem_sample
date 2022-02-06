@@ -12,19 +12,19 @@
 #ifndef SHIP_MODE
 
 //
-// Test/Development Secure Boot PK Certificate 
+// Test/Development Secure Boot PK Certificate
 //
-extern CONST UINT8 *DevelopmentPlatformKeyCertificate;
-extern CONST UINT32 DevelopmentSizeOfPlatformKeyCertificate;
+extern CONST UINT8   *DevelopmentPlatformKeyCertificate;
+extern CONST UINT32  DevelopmentSizeOfPlatformKeyCertificate;
 
 #endif
 
 /** PRODUCTION KEYS  **/
 
 //
-// Production Secure Boot PK Certificate 
+// Production Secure Boot PK Certificate
 //
-extern CONST UINT8  *ProductionPlatformKeyCertificate;
+extern CONST UINT8   *ProductionPlatformKeyCertificate;
 extern CONST UINT32  ProductionSizeOfPlatformKeyCertificate;
 
 #endif //__PLATFORM_KEY_LIB__

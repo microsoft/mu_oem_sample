@@ -29,25 +29,26 @@
   @retval     TRUE if secure boot is enabled, FALSE otherwise.
 **/
 BOOLEAN
-IsSecureBootOn()
+IsSecureBootOn (
+  )
 {
-  EFI_STATUS Status;
-  EFI_PEI_READ_ONLY_VARIABLE2_PPI *VarPpi = NULL;
-  UINTN PkSize = 0;
+  EFI_STATUS                       Status;
+  EFI_PEI_READ_ONLY_VARIABLE2_PPI  *VarPpi = NULL;
+  UINTN                            PkSize  = 0;
 
-  Status = PeiServicesLocatePpi(&gEfiPeiReadOnlyVariable2PpiGuid, 0, NULL, (VOID *)&VarPpi);
-  if (EFI_ERROR(Status)){
-    DEBUG((DEBUG_ERROR, "Failed to locate EFI_PEI_READ_ONLY_VARIABLE2_PPI. \n"));
+  Status = PeiServicesLocatePpi (&gEfiPeiReadOnlyVariable2PpiGuid, 0, NULL, (VOID *)&VarPpi);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "Failed to locate EFI_PEI_READ_ONLY_VARIABLE2_PPI. \n"));
     return FALSE;
   }
 
-  Status = VarPpi->GetVariable(VarPpi, EFI_PLATFORM_KEY_NAME, &gEfiGlobalVariableGuid, NULL, &PkSize, NULL);
-  if ((Status == EFI_BUFFER_TOO_SMALL) && (PkSize > 0) )
-  {
-    DEBUG((DEBUG_INFO, "%a - PK exists.  Secure boot on.  Pk Size is 0x%X\n", __FUNCTION__, PkSize));
+  Status = VarPpi->GetVariable (VarPpi, EFI_PLATFORM_KEY_NAME, &gEfiGlobalVariableGuid, NULL, &PkSize, NULL);
+  if ((Status == EFI_BUFFER_TOO_SMALL) && (PkSize > 0)) {
+    DEBUG ((DEBUG_INFO, "%a - PK exists.  Secure boot on.  Pk Size is 0x%X\n", __FUNCTION__, PkSize));
     return TRUE;
   }
-  DEBUG((DEBUG_INFO, "%a - PK doesn't exist.  Secure boot off\n", __FUNCTION__));
+
+  DEBUG ((DEBUG_INFO, "%a - PK doesn't exist.  Secure boot off\n", __FUNCTION__));
   return FALSE;
 }
 
@@ -63,20 +64,20 @@ IsSecureBootOn()
 **/
 EFI_STATUS
 EFIAPI
-DeviceStatePeiEntry(
-  IN       EFI_PEI_FILE_HANDLE       FileHandle,
-  IN CONST EFI_PEI_SERVICES          **PeiServices
+DeviceStatePeiEntry (
+  IN       EFI_PEI_FILE_HANDLE  FileHandle,
+  IN CONST EFI_PEI_SERVICES     **PeiServices
   )
 {
-  DEVICE_STATE                  State;
+  DEVICE_STATE  State;
+
   State = 0;
 
-  if (!IsSecureBootOn())
-  {
+  if (!IsSecureBootOn ()) {
     State |= DEVICE_STATE_SECUREBOOT_OFF;
   }
 
-  AddDeviceState(State);
+  AddDeviceState (State);
 
   return EFI_SUCCESS;
 }
