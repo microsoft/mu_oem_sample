@@ -23,7 +23,7 @@
 
 # This driver 1. satisfies the NetworkDependency Protocol, 2. does a ConnectAll to insure the network stack and related devices start.
 # The override is here in case TianoCore changes the other functionality of the original driver.
-#Override : 00000001 | MdeModulePkg/Universal/BootManagerPolicyDxe/BootManagerPolicyDxe.inf | 029b556f0af0b2e16daea70054922387 | 2019-04-08T18-57-46
+#Override : 00000002 | MdeModulePkg/Universal/BootManagerPolicyDxe/BootManagerPolicyDxe.inf | 1394582abed01310637425761cf02e4e | 2022-02-06T04-32-51 | 683ed68b7ecab2be6740359535a52a3ea086dd8a
 
 
 [Sources]
