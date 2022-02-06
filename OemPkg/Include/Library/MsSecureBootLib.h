@@ -20,16 +20,14 @@ Environments:
 #ifndef __MS_SECURE_BOOT_LIB_INC__
 #define __MS_SECURE_BOOT_LIB_INC__
 
-
 enum {
-    MS_SB_CONFIG_MS_ONLY = 0,   // Starts at 0 so it can be used as an index.
-    MS_SB_CONFIG_MS_3P,
-    MS_SB_CONFIG_NONE,
+  MS_SB_CONFIG_MS_ONLY = 0,     // Starts at 0 so it can be used as an index.
+  MS_SB_CONFIG_MS_3P,
+  MS_SB_CONFIG_NONE,
 
-    // ALWAYS LAST OPTION!!
-    MS_SB_CONFIG_COUNT
+  // ALWAYS LAST OPTION!!
+  MS_SB_CONFIG_COUNT
 };
-
 
 /**
     This function will delete the secure boot keys, thus
@@ -41,8 +39,8 @@ enum {
 **/
 EFI_STATUS
 EFIAPI
-DeleteSecureBootVariables();
-
+DeleteSecureBootVariables (
+  );
 
 /**
   Helper function to quickly determine whether SecureBoot is enabled.
@@ -56,7 +54,6 @@ IsSecureBootEnable (
   VOID
   );
 
-
 /**
   Returns the current config of the SecureBoot variables, if it can be determined.
 
@@ -67,7 +64,6 @@ UINTN
 GetCurrentSecureBootConfig (
   VOID
   );
-
 
 /**
   Similar to DeleteSecureBootVariables, this function is used to unilaterally
@@ -88,7 +84,7 @@ GetCurrentSecureBootConfig (
 **/
 EFI_STATUS
 SetDefaultSecureBootVariables (
-  IN  BOOLEAN    UseThirdParty
+  IN  BOOLEAN  UseThirdParty
   );
 
 #endif //__MS_SECURE_BOOT_LIB_INC__

@@ -13,20 +13,19 @@
 //
 // Standard definitions for working with password buffers.
 //
-#define PW_MIN_LENGTH     6
-#define PW_MAX_LENGTH     128
+#define PW_MIN_LENGTH  6
+#define PW_MAX_LENGTH  128
 
-typedef UINT8             *PASSWORD_HASH;
+typedef UINT8 *PASSWORD_HASH;
 
 //
 // Definitions for the test failures for the password.
 //
-typedef UINT32            PW_TEST_BITMAP;
-#define PW_TEST_STRING_NULL         (1 << 0)
-#define PW_TEST_STRING_TOO_SHORT    (1 << 1)
-#define PW_TEST_STRING_TOO_LONG     (1 << 2)
-#define PW_TEST_STRING_INVALID_CHAR (1 << 3)
-
+typedef UINT32 PW_TEST_BITMAP;
+#define PW_TEST_STRING_NULL          (1 << 0)
+#define PW_TEST_STRING_TOO_SHORT     (1 << 1)
+#define PW_TEST_STRING_TOO_LONG      (1 << 2)
+#define PW_TEST_STRING_INVALID_CHAR  (1 << 3)
 
 /**
   Copies a password to a buffer, but will only copy the maximum
@@ -47,11 +46,10 @@ typedef UINT32            PW_TEST_BITMAP;
 EFI_STATUS
 EFIAPI
 PasswordPolicySafeCopyPassword (
-  OUT CHAR16       *Buffer,
+  OUT CHAR16        *Buffer,
   IN  UINTN         BufferLength,
-  IN  CONST CHAR16 *Password
+  IN  CONST CHAR16  *Password
   );
-
 
 /**
   Takes in a buffer and destroys the data within it.
@@ -63,10 +61,9 @@ PasswordPolicySafeCopyPassword (
 VOID
 EFIAPI
 PasswordPolicyCleansePwBuffer (
-  IN  CHAR16       *Data,
-  IN  UINTN         Size
+  IN  CHAR16  *Data,
+  IN  UINTN   Size
   );
-
 
 /**
   Public interface for validating password strings.
@@ -93,7 +90,6 @@ PasswordPolicyIsPwStringValid (
   OUT       PW_TEST_BITMAP  *Failures OPTIONAL
   );
 
-
 /**
   Public interface for validating a password hash.
 
@@ -115,10 +111,9 @@ PasswordPolicyIsPwStringValid (
 EFI_STATUS
 EFIAPI
 PasswordPolicyValidatePasswordHash (
-  IN CONST PASSWORD_HASH PasswordHash,
-  IN       UINTN         PasswordHashSize
+  IN CONST PASSWORD_HASH  PasswordHash,
+  IN       UINTN          PasswordHashSize
   );
-
 
 /**
   Public interface for generating a password hash.
@@ -146,7 +141,7 @@ PasswordPolicyValidatePasswordHash (
 EFI_STATUS
 EFIAPI
 PasswordPolicyGeneratePasswordHash (
-  IN  CONST PASSWORD_HASH   OldSalt   OPTIONAL,
+  IN  CONST PASSWORD_HASH  OldSalt   OPTIONAL,
   IN  CONST CHAR16         *Password   OPTIONAL,
   OUT       PASSWORD_HASH  *PasswordHash,
   OUT       UINTN          *PasswordHashSize

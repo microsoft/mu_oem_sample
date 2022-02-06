@@ -10,7 +10,6 @@
 #ifndef __PASSWORD_STORE_INTERNAL_H__
 #define __PASSWORD_STORE_INTERNAL_H__
 
-
 /**
   Performs any initialization that is necessary for the functions in this
   library to behave as expected.
@@ -28,7 +27,6 @@ PasswordStoreInitializeLib (
   VOID
   );
 
-
 /**
   Deletes all passwords and resets password infrastructure to factory condition.
   Published as a public function so that it can be invoked in a useful driver.
@@ -42,6 +40,5 @@ EFIAPI
 PasswordStoreResetPasswordLib (
   VOID
   );
-
 
 #endif // _PASSWORD_STORE_INTERNAL_H_
