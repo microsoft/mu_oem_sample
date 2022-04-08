@@ -14,7 +14,7 @@
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
-#include <Library/MsSecureBootLib.h>
+#include <Library/MuSecureBootLib.h>
 
 #include <DfciSystemSettingTypes.h>
 

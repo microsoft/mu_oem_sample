@@ -20,7 +20,6 @@
   #
   PasswordPolicyLib|Include/Library/PasswordPolicyLib.h
   PlatformKeyLib|Include/Library/PlatformKeyLib.h
-  MsSecureBootLib|Include/Library/MsSecureBootLib.h
 
 [Guids]
   # {B20F1063-8C75-4A83-BFE0-969EFB5AF0AA}

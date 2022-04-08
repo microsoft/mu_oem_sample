@@ -50,7 +50,7 @@
 #include <Library/ResetUtilityLib.h>
 #include <Library/MsColorTableLib.h>
 #include <Library/MsNVBootReasonLib.h>
-#include <Library/MsSecureBootLib.h>
+#include <Library/MuSecureBootLib.h>
 #include <Library/SwmDialogsLib.h>
 
 #include <MsDisplayEngine.h>

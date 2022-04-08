@@ -37,7 +37,7 @@
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/MsColorTableLib.h>
 #include <Library/SwmDialogsLib.h>
-#include <Library/MsSecureBootLib.h>
+#include <Library/MuSecureBootLib.h>
 #include <Library/PasswordPolicyLib.h>
 
 #include <Settings/DfciSettings.h>

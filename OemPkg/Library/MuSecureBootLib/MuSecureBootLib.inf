@@ -1,4 +1,4 @@
-## @file MsSecureBootLib.inf
+## @file MuSecureBootLib.inf
 #
 #  Copyright (C) Microsoft Corporation. All rights reserved.
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
@@ -10,18 +10,18 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = MsSecureBootLib
+  BASE_NAME                      = MuSecureBootLib
   FILE_GUID                      = D5F34E15-67B7-479F-B065-46AA7D77BFF7
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = MsSecureBootLib | DXE_DRIVER UEFI_APPLICATION
+  LIBRARY_CLASS                  = MuSecureBootLib | DXE_DRIVER UEFI_APPLICATION
 
 #
 #  VALID_ARCHITECTURES           = IA32 X64 AARCH64
 #
 
 [Sources]
-  MsSecureBootLib.c
+  MuSecureBootLib.c
 
 [Packages]
   MdePkg/MdePkg.dec
