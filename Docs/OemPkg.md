@@ -73,11 +73,7 @@ non-volatile variable storage.
 
 **PasswordStoreVariable.h** defines the GUID and variable names for a variable-backed PasswordStore.
 
-**MsSecureBootLib.h** defines the interface for interacting with Secure Boot variables.
-
 **PasswordPolicyLib.h** contains the interface for storing and hashing an administrator password.
-
-**PlatformKeyLib.h** declares the platform key certificates.
 
 **ButtonServices.h** is the header for [FrontpageButtonsVolumeUp.c](#FrontpageButtonsVolumeUp)
 

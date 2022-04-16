@@ -71,8 +71,6 @@
   MsNVBootReasonLib|OemPkg/Library/MsNVBootReasonLib/MsNVBootReasonLib.inf
   MuUefiVersionLib|OemPkg/Library/MuUefiVersionLib/MuUefiVersionLib.inf
   PasswordStoreLib|OemPkg/Library/PasswordStoreLib/PasswordStoreLib.inf
-  MsSecureBootLib|OemPkg/Library/MsSecureBootLib/MsSecureBootLib.inf
-  PlatformKeyLib|OemPkg/Library/PlatformKeyLibNull/PlatformKeyLibNull.inf
   PasswordPolicyLib|OemPkg/Library/PasswordPolicyLibNull/PasswordPolicyLibNull.inf
 
   DeviceBootManagerLib|MsCorePkg/Library/DeviceBootManagerLibNull/DeviceBootManagerLibNull.inf
@@ -133,9 +131,7 @@
   OemPkg/Library/PasswordStoreLib/PasswordStoreLib.inf
   OemPkg/Library/PasswordPolicyLib/PasswordPolicyLib.inf
   OemPkg/Library/PasswordPolicyLibNull/PasswordPolicyLibNull.inf
-  OemPkg/Library/MsSecureBootLib/MsSecureBootLib.inf
   OemPkg/Library/MsSecureBootModeSettingDxeLib/MsSecureBootModeSettingDxeLib.inf
-  OemPkg/Library/PlatformKeyLibNull/PlatformKeyLibNull.inf
   OemPkg/Library/DfciUiSupportLib/DfciUiSupportLib.inf
   OemPkg/Library/DfciGroupLib/DfciGroups.inf
   OemPkg/Library/DfciDeviceIdSupportLib/DfciDeviceIdSupportLib.inf
