@@ -134,7 +134,7 @@
   OemPkg/Library/PasswordStoreLib/PasswordStoreLib.inf
   OemPkg/Library/PasswordPolicyLib/PasswordPolicyLib.inf
   OemPkg/Library/PasswordPolicyLibNull/PasswordPolicyLibNull.inf
-  OemPkg/Library/MsSecureBootModeSettingDxeLib/MsSecureBootModeSettingDxeLib.inf
+  OemPkg/Library/MsSecureBootModeSettingLib/MsSecureBootModeSettingLib.inf
   OemPkg/Library/DfciUiSupportLib/DfciUiSupportLib.inf
   OemPkg/Library/DfciGroupLib/DfciGroups.inf
   OemPkg/Library/DfciDeviceIdSupportLib/DfciDeviceIdSupportLib.inf

@@ -8,13 +8,17 @@
 **/
 
 #include <PiDxe.h>
+#include <UefiSecureBoot.h>
+#include <Guid/ImageAuthentication.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/DebugLib.h>
 #include <Library/PcdLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
 #include <Library/UefiRuntimeServicesTableLib.h>
-#include <Library/MsSecureBootLib.h>
+#include <Library/SecureBootVariableLib.h>
+#include <Library/MuSecureBootKeySelectorLib.h>
+#include <Library/SecureBootKeyStoreLib.h>
 
 #include <DfciSystemSettingTypes.h>
 
@@ -22,8 +26,6 @@
 
 #include <Settings/DfciSettings.h>
 #include <Settings/FrontPageSettings.h>
-
-#define MS_SB_CONFIG_CUSTOM  3
 
 EFI_EVENT  mSecureBootSettingsProviderSupportInstallEvent;
 VOID       *mSecureBootSettingProviderSupportInstallEventRegistration = NULL;
@@ -54,7 +56,7 @@ SecureBootModeGetDefault (
   }
 
   *ValueSize        = sizeof (UINT8);
-  *((UINT8 *)Value) = MS_SB_CONFIG_MS_3P;
+  *((UINT8 *)Value) = MU_SB_CONFIG_NONE;
   return EFI_SUCCESS;
 }
 
@@ -86,12 +88,8 @@ SecureBootModeGet (
   }
 
   // mIsValid
-  current = GetCurrentSecureBootConfig ();
-  if (current == (UINTN)-1) {
-    *((UINT8 *)Value) = MS_SB_CONFIG_CUSTOM;      // something needs to be defined for custom which might be used in the front page to display a custom string. (anything that is not None, MS, or MS_3P?
-  } else {
-    *((UINT8 *)Value) = (UINT8)current;
-  }
+  current           = GetCurrentSecureBootConfig ();
+  *((UINT8 *)Value) = (UINT8)current;
 
   *ValueSize = sizeof (UINT8);
   return EFI_SUCCESS;
@@ -109,9 +107,11 @@ SecureBootModeSet (
   OUT DFCI_SETTING_FLAGS           *Flags
   )
 {
-  UINTN       current;
-  EFI_STATUS  Status = EFI_SUCCESS;
-  BOOLEAN     UseThirdParty;
+  UINTN                     current;
+  EFI_STATUS                Status = EFI_SUCCESS;
+  UINT8                     KeyIndex;
+  SECURE_BOOT_PAYLOAD_INFO  *SecureBootPayload     = NULL;
+  UINT8                     SecureBootPayloadCount = 0;
 
   *Flags = 0;
 
@@ -123,6 +123,11 @@ SecureBootModeSet (
     return EFI_BAD_BUFFER_SIZE;
   }
 
+  Status = GetPlatformKeyStore (&SecureBootPayload, &SecureBootPayloadCount);
+  if (EFI_ERROR (Status)) {
+    return Status;
+  }
+
   if (0 != AsciiStrnCmp (This->Id, DFCI_SETTING_ID__SECURE_BOOT_KEYS_ENUM, DFCI_MAX_ID_LEN)) {
     DEBUG ((DEBUG_ERROR, "TpmEnableSet was called with incorrect Provider Id (%a)\n", This->Id));
     return EFI_UNSUPPORTED;
@@ -130,7 +135,7 @@ SecureBootModeSet (
 
   DEBUG ((DEBUG_INFO, "Setting Secure Boot Mode to %d\n", *((UINT8 *)Value)));
 
-  if (*((UINT8 *)Value) > MS_SB_CONFIG_NONE) {
+  if ((*((UINT8 *)Value) > SecureBootPayloadCount) && (*((UINT8 *)Value) != MU_SB_CONFIG_NONE)) {
     DEBUG ((DEBUG_ERROR, "Custom secure boot modes are not supported (%a)\n", This->Id));
     return EFI_INVALID_PARAMETER;
   }
@@ -145,17 +150,17 @@ SecureBootModeSet (
   // this is where you move what front page did.
   //
   // Take action on the SB variables.
-  if ((MS_SB_CONFIG_MS_ONLY == *((UINT8 *)Value)) || (MS_SB_CONFIG_MS_3P == *((UINT8 *)Value))) {
+  if (SecureBootPayloadCount > *((UINT8 *)Value)) {
     // Make sure to clear out any variables that may already be set.
     Status = DeleteSecureBootVariables ();
 
     // If we're still good to go, do the do.
     if (!EFI_ERROR (Status)) {
-      UseThirdParty = (MS_SB_CONFIG_MS_3P == *((UINT8 *)Value));
-      Status        = SetDefaultSecureBootVariables (UseThirdParty);
-      DEBUG ((DEBUG_INFO, "INFO %a - SetDefaultSecureBootVariables(%d) = %r\n", __FUNCTION__, UseThirdParty, Status));
+      KeyIndex = *((UINT8 *)Value);
+      Status   = SetSecureBootConfig (KeyIndex);
+      DEBUG ((DEBUG_INFO, "INFO %a - SetSecureBootConfig(%d) = %r\n", __FUNCTION__, KeyIndex, Status));
     }
-  } else if (MS_SB_CONFIG_NONE == *((UINT8 *)Value)) {
+  } else if (MU_SB_CONFIG_NONE == *((UINT8 *)Value)) {
     Status = DeleteSecureBootVariables ();
     DEBUG ((DEBUG_INFO, "INFO %a - DeleteSecureBootVariables() = %r\n", __FUNCTION__, Status));
   } else {

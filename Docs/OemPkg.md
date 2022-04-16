@@ -108,7 +108,7 @@ boot from a USB or other device.
 **MsBootPolicyLib** implements the desired boot behavior when no UEFI boot options are present (or
 they failed) and a alternate boot has been requested (ex. booting from USB).
 
-**MsSecureBootModeSettingDxeLib** sets and gets the Secure Boot mode value during the
+**MsSecureBootModeSettingLib** sets and gets the Secure Boot mode value during the
 [DXE](https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface#DXE_-_Driver_Execution_Environment)
 phase of execution.
 
