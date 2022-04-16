@@ -10,6 +10,7 @@
 #include "FrontPageUi.h"
 
 #include <PiDxe.h>          // This has to be here so Protocol/FirmwareVolume2.h doesn't puke errors.
+#include <UefiSecureBoot.h>
 
 #include <Guid/GlobalVariable.h>
 #include <Guid/ImageAuthentication.h>
@@ -37,7 +38,9 @@
 #include <Library/UefiRuntimeServicesTableLib.h>
 #include <Library/MsColorTableLib.h>
 #include <Library/SwmDialogsLib.h>
-#include <Library/MsSecureBootLib.h>
+#include <Library/SecureBootVariableLib.h>
+#include <Library/MuSecureBootKeySelectorLib.h>
+#include <Library/SecureBootKeyStoreLib.h>
 #include <Library/PasswordPolicyLib.h>
 
 #include <Settings/DfciSettings.h>
@@ -48,6 +51,8 @@ extern BOOLEAN                         mResetRequired;
 extern DFCI_SETTING_ACCESS_PROTOCOL    *mSettingAccess;
 extern UINTN                           mAuthToken;
 extern EDKII_VARIABLE_POLICY_PROTOCOL  *mVariablePolicyProtocol;
+extern SECURE_BOOT_PAYLOAD_INFO        *mSecureBootKeys;
+extern UINT8                           mSecureBootKeysCount;
 
 STATIC
 EFI_STATUS
@@ -507,12 +512,13 @@ HandleSecureBootChange (
 {
   EFI_STATUS          Status;
   CHAR16              *DialogTitleBarText, *DialogCaptionText, *DialogBodyText;
-  CHAR16              *Options[MS_SB_CONFIG_COUNT];
+  CHAR16              **Options = NULL;
   SWM_MB_RESULT       SwmResult;
   UINTN               SelectedIndex;
   UINT8               IndexSetValue;
-  DFCI_SETTING_FLAGS  Flags        = 0;
-  UINTN               OptionsCount = MS_SB_CONFIG_COUNT;
+  UINT8               Index;
+  DFCI_SETTING_FLAGS  Flags = 0;
+  UINTN               OptionsCount;
 
   //
   // Load UI dialog strings.
@@ -520,11 +526,19 @@ HandleSecureBootChange (
   DialogCaptionText  = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SB_CONFIG_CAPTION), NULL);
   DialogBodyText     = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SB_CONFIG_BODY), NULL);
 
+  OptionsCount = mSecureBootKeysCount + 1;
+  Options      = AllocatePool (OptionsCount * sizeof (CHAR16 *));
+  if (Options == NULL) {
+    return EFI_OUT_OF_RESOURCES;
+  }
+
   //
   // Load UI option strings.
-  Options[MS_SB_CONFIG_MS_ONLY] = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SEC_SB_MS_ONLY_CONFIG_TEXT), NULL);
-  Options[MS_SB_CONFIG_MS_3P]   = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SEC_SB_MS_PLUS_CONFIG_TEXT), NULL);
-  Options[MS_SB_CONFIG_NONE]    = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_GENERIC_TEXT_NONE), NULL);
+  for (Index = 0; Index < mSecureBootKeysCount; Index++) {
+    Options[Index] = (CHAR16 *)mSecureBootKeys[Index].SecureBootKeyName;
+  }
+
+  Options[mSecureBootKeysCount] = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_GENERIC_TEXT_NONE), NULL);
 
   //
   // Display the dialog to the user.
@@ -543,6 +557,10 @@ HandleSecureBootChange (
   // If the form was submitted, process the update.
   if (!EFI_ERROR (Status) && (SWM_MB_IDOK == SwmResult) && !EFI_ERROR (SafeUintnToUint8 (SelectedIndex, &IndexSetValue))) {
     mVariablePolicyProtocol->DisableVariablePolicy ();
+
+    if (IndexSetValue == mSecureBootKeysCount) {
+      IndexSetValue = MU_SB_CONFIG_NONE;
+    }
 
     Status = mSettingAccess->Set (
                                mSettingAccess,
@@ -586,6 +604,10 @@ HandleSecureBootChange (
   //                  This is to account for possible edge cases in the suspension of VariablePolicy enforcement.
   mResetRequired = TRUE;
 
+  if (Options != NULL) {
+    FreePool (Options);
+  }
+
   return Status;
 }
 
@@ -614,7 +636,7 @@ UpdateSecureBootStatusStrings (
 
   //
   // Determine whether SecureBoot is enabled.
-  IsEnabled = IsSecureBootEnable ();
+  IsEnabled = IsSecureBootEnabled ();
 
   //
   // If enabled, determine the current config.
@@ -625,12 +647,12 @@ UpdateSecureBootStatusStrings (
 
     // Determine the ConfigSubstring.
     CurrentConfig = GetCurrentSecureBootConfig ();
-    if (MS_SB_CONFIG_MS_ONLY == CurrentConfig) {
-      ConfigSubstring = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SEC_SB_MS_ONLY_CONFIG_TEXT), NULL);
-    } else if (MS_SB_CONFIG_MS_3P == CurrentConfig) {
-      ConfigSubstring = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SEC_SB_MS_PLUS_CONFIG_TEXT), NULL);
-    } else {
+    if (MU_SB_CONFIG_NONE == CurrentConfig) {
+      ConfigSubstring = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_GENERIC_TEXT_NONE), NULL);
+    } else if (mSecureBootKeysCount <= CurrentConfig) {
       ConfigSubstring = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SEC_SB_CUSTOM_CONFIG_TEXT), NULL);
+    } else {
+      ConfigSubstring = (CHAR16 *)mSecureBootKeys[CurrentConfig].SecureBootKeyName;
     }
 
     UnicodeSPrint (

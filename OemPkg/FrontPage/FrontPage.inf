@@ -36,6 +36,7 @@
   OemPkg/OemPkg.dec
   DfciPkg/DfciPkg.dec
   MsWheaPkg/MsWheaPkg.dec
+  SecurityPkg/SecurityPkg.dec
 
 [LibraryClasses]
   BaseLib
@@ -57,7 +58,9 @@
   MsNVBootReasonLib
   GraphicsConsoleHelperLib
   SwmDialogsLib
-  MsSecureBootLib
+  SecureBootVariableLib
+  MuSecureBootKeySelectorLib
+  SecureBootKeyStoreLib
   SafeIntLib
 
 [Guids]
@@ -69,6 +72,7 @@
   gFrontPageResetGuid                           ## CONSUMES ## Used to signal a specific reset type, in case anyone wants to handle it.
   gDfciMenuFormsetGuid                          ## CONSUMES
   gHwhMenuFormsetGuid                           ## CONSUMES
+  gMuVarPolicyDxePhaseGuid                      ## CONSUMES
 
 [Protocols]
   gEfiSmbiosProtocolGuid                        ## PROTOCOL CONSUMES

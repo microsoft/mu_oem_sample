@@ -8,6 +8,7 @@
 **/
 
 #include <Uefi.h>
+#include <UefiSecureBoot.h>
 #include "FrontPage.h"
 #include "String.h"
 #include "FrontPageUi.h"
@@ -22,6 +23,7 @@
 #include <Guid/MsNVBootReason.h>
 #include <Guid/DfciMenuGuid.h>
 #include <Guid/HwhMenuGuid.h>
+#include <Guid/ImageAuthentication.h>
 
 #include <Pi/PiFirmwareFile.h>
 
@@ -50,7 +52,9 @@
 #include <Library/ResetUtilityLib.h>
 #include <Library/MsColorTableLib.h>
 #include <Library/MsNVBootReasonLib.h>
-#include <Library/MsSecureBootLib.h>
+#include <Library/SecureBootVariableLib.h>
+#include <Library/MuSecureBootKeySelectorLib.h>
+#include <Library/SecureBootKeyStoreLib.h>
 #include <Library/SwmDialogsLib.h>
 
 #include <MsDisplayEngine.h>
@@ -85,6 +89,8 @@ DFCI_AUTHENTICATION_PROTOCOL     *mAuthProtocol               = NULL;
 EFI_HII_CONFIG_ROUTING_PROTOCOL  *mHiiConfigRouting;
 DFCI_SETTING_ACCESS_PROTOCOL     *mSettingAccess;
 DFCI_AUTH_TOKEN                  mAuthToken;
+SECURE_BOOT_PAYLOAD_INFO         *mSecureBootKeys     = NULL;
+UINT8                            mSecureBootKeysCount = 0;
 
 extern EFI_HII_HANDLE  gStringPackHandle;
 extern EFI_GUID        gMsEventMasterFrameNotifyGroupGuid;
@@ -1524,6 +1530,12 @@ UefiMain (
   if (EFI_ERROR (Status)) {
     ASSERT_EFI_ERROR (Status);
     DEBUG ((DEBUG_ERROR, "%a Couldn't locate system setting access protocol\n", __FUNCTION__));
+  }
+
+  Status = GetPlatformKeyStore (&mSecureBootKeys, &mSecureBootKeysCount);
+  if (EFI_ERROR (Status)) {
+    ASSERT_EFI_ERROR (Status);
+    DEBUG ((DEBUG_ERROR, "%a Couldn't fetch platform key store %r!\n", __FUNCTION__, Status));
   }
 
   // Force-connect all controllers.
