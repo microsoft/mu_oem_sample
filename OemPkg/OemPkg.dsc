@@ -135,6 +135,7 @@
   OemPkg/Library/DfciUiSupportLib/DfciUiSupportLib.inf
   OemPkg/Library/DfciGroupLib/DfciGroups.inf
   OemPkg/Library/DfciDeviceIdSupportLib/DfciDeviceIdSupportLib.inf
+  OemPkg/Library/SecureBootKeyStoreLibOem/SecureBootKeyStoreLibOem.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
 
 [Components.IA32]
