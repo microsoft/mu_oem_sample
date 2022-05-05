@@ -281,7 +281,7 @@ It will ASSERT() if one of these operations fails and it will always return EFI_
 **/
 EFI_STATUS
 EFIAPI
-MsSecureBootModeSettingDxeLibConstructor (
+MsSecureBootModeSettingLibConstructor (
   IN EFI_HANDLE        ImageHandle,
   IN EFI_SYSTEM_TABLE  *SystemTable
   )
