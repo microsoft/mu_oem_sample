@@ -4,8 +4,20 @@
 # Copyright (c) Microsoft Corporation.
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
-# MU_CHANGE [BEGIN]
+
+resources:
+  repositories:
+    - repository: mu_devops
+      type: github
+      endpoint: microsoft
+      name: microsoft/mu_devops
+      ref: main
+
 trigger:
+- dev/*
+- release/*
+
+pr:
 - dev/*
 - release/*
 
@@ -18,14 +30,14 @@ schedules:
     - release/*
   always: true          # Always build, even if no changes
 
-pr:
-- dev/*
-- release/*
-# MU_CHANGE [END]
-
 jobs:
-- template: templates/pr-gate-build-job.yml
+- template: Jobs/PrGate.yml@mu_devops
   parameters:
-    tool_chain_tag: 'VS2022'
-    vm_image: 'windows-2022'
-    arch_list: "IA32,X64"
+    arch_list: IA32,X64
+    do_ci_build: true
+    do_ci_setup: true
+    do_non_ci_setup: true
+    packages: OemPkg
+    target_list: DEBUG,RELEASE,NO-TARGET,NOOPT
+    tool_chain_tag: VS2022
+    vm_image: windows-2022
