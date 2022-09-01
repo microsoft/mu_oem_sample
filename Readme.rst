@@ -5,7 +5,7 @@ Project Mu Oem Sample Repository
 ============================= ================= =============== ===================
  Host Type & Toolchain        Build Status      Test Status     Code Coverage
 ============================= ================= =============== ===================
-Windows_VS2019_               |WindowsCiBuild|  |WindowsCiTest| |WindowsCiCoverage|
+Windows_VS_                   |WindowsCiBuild|  |WindowsCiTest| |WindowsCiCoverage|
 Ubuntu_GCC5_                  |UbuntuCiBuild|   |UbuntuCiTest|  |UbuntuCiCoverage|
 ============================= ================= =============== ===================
 
@@ -73,7 +73,7 @@ Copyright & License
 
 .. CoreCI
 
-.. _Windows_VS2019: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=47&&branchName=release%2F202202
+.. _Windows_VS: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=47&&branchName=release%2F202202
 .. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Oem%20Sample%20CI%20VS2019?branchName=release%2F202202
 .. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/47.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
