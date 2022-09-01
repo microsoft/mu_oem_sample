@@ -74,12 +74,12 @@ Copyright & License
 .. CoreCI
 
 .. _Windows_VS: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=47&&branchName=release%2F202202
-.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Oem%20Sample%20CI%20VS2019?branchName=release%2F202202
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/OEM%20Sample/Mu%20OEM%20Sample%20-%20CI%20-%20Windows%20VS?repoName=microsoft%2Fmu_oem_sample&branchName=release%2F202202
 .. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/47.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
 .. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=48&&branchName=release%2F202202
-.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/Mu%20Oem%20Sample%20CI%20Ubuntu%20GCC5?branchName=release%2F202202
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/OEM%20Sample/Mu%20OEM%20Sample%20-%20CI%20-%20GCC5?repoName=microsoft%2Fmu_oem_sample&branchName=release%2F202202
 .. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/48.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
