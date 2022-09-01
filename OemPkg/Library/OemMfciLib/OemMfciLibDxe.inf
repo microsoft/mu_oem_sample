@@ -1,0 +1,42 @@
+## @file OemMfciLibDxe.inf
+#
+#  MFCI based library instance for system mode related functions for
+#  configuration modules.
+#
+#  Copyright (c) Microsoft Corporation.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+
+[Defines]
+  INF_VERSION         = 0x00010017
+  BASE_NAME           = OemMfciLibDxe
+  FILE_GUID           = 484BDBBF-9589-4CCE-996F-BB22618055EB
+  VERSION_STRING      = 1.0
+  MODULE_TYPE         = DXE_DRIVER
+  LIBRARY_CLASS       = OemMfciLib
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = ANY
+#
+
+[Sources]
+  OemMfciLibDxe.c
+
+[LibraryClasses]
+  UefiBootServicesTableLib
+  DebugLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MfciPkg/MfciPkg.dec
+  OemPkg/OemPkg.dec
+
+[Protocols]
+  gMfciProtocolGuid         ## CONSUMES
+
+[Depex]
+  gMfciProtocolGuid

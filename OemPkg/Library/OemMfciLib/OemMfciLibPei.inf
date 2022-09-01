@@ -1,0 +1,42 @@
+## @file OemMfciLibPei.inf
+#
+#  MFCI based library instance for system mode related functions for
+#  configuration modules.
+#
+#  Copyright (c) Microsoft Corporation.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+##
+
+
+[Defines]
+  INF_VERSION         = 0x00010017
+  BASE_NAME           = OemMfciLibPei
+  FILE_GUID           = 7822FA17-4EFA-4BFB-8CB5-CD08F0C44408
+  VERSION_STRING      = 1.0
+  MODULE_TYPE         = PEIM
+  LIBRARY_CLASS       = OemMfciLib
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = ANY
+#
+
+[Sources]
+  OemMfciLibPei.c
+
+[LibraryClasses]
+  PeiServicesLib
+  DebugLib
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MfciPkg/MfciPkg.dec
+  OemPkg/OemPkg.dec
+
+[Ppis]
+  gMfciPpiGuid        ## CONSUMES
+
+[Depex]
+  gMfciPpiGuid

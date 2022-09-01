@@ -20,6 +20,14 @@
   #
   PasswordPolicyLib|Include/Library/PasswordPolicyLib.h
 
+  ## @libraryclass Provides the abstracted MFCI policy query function
+  #
+  OemMfciLib|Include/Library/OemMfciLib.h
+
+  ## @libraryclass Provides the abstracted MFCI policy query and notification registration function
+  #
+  OemMfciDxeLib|Include/Library/OemMfciDxeLib.h
+
 [Guids]
   # {B20F1063-8C75-4A83-BFE0-969EFB5AF0AA}
   gOemPkgTokenSpaceGuid = { 0xB20F1063, 0x8C75, 0x4A83, { 0xBF, 0xE0, 0x96, 0x9E, 0xFB, 0x5A, 0xF0, 0xAA } }

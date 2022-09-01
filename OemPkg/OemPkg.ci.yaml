@@ -25,7 +25,8 @@
             "SecurityPkg/SecurityPkg.dec",
             "CryptoPkg/CryptoPkg.dec",
             "OemPkg/OemPkg.dec",
-            "MsWheaPkg/MsWheaPkg.dec"
+            "MsWheaPkg/MsWheaPkg.dec",
+            "MfciPkg/MfciPkg.dec"
         ],
         "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
             "MdePkg/MdePkg.dec",
