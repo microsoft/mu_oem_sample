@@ -1259,7 +1259,7 @@ ExtractConfig (
     return EFI_UNSUPPORTED;
   }
 
-  DEBUG ((DEBUG_INFO, "%a - Request=%s\n", __FUNCTION__));
+  DEBUG ((DEBUG_INFO, "%a - Request=%s\n", __FUNCTION__, Request));
   DEBUG ((DEBUG_INFO, "%s", Request));
   DEBUG ((DEBUG_INFO, "\n"));
 

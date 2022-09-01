@@ -449,7 +449,7 @@ UpdateFormWithFirmwareVersions (
           goto FmpCleanUp;
         }
       } else {
-        DEBUG ((DEBUG_ERROR, "%a - FMP ImageIdName is null\n"));
+        DEBUG ((DEBUG_ERROR, "%a - FMP ImageIdName is null\n", __FUNCTION__));
       }
 
       if (FmpImageInfoBuf->VersionName != NULL) {
@@ -458,7 +458,7 @@ UpdateFormWithFirmwareVersions (
           goto FmpCleanUp;
         }
       } else {
-        DEBUG ((DEBUG_ERROR, "%a - FMP VersionName is null\n"));
+        DEBUG ((DEBUG_ERROR, "%a - FMP VersionName is null\n", __FUNCTION__));
       }
 
       // Create a Subtitle OpCode to group the Firmware version "key-value" pair that follows.
@@ -1785,10 +1785,10 @@ GetAuthToken (
 
   if (PasswordBuffer != NULL) {
     Status = mAuthProtocol->AuthWithPW (mAuthProtocol, PasswordBuffer, StrLen (PasswordBuffer), &mAuthToken);
-    DEBUG ((DEBUG_INFO, "%a Auth Token Acquired %x\n", __FUNCTION__, mAuthToken, Status));
+    DEBUG ((DEBUG_INFO, "%a Auth Token Acquired %x- %r\n", __FUNCTION__, mAuthToken, Status));
   } else {
     Status = mAuthProtocol->AuthWithPW (mAuthProtocol, NULL, 0, &mAuthToken);
-    DEBUG ((DEBUG_INFO, "%a Auth Token Acquired with NULL Password %x\n", __FUNCTION__, mAuthToken, Status));
+    DEBUG ((DEBUG_INFO, "%a Auth Token Acquired with NULL Password %x - %r\n", __FUNCTION__, mAuthToken, Status));
   }
 
   if (!EFI_ERROR (Status) && (mAuthToken != DFCI_AUTH_TOKEN_INVALID)) {

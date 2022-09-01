@@ -77,7 +77,7 @@ DfciUiDisplayAuthDialog (
   if (!EFI_ERROR (Status)) {
     if (*Result == DFCI_MB_IDOK) {
       if (NULL == ThumbprintFromUser) {
-        DEBUG ((DEBUG_ERROR, "%a: Failed to get Thumbprint from Dialog"));
+        DEBUG ((DEBUG_ERROR, "%a: Failed to get Thumbprint from Dialog\n", __FUNCTION__));
         *Result = DFCI_MB_IDTRYAGAIN;
         ASSERT (ThumbprintFromUser != NULL);
       } else {
