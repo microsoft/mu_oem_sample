@@ -1,5 +1,5 @@
 ## @file
-# Azure Pipeline build file for a build using ubuntu and GCC5
+# Azure Pipeline build file for a build using ubuntu and GCC
 #
 # Copyright (c) Microsoft Corporation.
 # Copyright (c) 2020, Hewlett Packard Enterprise Development LP. All rights reserved.<BR>
@@ -14,27 +14,14 @@ resources:
       name: microsoft/mu_devops
       ref: main
 
-trigger:
-- dev/*
-- release/*
-
-pr:
-- dev/*
-- release/*
-
-schedules:
-- cron: "30 9 * * 0,3"  # Sun/Wed at 2:30AM Pacific
-  displayName: Sun/Wed Build
-  branches:
-    include:
-    - dev/*
-    - release/*
-  always: true          # Always build, even if no changes
+variables:
+- group: architectures-arm-64-x86-64
+- group: tool-chain-ubuntu-gcc
 
 jobs:
 - template: Jobs/PrGate.yml@mu_devops
   parameters:
-    arch_list: IA32,X64,ARM,AARCH64
+    arch_list: $(arch_list)
     do_ci_build: true
     do_ci_setup: true
     do_non_ci_setup: true
@@ -43,6 +30,6 @@ jobs:
       displayName: Install Windows Resource Compiler for Linux
     packages: OemPkg
     target_list: DEBUG,RELEASE,NO-TARGET,NOOPT
-    tool_chain_tag: GCC5
-    vm_image: ubuntu-latest
+    tool_chain_tag: $(tool_chain_tag)
+    vm_image: $(vm_image)
 
