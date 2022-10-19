@@ -16,11 +16,13 @@ resources:
 
 trigger:
 - dev/*
-- release/*
+- release/202208
+- release/202202
 
 pr:
 - dev/*
-- release/*
+- release/202208
+- release/202202
 
 schedules:
 - cron: "30 9 * * 0,3"  # Sun/Wed at 2:30AM Pacific
@@ -28,7 +30,8 @@ schedules:
   branches:
     include:
     - dev/*
-    - release/*
+    - release/202208
+    - release/202202
   always: true          # Always build, even if no changes
 
 jobs:
