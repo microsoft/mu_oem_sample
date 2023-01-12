@@ -51,7 +51,7 @@ SecureBootModeGetDefault (
   }
 
   if (0 != AsciiStrnCmp (This->Id, DFCI_SETTING_ID__SECURE_BOOT_KEYS_ENUM, DFCI_MAX_ID_LEN)) {
-    DEBUG ((DEBUG_ERROR, "Securebootmode was called with incorrect Provider Id (%a)\n", This->Id));
+    DEBUG ((DEBUG_ERROR, "%a was called with incorrect Provider Id (%a)\n", __FUNCTION__, This->Id));
     return EFI_UNSUPPORTED;
   }
 
@@ -83,7 +83,7 @@ SecureBootModeGet (
   }
 
   if (0 != AsciiStrnCmp (This->Id, DFCI_SETTING_ID__SECURE_BOOT_KEYS_ENUM, DFCI_MAX_ID_LEN)) {
-    DEBUG ((DEBUG_ERROR, "TpmEnableGet was called with incorrect Provider Id (%a)\n", This->Id));
+    DEBUG ((DEBUG_ERROR, "%a was called with incorrect Provider Id (%a)\n", __FUNCTION__, This->Id));
     return EFI_UNSUPPORTED;
   }
 
@@ -129,7 +129,7 @@ SecureBootModeSet (
   }
 
   if (0 != AsciiStrnCmp (This->Id, DFCI_SETTING_ID__SECURE_BOOT_KEYS_ENUM, DFCI_MAX_ID_LEN)) {
-    DEBUG ((DEBUG_ERROR, "TpmEnableSet was called with incorrect Provider Id (%a)\n", This->Id));
+    DEBUG ((DEBUG_ERROR, "%a was called with incorrect Provider Id (%a)\n", __FUNCTION__, This->Id));
     return EFI_UNSUPPORTED;
   }
 
