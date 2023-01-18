@@ -26,7 +26,8 @@
             "CryptoPkg/CryptoPkg.dec",
             "OemPkg/OemPkg.dec",
             "MsWheaPkg/MsWheaPkg.dec",
-            "MfciPkg/MfciPkg.dec"
+            "MfciPkg/MfciPkg.dec",
+            "ShellPkg/ShellPkg.dec"
         ],
         "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
             "MdePkg/MdePkg.dec",
@@ -72,6 +73,8 @@
             "PCINFO",
             "MFRAME",
             "Passw",         # Partial string for password name. Actual name is Passw0rd.
+            "OEM's",
+            "Bootxxxx",
             "SECUREBOOT"
         ],
         "AdditionalIncludePaths": [] # Additional paths to spell check relative to package root (wildcards supported)
