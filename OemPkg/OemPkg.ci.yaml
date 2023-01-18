@@ -72,6 +72,7 @@
             "PCINFO",
             "MFRAME",
             "Passw",         # Partial string for password name. Actual name is Passw0rd.
+            "OEM's",
             "SECUREBOOT"
         ],
         "AdditionalIncludePaths": [] # Additional paths to spell check relative to package root (wildcards supported)
