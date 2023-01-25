@@ -148,6 +148,7 @@
   OemPkg/BootMenu/BootMenu.inf
   OemPkg/Override/MdeModulePkg/Universal/BootManagerPolicyDxe/BootManagerPolicyDxe.inf
   OemPkg/Library/DeviceBootManagerLib/DeviceBootManagerLib.inf
+  OemPkg/Library/UpdateFacsHardwareSignatureLib/UpdateFacsHardwareSignatureLib.inf
 
 [BuildOptions]
 #force deprecated interfaces off
