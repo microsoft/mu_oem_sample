@@ -190,6 +190,11 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                 "Path": "Common/MU_TIANO",
                 "Url": "https://github.com/Microsoft/mu_tiano_plus.git",
                 "Branch": "release/202208"
+            },
+            {
+                "Path": "MU_FEATURE_DFCI",
+                "Url": "https://github.com/microsoft/mu_feature_dfci.git",
+                "Branch": "main"
             }
         ]
 
