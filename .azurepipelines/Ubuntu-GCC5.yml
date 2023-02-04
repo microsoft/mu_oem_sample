@@ -17,7 +17,7 @@ resources:
       type: github
       endpoint: microsoft
       name: microsoft/mu_devops
-      ref: refs/tags/v1.4.2
+      ref: refs/tags/v2.0.1
 
 variables:
 - group: architectures-arm-64-x86-64
@@ -31,7 +31,7 @@ jobs:
     do_ci_setup: true
     do_non_ci_setup: true
     extra_steps:
-    - script: sudo microdnf install --assumeyes mingw64-gcc
+    - script: sudo dnf install --assumeyes mingw64-gcc
       displayName: Install Windows Resource Compiler for Linux
     packages: OemPkg
     target_list: DEBUG,RELEASE,NO-TARGET,NOOPT
