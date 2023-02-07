@@ -82,6 +82,8 @@
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
   PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf
 
+  PlatformConfigDataLib|OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
+
 [LibraryClasses.IA32]
   MsUiThemeLib|MsGraphicsPkg/Library/MsUiThemeLib/Pei/MsUiThemeLib.inf
 
@@ -96,6 +98,7 @@
   BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
 !endif
 
+[LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
 
 [LibraryClasses.common.PEIM]
@@ -138,7 +141,9 @@
   OemPkg/Library/SecureBootKeyStoreLibOem/SecureBootKeyStoreLibOem.inf
   OemPkg/Library/OemMfciLib/OemMfciLibPei.inf
   OemPkg/Library/OemMfciLib/OemMfciLibDxe.inf
+  OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
+  OemPkg/OemConfigPolicyCreatorPei/OemConfigPolicyCreatorPei.inf
 
 [Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
