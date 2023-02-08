@@ -222,10 +222,14 @@ OemConfigPolicyCreatorPeiEntry (
     return Status;
   }
 
+  DEBUG ((DEBUG_ERROR, "OSDDEBUG 1\n"));
+
   // Publish immutable config policy
   // Policy Service will publish the  gOemConfigPolicyPpiGuid so that the Silicon Policy Creator can consume our
   // Config Policy and map it to Silicon Policies
   Status = PolPpi->SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, ConfPolicy, ConfPolicySize);
+
+  DEBUG ((DEBUG_ERROR, "OSDDEBUG 2\n"));
 
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a Failed to set config policy! Status (%r)\n", __FUNCTION__, Status));
@@ -233,7 +237,9 @@ OemConfigPolicyCreatorPeiEntry (
   }
 
   // Policy Service copies the policy, so we can free this memory
-  FreePool (ConfPolicy); 
+  FreePool (ConfPolicy);
+
+  DEBUG ((DEBUG_ERROR, "OSDDEBUG 3\n"));
 
   return Status;
 }
