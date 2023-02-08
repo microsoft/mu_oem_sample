@@ -30,8 +30,9 @@
   PlatformConfigDataLib
 
 [Ppis]
-  gPeiPolicyPpiGuid
-  gEfiPeiReadOnlyVariable2PpiGuid
+  gPeiPolicyPpiGuid                   ## CONSUMES
+  gEfiPeiReadOnlyVariable2PpiGuid     ## CONSUMES
+  gOemConfigPolicyPpiGuid             ## PRODUCES
 
 [Guids]
   gOemConfigPolicyGuid                # Guid that config policy is filed under

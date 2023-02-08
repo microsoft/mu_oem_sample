@@ -174,6 +174,8 @@ CreateConfPolicy (
     FreePool (UnicodeName);
   }
 
+  DEBUG ((DEBUG_ERROR, "%a ConfPolicy: %p *ConfPolicy: %p\n", __FUNCTION__, ConfPolicy, *ConfPolicy));
+
   return EFI_SUCCESS;
 }
 
@@ -210,15 +212,19 @@ OemConfigPolicyCreatorPeiEntry (
   // Oem can choose to do any Oem specific things to config here such as enforcing static only config or
   // selecting a configuration profile based on some criteria
 
-  Status = CreateConfPolicy (ConfPolicy, &ConfPolicySize);
+  Status = CreateConfPolicy (&ConfPolicy, &ConfPolicySize);
+
+  DEBUG ((DEBUG_ERROR, "%a ConfPolicy: %p Size: %d\n", __FUNCTION__, ConfPolicy, ConfPolicySize));
 
   if (EFI_ERROR (Status) || (ConfPolicy == NULL) || (ConfPolicySize == 0)) {
-    DEBUG ((DEBUG_ERROR, "%a CreateConfPolicy failed! Status (%r)", __FUNCTION__, Status));
+    DEBUG ((DEBUG_ERROR, "%a CreateConfPolicy failed! Status (%r)\n", __FUNCTION__, Status));
     ASSERT (FALSE);
     return Status;
   }
 
   // Publish immutable config policy
+  // Policy Service will publish the  gOemConfigPolicyPpiGuid so that the Silicon Policy Creator can consume our
+  // Config Policy and map it to Silicon Policies
   Status = PolPpi->SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, ConfPolicy, ConfPolicySize);
 
   if (EFI_ERROR (Status)) {
@@ -227,7 +233,7 @@ OemConfigPolicyCreatorPeiEntry (
   }
 
   // Policy Service copies the policy, so we can free this memory
-  FreePool (ConfPolicy);
+  FreePool (ConfPolicy); 
 
   return Status;
 }
