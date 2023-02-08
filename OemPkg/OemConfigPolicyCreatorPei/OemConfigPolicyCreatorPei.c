@@ -97,8 +97,8 @@ CreateConfPolicy (
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < NumKnobs; i++) {
     // NeededSize is sum of NameSize, ValueSize, size of the guid,
-    // size of the NameSize field, size of the DataSize field
-    NeededSize += gKnobData[i].NameSize + gKnobData[i].ValueSize + sizeof (EFI_GUID) + sizeof (UINT32) + sizeof (UINT32);
+    // size of the Unicode NameSize field, size of the DataSize field
+    NeededSize += (gKnobData[i].NameSize * 2) + gKnobData[i].ValueSize + sizeof (CONF_POLICY_ENTRY);
   }
 
   if (NeededSize > MAX_UINT16) {
@@ -119,13 +119,13 @@ CreateConfPolicy (
 
   // now go through and populate the Conf Policy
   for (i = 0; i < NumKnobs; i++) {
-    ((CONF_POLICY_ENTRY *)((CHAR8 *)*ConfPolicy + Offset))->NameSize      = gKnobData[i].NameSize;
+    UnicodeNameSize = gKnobData[i].NameSize * 2;
+    ((CONF_POLICY_ENTRY *)((CHAR8 *)*ConfPolicy + Offset))->NameSize      = UnicodeNameSize;
     ((CONF_POLICY_ENTRY *)((CHAR8 *)*ConfPolicy + Offset))->DataSize      = gKnobData[i].ValueSize;
     ((CONF_POLICY_ENTRY *)((CHAR8 *)*ConfPolicy + Offset))->NamespaceGuid = gKnobData[i].VendorNamespace;
     Offset                                                               += sizeof (CONF_POLICY_ENTRY);
 
     // convert ASCII name to Unicode
-    UnicodeNameSize = gKnobData[i].NameSize * 2;
     UnicodeName = AllocatePool (UnicodeNameSize);
     if (UnicodeName == NULL) {
       DEBUG((DEBUG_ERROR, "%a failed to allocate memory for unicode name string!\n", __FUNCTION__));
@@ -136,6 +136,10 @@ CreateConfPolicy (
     }
 
     AsciiStrToUnicodeStrS (gKnobData[i].Name, UnicodeName, gKnobData[i].NameSize);
+
+    DEBUG((DEBUG_ERROR, "OSDDEBUG: CacheValueAddress %p\n", gKnobData[i].CacheValueAddress));
+
+    DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");
 
     // check if value has been overridden in variable storage
     VarSize = gKnobData[i].ValueSize;
@@ -164,6 +168,8 @@ CreateConfPolicy (
       *ConfPolicySize = 0;
       return Status;
     }
+
+    DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");
 
     CopyMem ((CHAR8 *)*ConfPolicy + Offset, UnicodeName, UnicodeNameSize);
     Offset += UnicodeNameSize;
@@ -212,7 +218,7 @@ OemConfigPolicyCreatorPeiEntry (
   // Oem can choose to do any Oem specific things to config here such as enforcing static only config or
   // selecting a configuration profile based on some criteria
 
-  //Status = CreateConfPolicy (&ConfPolicy, &ConfPolicySize);
+  Status = CreateConfPolicy (&ConfPolicy, &ConfPolicySize);
 
   DEBUG ((DEBUG_ERROR, "%a ConfPolicy: %p Size: %d\n", __FUNCTION__, ConfPolicy, ConfPolicySize));
 
@@ -227,7 +233,7 @@ OemConfigPolicyCreatorPeiEntry (
   // Publish immutable config policy
   // Policy Service will publish the  gOemConfigPolicyPpiGuid so that the Silicon Policy Creator can consume our
   // Config Policy and map it to Silicon Policies
-  Status = PolPpi->SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, &ConfPolicySize, sizeof(ConfPolicySize));
+  Status = PolPpi->SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, ConfPolicy, ConfPolicySize);
 
   DEBUG ((DEBUG_ERROR, "OSDDEBUG 2\n"));
 
