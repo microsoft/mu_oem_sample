@@ -138,10 +138,11 @@ CreateConfPolicy (
     DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");
     ConfListPtr = ((UINT8 *)*ConfPolicy) + Offset;
 
-    Status = ConvertVariableEntryToVariableList (&VarListEntry, &ConfListPtr, &VarListSize);
+    VarListSize = NeededSize - Offset;
+    Status = ConvertVariableEntryToVariableList (&VarListEntry, ConfListPtr, &VarListSize);
 
     if (EFI_ERROR (Status)) {
-      DEBUG((DEBUG_ERROR, "%a failed to convert variable entry to var list!\n", __FUNCTION__));
+      DEBUG((DEBUG_ERROR, "%a failed to convert variable entry to var list! - %r\n", __FUNCTION__, Status));
       ASSERT (FALSE);
       FreePool (*ConfPolicy);
       return EFI_ABORTED;
