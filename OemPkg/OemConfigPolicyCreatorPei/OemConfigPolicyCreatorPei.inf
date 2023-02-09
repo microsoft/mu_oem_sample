@@ -21,6 +21,7 @@
 [Packages]
   MdePkg/MdePkg.dec
   PolicyServicePkg/PolicyServicePkg.dec
+  SetupDataPkg/SetupDataPkg.dec
   OemPkg/OemPkg.dec
 
 [LibraryClasses]
@@ -28,6 +29,7 @@
   PeiServicesLib
   DebugLib
   PlatformConfigDataLib
+  ConfigVariableListLib
 
 [Ppis]
   gPeiPolicyPpiGuid                   ## CONSUMES

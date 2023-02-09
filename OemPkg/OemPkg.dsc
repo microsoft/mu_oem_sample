@@ -83,6 +83,7 @@
   PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf
 
   PlatformConfigDataLib|OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
+  ConfigVariableListLib|SetupDataPkg/Library/ConfigVariableListLib/ConfigVariableListLib.inf
 
 [LibraryClasses.IA32]
   MsUiThemeLib|MsGraphicsPkg/Library/MsUiThemeLib/Pei/MsUiThemeLib.inf
