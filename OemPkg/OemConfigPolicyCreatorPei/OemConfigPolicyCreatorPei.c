@@ -15,6 +15,7 @@
 #include <Library/PeiServicesLib.h>
 #include <Library/DebugLib.h>
 #include <Library/MemoryAllocationLib.h>
+#include <Library/ConfigVariableListLib.h>
 
 typedef enum {
   KNOB_PowerOnPort0,
@@ -46,12 +47,6 @@ typedef struct {
 extern KNOB_DATA  gKnobData[];
 extern UINTN      gNumKnobs;
 
-typedef struct {
-  UINTN       NameSize;
-  UINTN       DataSize;
-  EFI_GUID    NamespaceGuid;
-} CONF_POLICY_ENTRY;
-
 /**
   Helper function to create config policy.
 
@@ -61,6 +56,7 @@ typedef struct {
   @retval EFI_SUCCESS           The configuration is translated to policy successfully.
   @retval EFI_OUT_OF_RESOURCES  Memory allocation failed.
   @retval EFI_NOT_READY         Variable Services were not found.
+  @retval EFI_ABORTED           Creating variable list failed.
   @retval Others                Other errors occurred when getting GFX policy.
 **/
 STATIC
@@ -79,7 +75,11 @@ CreateConfPolicy (
   EFI_PEI_READ_ONLY_VARIABLE2_PPI  *PPIVariableServices;
   UINTN                            VarSize;
   UINTN                            UnicodeNameSize = 0;
-  CHAR16                           *UnicodeName = NULL;
+  // get a buffer of the max name size
+  CHAR16                           UnicodeName[CONF_VAR_NAME_LEN];
+  CONFIG_VAR_LIST_ENTRY            VarListEntry;
+  UINTN                            VarListSize;
+  VOID                             *ConfListPtr;
 
   Status = PeiServicesLocatePpi (
              &gEfiPeiReadOnlyVariable2PpiGuid,
@@ -96,9 +96,9 @@ CreateConfPolicy (
 
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < NumKnobs; i++) {
-    // NeededSize is sum of NameSize, ValueSize, size of the guid,
-    // size of the Unicode NameSize field, size of the DataSize field
-    NeededSize += (gKnobData[i].NameSize * 2) + gKnobData[i].ValueSize + sizeof (CONF_POLICY_ENTRY);
+    // the var list will use the Unicode version of the name, gKnobData has the ASCII version
+    NeededSize += VAR_LIST_SIZE(gKnobData[i].NameSize * 2, gKnobData[i].ValueSize);
+    DEBUG ((DEBUG_ERROR, "OSDDEBUG NeededSize: %x\n", NeededSize));
   }
 
   if (NeededSize > MAX_UINT16) {
@@ -120,24 +120,14 @@ CreateConfPolicy (
   // now go through and populate the Conf Policy
   for (i = 0; i < NumKnobs; i++) {
     UnicodeNameSize = gKnobData[i].NameSize * 2;
-    ((CONF_POLICY_ENTRY *)((CHAR8 *)*ConfPolicy + Offset))->NameSize      = UnicodeNameSize;
-    ((CONF_POLICY_ENTRY *)((CHAR8 *)*ConfPolicy + Offset))->DataSize      = gKnobData[i].ValueSize;
-    ((CONF_POLICY_ENTRY *)((CHAR8 *)*ConfPolicy + Offset))->NamespaceGuid = gKnobData[i].VendorNamespace;
-    Offset                                                               += sizeof (CONF_POLICY_ENTRY);
-
-    // convert ASCII name to Unicode
-    UnicodeName = AllocatePool (UnicodeNameSize);
-    if (UnicodeName == NULL) {
-      DEBUG((DEBUG_ERROR, "%a failed to allocate memory for unicode name string!\n", __FUNCTION__));
-      ASSERT (FALSE);
-      FreePool (*ConfPolicy);
-      *ConfPolicySize = 0;
-      return EFI_OUT_OF_RESOURCES;
-    }
-
     AsciiStrToUnicodeStrS (gKnobData[i].Name, UnicodeName, gKnobData[i].NameSize);
 
-    DEBUG((DEBUG_ERROR, "OSDDEBUG: CacheValueAddress %p\n", gKnobData[i].CacheValueAddress));
+    VarListEntry.Name = UnicodeName;
+    VarListEntry.Guid = gKnobData[i].VendorNamespace;
+    // hardcoded for now
+    VarListEntry.Attributes = 7;
+    VarListEntry.Data = gKnobData[i].CacheValueAddress;
+    VarListEntry.DataSize = gKnobData[i].ValueSize;
 
     DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");
 
@@ -170,17 +160,31 @@ CreateConfPolicy (
     }
 
     DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");
+    ConfListPtr = ((UINT8 *)*ConfPolicy) + Offset;
 
-    CopyMem ((CHAR8 *)*ConfPolicy + Offset, UnicodeName, UnicodeNameSize);
-    Offset += UnicodeNameSize;
+    Status = ConvertVariableEntryToVariableList (&VarListEntry, &ConfListPtr, &VarListSize);
 
-    CopyMem ((CHAR8 *)*ConfPolicy + Offset, gKnobData[i].CacheValueAddress, gKnobData[i].ValueSize);
-    Offset += gKnobData[i].ValueSize;
+    if (EFI_ERROR (Status)) {
+      DEBUG((DEBUG_ERROR, "%a failed to convert variable entry to var list!\n", __FUNCTION__));
+      ASSERT (FALSE);
+      FreePool (*ConfPolicy);
+      return EFI_ABORTED;
+    }
 
-    FreePool (UnicodeName);
+    Offset += VarListSize;
   }
 
-  DEBUG ((DEBUG_ERROR, "%a ConfPolicy: %p *ConfPolicy: %p\n", __FUNCTION__, ConfPolicy, *ConfPolicy));
+  DUMP_HEX(DEBUG_ERROR, 0, *ConfPolicy, Offset, "OSDDEBUG: ");
+
+  if (Offset != NeededSize) {
+    // oops we messed up the math, may have corrupted memory...
+    DEBUG((DEBUG_ERROR, "%a expected ConfPolicy size %x does not match actual size %x!\n", __FUNCTION__, NeededSize, Offset));
+    ASSERT (Offset == NeededSize);
+    FreePool (*ConfPolicy);
+    return EFI_ABORTED;
+  }
+
+  DEBUG ((DEBUG_ERROR, "%a ConfPolicy: %p *ConfPolicy: %p ConfVarListPtr: %p &ConfListPtr: %p\n", __FUNCTION__, ConfPolicy, *ConfPolicy, ConfListPtr, &ConfListPtr));
 
   return EFI_SUCCESS;
 }
