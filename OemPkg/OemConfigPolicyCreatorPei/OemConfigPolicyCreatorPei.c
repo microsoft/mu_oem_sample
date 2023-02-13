@@ -16,33 +16,8 @@
 #include <Library/DebugLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Library/ConfigVariableListLib.h>
-
-typedef enum {
-  KNOB_PowerOnPort0,
-  KNOB_MAX
-} KNOB;
-
-typedef struct {
-  INTN    GetCount;
-  INTN    SetCount;
-} KNOB_STATISTICS;
-
-typedef BOOLEAN (KNOB_VALIDATION_FN)(
-  CONST VOID *
-  );
-
-typedef struct {
-  KNOB                  Knob;
-  CONST VOID            *DefaultValueAddress;
-  VOID                  *CacheValueAddress;
-  UINTN                 ValueSize;
-  CONST CHAR8           *Name;
-  UINTN                 NameSize;
-  EFI_GUID              VendorNamespace;
-  INTN                  Attributes;
-  KNOB_STATISTICS       Statistics;
-  KNOB_VALIDATION_FN    *Validator;
-} KNOB_DATA;
+#include <Library/ConfigKnobShimLib.h>
+#include <ConfigStdStructDefs.h>
 
 extern KNOB_DATA  gKnobData[];
 extern UINTN      gNumKnobs;
@@ -68,12 +43,9 @@ CreateConfPolicy (
 {
   EFI_STATUS  Status;
   UINT32                           i;
-  // NumKnobs is total knobs minus dummy KNOB_MAX at end
-  UINTN                            NumKnobs = gNumKnobs - 1;
   UINTN                            NeededSize = 0;
   UINTN                            Offset     = 0;
   EFI_PEI_READ_ONLY_VARIABLE2_PPI  *PPIVariableServices;
-  UINTN                            VarSize;
   UINTN                            UnicodeNameSize = 0;
   // get a buffer of the max name size
   CHAR16                           UnicodeName[CONF_VAR_NAME_LEN];
@@ -95,7 +67,7 @@ CreateConfPolicy (
   }
 
   // first figure out how much space we need to allocate for the ConfPolicy
-  for (i = 0; i < NumKnobs; i++) {
+  for (i = 0; i < gNumKnobs; i++) {
     // the var list will use the Unicode version of the name, gKnobData has the ASCII version
     NeededSize += VAR_LIST_SIZE(gKnobData[i].NameSize * 2, gKnobData[i].ValueSize);
     DEBUG ((DEBUG_ERROR, "OSDDEBUG NeededSize: %x\n", NeededSize));
@@ -118,7 +90,7 @@ CreateConfPolicy (
   *ConfPolicySize = (UINT16)NeededSize;
 
   // now go through and populate the Conf Policy
-  for (i = 0; i < NumKnobs; i++) {
+  for (i = 0; i < gNumKnobs; i++) {
     UnicodeNameSize = gKnobData[i].NameSize * 2;
     AsciiStrToUnicodeStrS (gKnobData[i].Name, UnicodeName, gKnobData[i].NameSize);
 
@@ -132,20 +104,15 @@ CreateConfPolicy (
     DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");
 
     // check if value has been overridden in variable storage
-    VarSize = gKnobData[i].ValueSize;
-    Status  = PPIVariableServices->GetVariable (
-                                     PPIVariableServices,
-                                     UnicodeName,
-                                     &gKnobData[i].VendorNamespace,
-                                     NULL,
-                                     &VarSize,
-                                     gKnobData[i].CacheValueAddress
-                                     );
+    Status = GetConfigKnobOverride (&gKnobData[i].VendorNamespace,
+                                    UnicodeName,
+                                    gKnobData[i].CacheValueAddress,
+                                    gKnobData[i].ValueSize);
 
     // if variable services fails other than failing to find the variable (it was not overidden)
     // or a size mismatch (stale data from a previous definition of the knob), we should fail
     // as we may be missing overidden knobs
-    if (EFI_ERROR (Status) && (Status != EFI_NOT_FOUND) && (Status != EFI_BUFFER_TOO_SMALL)) {
+    if (EFI_ERROR (Status) && (Status != EFI_NOT_FOUND) && (Status != EFI_BAD_BUFFER_SIZE)) {
       DEBUG ((
         DEBUG_ERROR,
         "%a variable services failed to find %a with status (%r)\n",
@@ -157,6 +124,15 @@ CreateConfPolicy (
       FreePool (*ConfPolicy);
       *ConfPolicySize = 0;
       return Status;
+    }
+
+    // Validate the value from flash meets the constraints of the knob
+    if (Status == EFI_SUCCESS && gKnobData[i].Validator != NULL) {
+      if (!gKnobData[i].Validator (gKnobData[i].CacheValueAddress)) {
+        // If it doesn't, we will set the value to the default value
+        DEBUG ((DEBUG_ERROR, "Config knob %a failed validation!\n", gKnobData[i].Name));
+        CopyMem (gKnobData[i].CacheValueAddress, gKnobData[i].DefaultValueAddress, gKnobData[i].ValueSize);
+      }
     }
 
     DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");

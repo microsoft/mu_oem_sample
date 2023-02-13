@@ -30,6 +30,7 @@
   DebugLib
   PlatformConfigDataLib
   ConfigVariableListLib
+  ConfigKnobShimLib
 
 [Ppis]
   gPeiPolicyPpiGuid                   ## CONSUMES

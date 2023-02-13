@@ -108,6 +108,7 @@
   PeiServicesTablePointerLib|MdePkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
   MemoryAllocationLib|MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf
+  ConfigKnobShimLib|SetupDataPkg/Library/ConfigKnobShimLib/ConfigKnobShimPeiLib/ConfigKnobShimPeiLib.inf
 ###############################################################
 #
 # Components Section - list of the modules and components that will be processed by compilation
