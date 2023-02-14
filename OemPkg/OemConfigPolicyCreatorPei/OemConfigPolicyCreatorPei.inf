@@ -28,7 +28,6 @@
   PeimEntryPoint
   PeiServicesLib
   DebugLib
-  PlatformConfigDataLib
   ConfigVariableListLib
   ConfigKnobShimLib
 

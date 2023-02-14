@@ -9,35 +9,11 @@
 **/
 
 #include <Uefi.h>
-
-typedef enum {
-  KNOB_PowerOnPort0,
-  KNOB_MAX
-} KNOB;
-
-typedef struct {
-  INTN GetCount;
-  INTN SetCount;
-} KNOB_STATISTICS;
-
-typedef BOOLEAN (KNOB_VALIDATION_FN)(CONST VOID *);
-
-typedef struct {
-  KNOB Knob;
-  CONST VOID * DefaultValueAddress;
-  VOID * CacheValueAddress;
-  UINTN ValueSize;
-  CONST CHAR8 * Name;
-  UINTN NameSize;
-  EFI_GUID VendorNamespace;
-  INTN Attributes;
-  KNOB_STATISTICS Statistics;
-  KNOB_VALIDATION_FN* Validator;
-} KNOB_DATA;
+#include <ConfigStdStructDefs.h>
 
 KNOB_DATA gKnobData[1] = {
   {
-    KNOB_MAX,
+    0,
     NULL,
     NULL,
     0,
@@ -50,4 +26,4 @@ KNOB_DATA gKnobData[1] = {
   }
 };
 
-UINTN gNumKnobs = 1;
+UINTN gNumKnobs = 0;

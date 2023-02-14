@@ -135,7 +135,6 @@ CreateConfPolicy (
       }
     }
 
-    DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");
     ConfListPtr = ((UINT8 *)*ConfPolicy) + Offset;
 
     VarListSize = NeededSize - Offset;
@@ -151,8 +150,6 @@ CreateConfPolicy (
     Offset += VarListSize;
   }
 
-  DUMP_HEX(DEBUG_ERROR, 0, *ConfPolicy, Offset, "OSDDEBUG: ");
-
   if (Offset != NeededSize) {
     // oops we messed up the math, may have corrupted memory...
     DEBUG((DEBUG_ERROR, "%a expected ConfPolicy size %x does not match actual size %x!\n", __FUNCTION__, NeededSize, Offset));
@@ -160,8 +157,6 @@ CreateConfPolicy (
     FreePool (*ConfPolicy);
     return EFI_ABORTED;
   }
-
-  DEBUG ((DEBUG_ERROR, "%a ConfPolicy: %p *ConfPolicy: %p ConfVarListPtr: %p &ConfListPtr: %p\n", __FUNCTION__, ConfPolicy, *ConfPolicy, ConfListPtr, &ConfListPtr));
 
   return EFI_SUCCESS;
 }
@@ -193,7 +188,7 @@ OemConfigPolicyCreatorPeiEntry (
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a Failed to locate Policy PPI - %r\n", __FUNCTION__, Status));
     ASSERT (FALSE);
-    return Status;
+    goto Exit;
   }
 
   // Oem can choose to do any Oem specific things to config here such as enforcing static only config or
@@ -201,32 +196,31 @@ OemConfigPolicyCreatorPeiEntry (
 
   Status = CreateConfPolicy (&ConfPolicy, &ConfPolicySize);
 
-  DEBUG ((DEBUG_ERROR, "%a ConfPolicy: %p Size: %d\n", __FUNCTION__, ConfPolicy, ConfPolicySize));
-
   if (EFI_ERROR (Status) || (ConfPolicy == NULL) || (ConfPolicySize == 0)) {
     DEBUG ((DEBUG_ERROR, "%a CreateConfPolicy failed! Status (%r)\n", __FUNCTION__, Status));
     ASSERT (FALSE);
-    return Status;
+    goto Exit;
   }
-
-  DEBUG ((DEBUG_ERROR, "OSDDEBUG 1\n"));
 
   // Publish immutable config policy
   // Policy Service will publish the  gOemConfigPolicyPpiGuid so that the Silicon Policy Creator can consume our
   // Config Policy and map it to Silicon Policies
   Status = PolPpi->SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, ConfPolicy, ConfPolicySize);
 
-  DEBUG ((DEBUG_ERROR, "OSDDEBUG 2\n"));
-
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a Failed to set config policy! Status (%r)\n", __FUNCTION__, Status));
     ASSERT (FALSE);
+    goto Exit;
   }
 
+Exit:
   // Policy Service copies the policy, so we can free this memory
-  FreePool (ConfPolicy);
+  if (ConfPolicy != NULL) {
+    FreePool (ConfPolicy);
+  }
 
-  DEBUG ((DEBUG_ERROR, "OSDDEBUG 3\n"));
-
-  return Status;
+  // return success even in failure scenarios as returning a failure from an entry point can cause the image to be
+  // unloaded. In this way depend modules can come up and run their own failure scenarios for not finding the config
+  // policy
+  return EFI_SUCCESS;
 }

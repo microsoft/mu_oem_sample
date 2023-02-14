@@ -82,7 +82,6 @@
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
   PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf
 
-  PlatformConfigDataLib|OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
   ConfigVariableListLib|SetupDataPkg/Library/ConfigVariableListLib/ConfigVariableListLib.inf
 
 [LibraryClasses.IA32]
@@ -143,9 +142,12 @@
   OemPkg/Library/SecureBootKeyStoreLibOem/SecureBootKeyStoreLibOem.inf
   OemPkg/Library/OemMfciLib/OemMfciLibPei.inf
   OemPkg/Library/OemMfciLib/OemMfciLibDxe.inf
-  OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
-  OemPkg/OemConfigPolicyCreatorPei/OemConfigPolicyCreatorPei.inf
+  OemPkg/OemConfigPolicyCreatorPei/OemConfigPolicyCreatorPei.inf {
+    <LibraryClasses>
+      # platform data lib
+      NULL|OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
+  }
 
 [Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
