@@ -223,7 +223,7 @@ OemConfigPolicyCreatorPeiEntry (
   }
 
   // Publish immutable config policy
-  // Policy Service will publish the  gOemConfigPolicyPpiGuid so that the Silicon Policy Creator can consume our
+  // Policy Service will publish the gOemConfigPolicyGuid so that the Silicon Policy Creator can consume our
   // Config Policy and map it to Silicon Policies
   Status = PolPpi->SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, ConfPolicy, ConfPolicySize);
 
