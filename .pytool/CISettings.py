@@ -198,8 +198,8 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
             },
             {
                 "Path": "MU_FEATURE_CONFIG",
-                "Url": "https://github.com/microsoft/mu_feature_config.git",
-                "Branch": "main"
+                "Url": "https://github.com/kuqin12/mu_feature_config.git",
+                "Branch": "test_new_model_2"
             }
         ]
 

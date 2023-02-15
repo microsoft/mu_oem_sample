@@ -25,10 +25,9 @@
 [Sources]
   PlatformConfigDataNullLib.c
 
-[LibraryClasses]
-
 [Packages]
   MdePkg/MdePkg.dec
+  SetupDataPkg/SetupDataPkg.dec
 
 [Depex]
   # This library is intended to have no dependencies and only carry data

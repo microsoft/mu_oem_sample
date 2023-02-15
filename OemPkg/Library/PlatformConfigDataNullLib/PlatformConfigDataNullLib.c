@@ -11,19 +11,6 @@
 #include <Uefi.h>
 #include <ConfigStdStructDefs.h>
 
-KNOB_DATA gKnobData[1] = {
-  {
-    0,
-    NULL,
-    NULL,
-    0,
-    NULL,
-    0,
-    {0,0,0,{0,0,0,0,0,0,0,0}},
-    0,
-    {0, 0},
-    NULL
-  }
-};
+KNOB_DATA  gKnobData = { 0 };
 
-UINTN gNumKnobs = 0;
+UINTN  gNumKnobs = 0;

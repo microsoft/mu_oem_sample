@@ -20,6 +20,7 @@
 
 [Packages]
   MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
   PolicyServicePkg/PolicyServicePkg.dec
   SetupDataPkg/SetupDataPkg.dec
   OemPkg/OemPkg.dec

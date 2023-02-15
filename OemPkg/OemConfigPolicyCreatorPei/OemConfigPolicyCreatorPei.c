@@ -15,6 +15,7 @@
 #include <Library/PeiServicesLib.h>
 #include <Library/DebugLib.h>
 #include <Library/MemoryAllocationLib.h>
+#include <Guid/VariableFormat.h>
 #include <Library/ConfigVariableListLib.h>
 #include <Library/ConfigKnobShimLib.h>
 #include <ConfigStdStructDefs.h>
@@ -37,18 +38,17 @@ extern UINTN      gNumKnobs;
 STATIC
 EFI_STATUS
 CreateConfPolicy (
-  OUT  VOID    **ConfPolicy,
+  OUT  VOID     **ConfPolicy,
   OUT   UINT16  *ConfPolicySize
   )
 {
-  EFI_STATUS  Status;
+  EFI_STATUS                       Status;
   UINT32                           i;
   UINTN                            NeededSize = 0;
   UINTN                            Offset     = 0;
   EFI_PEI_READ_ONLY_VARIABLE2_PPI  *PPIVariableServices;
   UINTN                            UnicodeNameSize = 0;
-  // get a buffer of the max name size
-  CHAR16                           UnicodeName[CONF_VAR_NAME_LEN];
+  CHAR16                           UnicodeName[CONF_VAR_NAME_LEN]; // get a buffer of the max name size
   CONFIG_VAR_LIST_ENTRY            VarListEntry;
   UINTN                            VarListSize;
   VOID                             *ConfListPtr;
@@ -63,20 +63,21 @@ CreateConfPolicy (
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a failed to locate variable services!\n", __FUNCTION__));
     ASSERT (FALSE);
-    return EFI_NOT_READY;
+    goto CreatePolicyExit;
   }
 
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < gNumKnobs; i++) {
     // the var list will use the Unicode version of the name, gKnobData has the ASCII version
-    NeededSize += VAR_LIST_SIZE(gKnobData[i].NameSize * 2, gKnobData[i].ValueSize);
+    NeededSize += VAR_LIST_SIZE (gKnobData[i].NameSize * 2, gKnobData[i].ValueSize);
     DEBUG ((DEBUG_ERROR, "OSDDEBUG NeededSize: %x\n", NeededSize));
   }
 
   if (NeededSize > MAX_UINT16) {
-    DEBUG((DEBUG_ERROR, "%a config is greater than 64k! Too large for what policy service supports\n", __FUNCTION__));
+    DEBUG ((DEBUG_ERROR, "%a config is greater than 64k! Too large for what policy service supports\n", __FUNCTION__));
     ASSERT (FALSE);
-    return EFI_UNSUPPORTED;
+    Status = EFI_UNSUPPORTED;
+    goto CreatePolicyExit;
   }
 
   *ConfPolicy = AllocatePool (NeededSize);
@@ -84,8 +85,9 @@ CreateConfPolicy (
   if (*ConfPolicy == NULL) {
     DEBUG ((DEBUG_ERROR, "%a failed to allocate Conf Policy memory!\n", __FUNCTION__));
     ASSERT (FALSE);
-    return EFI_OUT_OF_RESOURCES;
-  } 
+    Status = EFI_OUT_OF_RESOURCES;
+    goto CreatePolicyExit;
+  }
 
   *ConfPolicySize = (UINT16)NeededSize;
 
@@ -97,21 +99,35 @@ CreateConfPolicy (
     VarListEntry.Name = UnicodeName;
     VarListEntry.Guid = gKnobData[i].VendorNamespace;
     // hardcoded for now
-    VarListEntry.Attributes = 7;
-    VarListEntry.Data = gKnobData[i].CacheValueAddress;
-    VarListEntry.DataSize = gKnobData[i].ValueSize;
+    VarListEntry.Attributes = VARIABLE_ATTRIBUTE_NV_BS_RT;
+    VarListEntry.Data       = gKnobData[i].CacheValueAddress;
+    if (gKnobData[i].ValueSize > MAX_UINT32) {
+      // we overflowed, better bail out
+      DEBUG ((
+        DEBUG_ERROR,
+        "%a knob %s had too large of a value size: 0x%x\n",
+        __FUNCTION__,
+        gKnobData[i].Name,
+        gKnobData[i].ValueSize
+        ));
+      ASSERT (FALSE);
+      Status = EFI_INVALID_PARAMETER;
+      goto CreatePolicyExit;
+    }
 
-    DUMP_HEX(DEBUG_ERROR, 0, gKnobData[i].CacheValueAddress, sizeof(BOOLEAN), "OSDDEBUG: ");
+    VarListEntry.DataSize = (UINT32)gKnobData[i].ValueSize;
 
     // check if value has been overridden in variable storage
-    Status = GetConfigKnobOverride (&gKnobData[i].VendorNamespace,
-                                    UnicodeName,
-                                    gKnobData[i].CacheValueAddress,
-                                    gKnobData[i].ValueSize);
+    Status = GetConfigKnobOverride (
+               &gKnobData[i].VendorNamespace,
+               UnicodeName,
+               gKnobData[i].CacheValueAddress,
+               gKnobData[i].ValueSize
+               );
 
-    // if variable services fails other than failing to find the variable (it was not overidden)
+    // if variable services fails other than failing to find the variable (it was not overridden)
     // or a size mismatch (stale data from a previous definition of the knob), we should fail
-    // as we may be missing overidden knobs
+    // as we may be missing overridden knobs
     if (EFI_ERROR (Status) && (Status != EFI_NOT_FOUND) && (Status != EFI_BAD_BUFFER_SIZE)) {
       DEBUG ((
         DEBUG_ERROR,
@@ -121,13 +137,11 @@ CreateConfPolicy (
         Status
         ));
       ASSERT (FALSE);
-      FreePool (*ConfPolicy);
-      *ConfPolicySize = 0;
-      return Status;
+      goto CreatePolicyExit;
     }
 
     // Validate the value from flash meets the constraints of the knob
-    if (Status == EFI_SUCCESS && gKnobData[i].Validator != NULL) {
+    if ((Status == EFI_SUCCESS) && (gKnobData[i].Validator != NULL)) {
       if (!gKnobData[i].Validator (gKnobData[i].CacheValueAddress)) {
         // If it doesn't, we will set the value to the default value
         DEBUG ((DEBUG_ERROR, "Config knob %a failed validation!\n", gKnobData[i].Name));
@@ -138,13 +152,12 @@ CreateConfPolicy (
     ConfListPtr = ((UINT8 *)*ConfPolicy) + Offset;
 
     VarListSize = NeededSize - Offset;
-    Status = ConvertVariableEntryToVariableList (&VarListEntry, ConfListPtr, &VarListSize);
+    Status      = ConvertVariableEntryToVariableList (&VarListEntry, ConfListPtr, &VarListSize);
 
     if (EFI_ERROR (Status)) {
-      DEBUG((DEBUG_ERROR, "%a failed to convert variable entry to var list! - %r\n", __FUNCTION__, Status));
+      DEBUG ((DEBUG_ERROR, "%a failed to convert variable entry to var list! - %r\n", __FUNCTION__, Status));
       ASSERT (FALSE);
-      FreePool (*ConfPolicy);
-      return EFI_ABORTED;
+      goto CreatePolicyExit;
     }
 
     Offset += VarListSize;
@@ -152,13 +165,22 @@ CreateConfPolicy (
 
   if (Offset != NeededSize) {
     // oops we messed up the math, may have corrupted memory...
-    DEBUG((DEBUG_ERROR, "%a expected ConfPolicy size %x does not match actual size %x!\n", __FUNCTION__, NeededSize, Offset));
+    DEBUG ((DEBUG_ERROR, "%a expected ConfPolicy size %x does not match actual size %x!\n", __FUNCTION__, NeededSize, Offset));
     ASSERT (Offset == NeededSize);
-    FreePool (*ConfPolicy);
-    return EFI_ABORTED;
+    Status = EFI_ABORTED;
+    goto CreatePolicyExit;
   }
 
-  return EFI_SUCCESS;
+CreatePolicyExit:
+  if (EFI_ERROR (Status)) {
+    *ConfPolicySize = 0;
+
+    if (*ConfPolicy != NULL) {
+      FreePool (*ConfPolicy);
+    }
+  }
+
+  return Status;
 }
 
 /**
@@ -179,7 +201,7 @@ OemConfigPolicyCreatorPeiEntry (
   EFI_STATUS  Status;
   POLICY_PPI  *PolPpi        = NULL;
   VOID        *ConfPolicy    = NULL;
-  UINT16       ConfPolicySize = 0;
+  UINT16      ConfPolicySize = 0;
 
   DEBUG ((DEBUG_INFO, "%a - Entry.\n", __FUNCTION__));
 
