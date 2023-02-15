@@ -47,7 +47,6 @@ CreateConfPolicy (
   UINTN                            NeededSize = 0;
   UINTN                            Offset     = 0;
   EFI_PEI_READ_ONLY_VARIABLE2_PPI  *PPIVariableServices;
-  UINTN                            UnicodeNameSize = 0;
   CHAR16                           UnicodeName[CONF_VAR_NAME_LEN]; // get a buffer of the max name size
   CONFIG_VAR_LIST_ENTRY            VarListEntry;
   UINTN                            VarListSize;
@@ -93,7 +92,6 @@ CreateConfPolicy (
 
   // now go through and populate the Conf Policy
   for (i = 0; i < gNumKnobs; i++) {
-    UnicodeNameSize = gKnobData[i].NameSize * 2;
     AsciiStrToUnicodeStrS (gKnobData[i].Name, UnicodeName, gKnobData[i].NameSize);
 
     VarListEntry.Name = UnicodeName;
