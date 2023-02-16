@@ -8,7 +8,6 @@
 
 #include <Uefi.h>
 
-#include <Ppi/ReadOnlyVariable2.h>
 #include <Ppi/Policy.h>
 #include <Library/DebugLib.h>
 #include <Library/BaseMemoryLib.h>
@@ -46,24 +45,10 @@ CreateConfPolicy (
   UINT32                           i;
   UINTN                            NeededSize = 0;
   UINTN                            Offset     = 0;
-  EFI_PEI_READ_ONLY_VARIABLE2_PPI  *PPIVariableServices;
   CHAR16                           UnicodeName[CONF_VAR_NAME_LEN]; // get a buffer of the max name size
   CONFIG_VAR_LIST_ENTRY            VarListEntry;
   UINTN                            VarListSize;
   VOID                             *ConfListPtr;
-
-  Status = PeiServicesLocatePpi (
-             &gEfiPeiReadOnlyVariable2PpiGuid,
-             0,
-             NULL,
-             (VOID **)&PPIVariableServices
-             );
-
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a failed to locate variable services!\n", __FUNCTION__));
-    ASSERT (FALSE);
-    goto CreatePolicyExit;
-  }
 
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < gNumKnobs; i++) {
