@@ -54,7 +54,6 @@ CreateConfPolicy (
   for (i = 0; i < gNumKnobs; i++) {
     // the var list will use the Unicode version of the name, gKnobData has the ASCII version
     NeededSize += VAR_LIST_SIZE (gKnobData[i].NameSize * 2, gKnobData[i].ValueSize);
-    DEBUG ((DEBUG_ERROR, "OSDDEBUG NeededSize: %x\n", NeededSize));
   }
 
   if (NeededSize > MAX_UINT16) {
