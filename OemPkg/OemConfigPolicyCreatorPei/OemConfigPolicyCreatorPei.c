@@ -56,6 +56,8 @@ CreateConfPolicy (
     NeededSize += VAR_LIST_SIZE (gKnobData[i].NameSize * 2, gKnobData[i].ValueSize);
   }
 
+  // validate we won't overflow the maximum size allowed for policy service. In addition, don't
+  // overflow the DataSize (UINT32) of VarListEntry
   if (NeededSize > MAX_UINT16) {
     DEBUG ((DEBUG_ERROR, "%a config is greater than 64k! Too large for what policy service supports\n", __FUNCTION__));
     ASSERT (FALSE);
@@ -83,20 +85,9 @@ CreateConfPolicy (
     // hardcoded for now
     VarListEntry.Attributes = VARIABLE_ATTRIBUTE_NV_BS_RT;
     VarListEntry.Data       = gKnobData[i].CacheValueAddress;
-    if (gKnobData[i].ValueSize > MAX_UINT32) {
-      // we overflowed, better bail out
-      DEBUG ((
-        DEBUG_ERROR,
-        "%a knob %s had too large of a value size: 0x%x\n",
-        __FUNCTION__,
-        gKnobData[i].Name,
-        gKnobData[i].ValueSize
-        ));
-      ASSERT (FALSE);
-      Status = EFI_INVALID_PARAMETER;
-      goto CreatePolicyExit;
-    }
-
+    // this is validated not to overflow above where we ensure the entire config
+    // NeededSize is not greater than MAX_UINT16 and NeededSize is takes each knob's
+    // ValueSize into consideration
     VarListEntry.DataSize = (UINT32)gKnobData[i].ValueSize;
 
     // check if value has been overridden in variable storage
