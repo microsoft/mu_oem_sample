@@ -17,6 +17,7 @@
 #include <Guid/VariableFormat.h>
 #include <Library/ConfigVariableListLib.h>
 #include <Library/ConfigKnobShimLib.h>
+#include <Library/SafeIntLib.h>
 #include <ConfigStdStructDefs.h>
 
 extern KNOB_DATA  gKnobData[];
@@ -43,22 +44,50 @@ CreateConfPolicy (
 {
   EFI_STATUS                       Status;
   UINT32                           i;
-  UINTN                            NeededSize = 0;
-  UINTN                            Offset     = 0;
+  UINT32                           NeededSize = 0;
+  UINT32                           Offset     = 0;
   CHAR16                           UnicodeName[CONF_VAR_NAME_LEN]; // get a buffer of the max name size
   CONFIG_VAR_LIST_ENTRY            VarListEntry;
   UINTN                            VarListSize;
   VOID                             *ConfListPtr;
+  RETURN_STATUS                    ReturnStatus;
+  UINT32                           UnicodeNameSize;
+  UINT32                           TmpNeededSize;
 
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < gNumKnobs; i++) {
+    ReturnStatus = SafeUint32Mult (gKnobData[i].NameSize, 2, &UnicodeNameSize);
+    if (RETURN_ERROR (ReturnStatus)) {
+      // we overflowed
+      DEBUG ((DEBUG_ERROR, "%a knob %s has too long a name!\n", __FUNCTION__, gKnobData[i].Name));
+      ASSERT (FALSE);
+      Status = EFI_UNSUPPORTED;
+      goto CreatePolicyExit;
+    }
     // the var list will use the Unicode version of the name, gKnobData has the ASCII version
-    NeededSize += VAR_LIST_SIZE (gKnobData[i].NameSize * 2, gKnobData[i].ValueSize);
-  }
+    Status = GetVarListSize (UnicodeNameSize, gKnobData[i].ValueSize, &TmpNeededSize);
+    if (EFI_ERROR (ReturnStatus)) {
+      // we overflowed
+      DEBUG ((DEBUG_ERROR, "%a knob %s would create too large a var list!\n", __FUNCTION__, gKnobData[i].Name));
+      ASSERT (FALSE);
+      Status = EFI_UNSUPPORTED;
+      goto CreatePolicyExit;
+    }
 
+    ReturnStatus = SafeUint32Add (NeededSize, TmpNeededSize, &NeededSize);
+    if (RETURN_ERROR (ReturnStatus)) {
+      // we overflowed
+      DEBUG ((DEBUG_ERROR, "%a config exceeds max size!\n", __FUNCTION__));
+      ASSERT (FALSE);
+      Status = EFI_UNSUPPORTED;
+      goto CreatePolicyExit;
+    }
+  } 
+
+  ReturnStatus = SafeUint32ToUint16(NeededSize, ConfPolicySize);
   // validate we won't overflow the maximum size allowed for policy service. In addition, don't
   // overflow the DataSize (UINT32) of VarListEntry
-  if (NeededSize > MAX_UINT16) {
+  if (RETURN_ERROR(ReturnStatus)) {
     DEBUG ((DEBUG_ERROR, "%a config is greater than 64k! Too large for what policy service supports\n", __FUNCTION__));
     ASSERT (FALSE);
     Status = EFI_UNSUPPORTED;
@@ -73,8 +102,6 @@ CreateConfPolicy (
     Status = EFI_OUT_OF_RESOURCES;
     goto CreatePolicyExit;
   }
-
-  *ConfPolicySize = (UINT16)NeededSize;
 
   // now go through and populate the Conf Policy
   for (i = 0; i < gNumKnobs; i++) {
@@ -124,7 +151,7 @@ CreateConfPolicy (
 
     ConfListPtr = ((UINT8 *)*ConfPolicy) + Offset;
 
-    VarListSize = NeededSize - Offset;
+    VarListSize = (UINTN)NeededSize - (UINTN)Offset;
     Status      = ConvertVariableEntryToVariableList (&VarListEntry, ConfListPtr, &VarListSize);
 
     if (EFI_ERROR (Status)) {
