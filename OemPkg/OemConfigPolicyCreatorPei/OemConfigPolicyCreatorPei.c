@@ -50,14 +50,13 @@ CreateConfPolicy (
   CONFIG_VAR_LIST_ENTRY            VarListEntry;
   UINTN                            VarListSize;
   VOID                             *ConfListPtr;
-  RETURN_STATUS                    ReturnStatus;
   UINT32                           UnicodeNameSize;
   UINT32                           TmpNeededSize;
 
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < gNumKnobs; i++) {
-    ReturnStatus = SafeUint32Mult (gKnobData[i].NameSize, 2, &UnicodeNameSize);
-    if (RETURN_ERROR (ReturnStatus)) {
+    Status = (EFI_STATUS)SafeUint32Mult (gKnobData[i].NameSize, 2, &UnicodeNameSize);
+    if (EFI_ERROR (Status)) {
       // we overflowed
       DEBUG ((DEBUG_ERROR, "%a knob %s has too long a name!\n", __FUNCTION__, gKnobData[i].Name));
       ASSERT (FALSE);
@@ -66,7 +65,7 @@ CreateConfPolicy (
     }
     // the var list will use the Unicode version of the name, gKnobData has the ASCII version
     Status = GetVarListSize (UnicodeNameSize, gKnobData[i].ValueSize, &TmpNeededSize);
-    if (EFI_ERROR (ReturnStatus)) {
+    if (EFI_ERROR (Status)) {
       // we overflowed
       DEBUG ((DEBUG_ERROR, "%a knob %s would create too large a var list!\n", __FUNCTION__, gKnobData[i].Name));
       ASSERT (FALSE);
@@ -74,8 +73,8 @@ CreateConfPolicy (
       goto CreatePolicyExit;
     }
 
-    ReturnStatus = SafeUint32Add (NeededSize, TmpNeededSize, &NeededSize);
-    if (RETURN_ERROR (ReturnStatus)) {
+    Status = (EFI_STATUS)SafeUint32Add (NeededSize, TmpNeededSize, &NeededSize);
+    if (EFI_ERROR (Status)) {
       // we overflowed
       DEBUG ((DEBUG_ERROR, "%a config exceeds max size!\n", __FUNCTION__));
       ASSERT (FALSE);
@@ -84,10 +83,10 @@ CreateConfPolicy (
     }
   } 
 
-  ReturnStatus = SafeUint32ToUint16(NeededSize, ConfPolicySize);
+  Status = (EFI_STATUS)SafeUint32ToUint16(NeededSize, ConfPolicySize);
   // validate we won't overflow the maximum size allowed for policy service. In addition, don't
   // overflow the DataSize (UINT32) of VarListEntry
-  if (RETURN_ERROR(ReturnStatus)) {
+  if (EFI_ERROR(Status)) {
     DEBUG ((DEBUG_ERROR, "%a config is greater than 64k! Too large for what policy service supports\n", __FUNCTION__));
     ASSERT (FALSE);
     Status = EFI_UNSUPPORTED;
