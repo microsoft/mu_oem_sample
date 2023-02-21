@@ -1,0 +1,45 @@
+## @file OemConfigPolicyCreatorPei.inf
+#
+#  This module receives the static platform data for a platform and creates a config policy. It is intended to run
+#  before a platform level Silicon Policy Creator that maps this config policy to silicon policy.
+#
+#  Copyright (C) Microsoft Corporation.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010017
+  BASE_NAME                      = OemConfigPolicyCreatorPei
+  FILE_GUID                      = E0AD89AA-0499-49A7-90BF-77C5A71307B1
+  MODULE_TYPE                    = PEIM
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = OemConfigPolicyCreatorPeiEntry
+
+[Sources]
+  OemConfigPolicyCreatorPei.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  PolicyServicePkg/PolicyServicePkg.dec
+  SetupDataPkg/SetupDataPkg.dec
+  OemPkg/OemPkg.dec
+
+[LibraryClasses]
+  PeimEntryPoint
+  PeiServicesLib
+  DebugLib
+  ConfigVariableListLib
+  ConfigKnobShimLib
+  SafeIntLib
+
+[Ppis]
+  gPeiPolicyPpiGuid                   ## CONSUMES
+  gEfiPeiReadOnlyVariable2PpiGuid     ## CONSUMES
+
+[Guids]
+  gOemConfigPolicyGuid                # Guid that config policy is filed under
+
+[Depex]
+  gPeiPolicyPpiGuid AND               # Needed to file config policy
+  gEfiPeiReadOnlyVariable2PpiGuid     # Needed to query variable storage
