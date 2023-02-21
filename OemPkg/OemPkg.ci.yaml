@@ -27,7 +27,9 @@
             "OemPkg/OemPkg.dec",
             "MsWheaPkg/MsWheaPkg.dec",
             "MfciPkg/MfciPkg.dec",
-            "ShellPkg/ShellPkg.dec"
+            "ShellPkg/ShellPkg.dec",
+            "PolicyServicePkg/PolicyServicePkg.dec",
+            "SetupDataPkg/SetupDataPkg.dec"
         ],
         "AcceptableDependencies-HOST_APPLICATION":[ # for host based unit tests
             "MdePkg/MdePkg.dec",

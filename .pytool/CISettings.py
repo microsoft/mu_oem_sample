@@ -195,6 +195,11 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                 "Path": "MU_FEATURE_DFCI",
                 "Url": "https://github.com/microsoft/mu_feature_dfci.git",
                 "Branch": "main"
+            },
+            {
+                "Path": "MU_FEATURE_CONFIG",
+                "Url": "https://github.com/microsoft/mu_feature_config.git",
+                "Branch": "main"
             }
         ]
 

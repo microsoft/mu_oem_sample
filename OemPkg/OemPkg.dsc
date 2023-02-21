@@ -82,6 +82,8 @@
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
   PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf
 
+  ConfigVariableListLib|SetupDataPkg/Library/ConfigVariableListLib/ConfigVariableListLib.inf
+
 [LibraryClasses.IA32]
   MsUiThemeLib|MsGraphicsPkg/Library/MsUiThemeLib/Pei/MsUiThemeLib.inf
 
@@ -96,6 +98,7 @@
   BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
 !endif
 
+[LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
 
 [LibraryClasses.common.PEIM]
@@ -104,6 +107,7 @@
   PeiServicesTablePointerLib|MdePkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
   MemoryAllocationLib|MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf
+  ConfigKnobShimLib|SetupDataPkg/Library/ConfigKnobShimLib/ConfigKnobShimPeiLib/ConfigKnobShimPeiLib.inf
 ###############################################################
 #
 # Components Section - list of the modules and components that will be processed by compilation
@@ -139,6 +143,12 @@
   OemPkg/Library/OemMfciLib/OemMfciLibPei.inf
   OemPkg/Library/OemMfciLib/OemMfciLibDxe.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
+  OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
+  OemPkg/OemConfigPolicyCreatorPei/OemConfigPolicyCreatorPei.inf {
+    <LibraryClasses>
+      # platform data lib
+      NULL|OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
+  }
 
 [Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
