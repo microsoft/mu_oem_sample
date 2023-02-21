@@ -42,16 +42,16 @@ CreateConfPolicy (
   OUT   UINT16  *ConfPolicySize
   )
 {
-  EFI_STATUS                       Status;
-  UINT32                           i;
-  UINT32                           NeededSize = 0;
-  UINT32                           Offset     = 0;
-  CHAR16                           UnicodeName[CONF_VAR_NAME_LEN]; // get a buffer of the max name size
-  CONFIG_VAR_LIST_ENTRY            VarListEntry;
-  UINTN                            VarListSize;
-  VOID                             *ConfListPtr;
-  UINT32                           UnicodeNameSize;
-  UINT32                           TmpNeededSize;
+  EFI_STATUS             Status;
+  UINT32                 i;
+  UINT32                 NeededSize = 0;
+  UINT32                 Offset     = 0;
+  CHAR16                 UnicodeName[CONF_VAR_NAME_LEN];           // get a buffer of the max name size
+  CONFIG_VAR_LIST_ENTRY  VarListEntry;
+  UINTN                  VarListSize;
+  VOID                   *ConfListPtr;
+  UINT32                 UnicodeNameSize;
+  UINT32                 TmpNeededSize;
 
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < gNumKnobs; i++) {
@@ -63,6 +63,7 @@ CreateConfPolicy (
       Status = EFI_UNSUPPORTED;
       goto CreatePolicyExit;
     }
+
     // the var list will use the Unicode version of the name, gKnobData has the ASCII version
     Status = GetVarListSize (UnicodeNameSize, gKnobData[i].ValueSize, &TmpNeededSize);
     if (EFI_ERROR (Status)) {
@@ -81,12 +82,12 @@ CreateConfPolicy (
       Status = EFI_UNSUPPORTED;
       goto CreatePolicyExit;
     }
-  } 
+  }
 
-  Status = (EFI_STATUS)SafeUint32ToUint16(NeededSize, ConfPolicySize);
+  Status = (EFI_STATUS)SafeUint32ToUint16 (NeededSize, ConfPolicySize);
   // validate we won't overflow the maximum size allowed for policy service. In addition, don't
   // overflow the DataSize (UINT32) of VarListEntry
-  if (EFI_ERROR(Status)) {
+  if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a config is greater than 64k! Too large for what policy service supports\n", __FUNCTION__));
     ASSERT (FALSE);
     Status = EFI_UNSUPPORTED;
@@ -159,7 +160,7 @@ CreateConfPolicy (
       goto CreatePolicyExit;
     }
 
-    Offset += VarListSize;
+    Offset += (UINT32)VarListSize;
   }
 
   if (Offset != NeededSize) {
@@ -224,8 +225,8 @@ OemConfigPolicyCreatorPeiEntry (
   }
 
   // Publish immutable config policy
-  // Policy Service will publish the gOemConfigPolicyGuid so that the Silicon Policy Creator can consume our
-  // Config Policy and map it to Silicon Policies
+  // Policy Service will receive gOemConfigPolicyGuid and publish it as a PPI so that the Silicon Policy Creator can
+  // have a depex on it and map it to Silicon Policies
   Status = PolPpi->SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, ConfPolicy, ConfPolicySize);
 
   if (EFI_ERROR (Status)) {
