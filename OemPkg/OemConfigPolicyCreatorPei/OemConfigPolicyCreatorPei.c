@@ -58,7 +58,7 @@ CreateConfPolicy (
     Status = (EFI_STATUS)SafeUint32Mult (gKnobData[i].NameSize, 2, &UnicodeNameSize);
     if (EFI_ERROR (Status)) {
       // we overflowed
-      DEBUG ((DEBUG_ERROR, "%a knob %s has too long a name!\n", __FUNCTION__, gKnobData[i].Name));
+      DEBUG ((DEBUG_ERROR, "%a config knob has too long a name! Size: 0x%x\n", __FUNCTION__, gKnobData[i].NameSize * 2));
       ASSERT (FALSE);
       Status = EFI_UNSUPPORTED;
       goto CreatePolicyExit;
@@ -68,7 +68,7 @@ CreateConfPolicy (
     Status = GetVarListSize (UnicodeNameSize, gKnobData[i].ValueSize, &TmpNeededSize);
     if (EFI_ERROR (Status)) {
       // we overflowed
-      DEBUG ((DEBUG_ERROR, "%a knob %s would create too large a var list!\n", __FUNCTION__, gKnobData[i].Name));
+      DEBUG ((DEBUG_ERROR, "%a Config var list is too large!\n", __FUNCTION__));
       ASSERT (FALSE);
       Status = EFI_UNSUPPORTED;
       goto CreatePolicyExit;
