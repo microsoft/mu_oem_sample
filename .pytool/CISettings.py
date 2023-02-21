@@ -198,8 +198,8 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
             },
             {
                 "Path": "MU_FEATURE_CONFIG",
-                "Url": "https://github.com/os-d/mu_feature_config.git",
-                "Branch": "osde/std_struct_def"
+                "Url": "https://github.com/microsoft/mu_feature_config.git",
+                "Branch": "main"
             }
         ]
 
