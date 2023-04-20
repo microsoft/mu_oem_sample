@@ -97,3 +97,7 @@
   # then user can access the front page as a limited user.
   # If set to 0 gives an unlimited number of attempts.
   gOemPkgTokenSpaceGuid.PcdMaxPasswordAttempts|0x3|UINT8|0x0000000B
+
+  ## Pcd for ActiveProfileIndexSelectorPcdLib to query ActiveProfileIndex from
+  # MAX_UINT32 indicates the default profile
+  gOemPkgTokenSpaceGuid.PcdActiveProfileIndex|0xffffffff|UINT32|0x0000000C

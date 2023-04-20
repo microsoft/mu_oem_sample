@@ -18,10 +18,68 @@
 #include <Library/ConfigVariableListLib.h>
 #include <Library/ConfigKnobShimLib.h>
 #include <Library/SafeIntLib.h>
+#include <Library/ActiveProfileIndexSelectorLib.h>
 #include <ConfigStdStructDefs.h>
 
+// these externs are provided by PlatformConfigDataLib
 extern KNOB_DATA  gKnobData[];
 extern UINTN      gNumKnobs;
+// number of profile overrides (i.e. into gProfileData)
+// this does not count the generic profile, which is not
+// in gProfileData, but rather in gKnobData's defaults
+extern UINTN    gNumProfiles;
+extern PROFILE  gProfileData[];
+
+/**
+  Helper function to apply profile overrides. This function is only
+  called if the active profile index has been validated to be within
+  the acceptable range.
+  @param[in]  ActiveProfileIndex The validated index into gProfileData
+**/
+STATIC
+VOID
+ApplyProfileOverrides (
+  UINT32  ActiveProfileIndex
+  )
+{
+  PROFILE  *ActiveProfile = &gProfileData[ActiveProfileIndex];
+  UINTN    i;
+  UINTN    Knob;
+
+  for (i = 0; i < ActiveProfile->OverrideCount; i++) {
+    Knob = ActiveProfile->Overrides[i].Knob;
+    if ((Knob >= gNumKnobs) || (Knob != gKnobData[Knob].Knob)) {
+      // something bad happened in the autogeneration, knobs are
+      // not ordered. Don't muck about finding the misordered knobs
+      // fail
+      DEBUG ((
+        DEBUG_ERROR,
+        "%a knob autogeneration out of order, can't finish applying profile, defaulting to generic profile\n",
+        __FUNCTION__
+        ));
+
+      // we may have failed in the middle of applying the profile, so we need to
+      // write the default value for each knob we may have passed to it's cache address so we can
+      // have a clean generic profile. We didn't apply the knob for this value of i, so decrement
+      // before we start
+      i--;
+      for ( ; i > 0; i--) {
+        Knob = ActiveProfile->Overrides[i].Knob;
+        CopyMem (gKnobData[Knob].CacheValueAddress, gKnobData[Knob].DefaultValueAddress, gKnobData[Knob].ValueSize);
+      }
+
+      // do this once more when i == 0. To keep signed/unsigned comparisons issues in check, i is not signed
+      // otherwise we'd do >= 0 in the loop
+      Knob = ActiveProfile->Overrides[i].Knob;
+      CopyMem (gKnobData[Knob].CacheValueAddress, gKnobData[Knob].DefaultValueAddress, gKnobData[Knob].ValueSize);
+
+      ASSERT (FALSE);
+      return;
+    }
+
+    CopyMem (gKnobData[Knob].CacheValueAddress, ActiveProfile->Overrides[i].Value, gKnobData[Knob].ValueSize);
+  }
+}
 
 /**
   Helper function to create config policy.
@@ -52,6 +110,7 @@ CreateConfPolicy (
   VOID                   *ConfListPtr;
   UINT32                 UnicodeNameSize;
   UINT32                 TmpNeededSize;
+  UINT32                 ActiveProfileIndex;
 
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < gNumKnobs; i++) {
@@ -101,6 +160,31 @@ CreateConfPolicy (
     ASSERT (FALSE);
     Status = EFI_OUT_OF_RESOURCES;
     goto CreatePolicyExit;
+  }
+
+  // before we get potential overrides for the policy, we need to figure out which
+  // profile will be our active one for this boot and apply any overrides from it
+  // to the cache
+  Status = GetActiveProfileIndex (&ActiveProfileIndex);
+  if (EFI_ERROR (Status)) {
+    // if we fail to get the active profile index, default to the generic profile
+    DEBUG ((DEBUG_ERROR, "%a failed to get active profile index! Defaulting to generic profile\n", __FUNCTION__));
+    ActiveProfileIndex = MAX_UINT32;
+  }
+
+  if ((ActiveProfileIndex >= 0) && (ActiveProfileIndex < gNumProfiles)) {
+    // if ActiveProfileIndex == MAX_UINT32, we are using the generic profile and don't
+    // look for any profile overrides. Otherwise, ensure that the active profile index
+    // is valid, otherwise use the generic profile. If it is valid, apply those overrides.
+    ApplyProfileOverrides (ActiveProfileIndex);
+  } else if (ActiveProfileIndex != MAX_UINT32) {
+    DEBUG ((
+      DEBUG_ERROR,
+      "%a bad value of ActiveProfileIndex returned: %d, defaulting to generic profile\n",
+      __FUNCTION__,
+      ActiveProfileIndex
+      ));
+    ActiveProfileIndex = MAX_UINT32;
   }
 
   // now go through and populate the Conf Policy
