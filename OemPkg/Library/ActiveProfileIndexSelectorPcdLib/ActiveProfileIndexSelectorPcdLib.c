@@ -38,7 +38,7 @@ GetActiveProfileIndex (
     return EFI_INVALID_PARAMETER;
   }
 
-  // Just return what the PCD has, the caller should valid it
+  // Just return what the PCD has, the caller should validate it
   *ActiveProfileIndex = FixedPcdGet32 (PcdActiveProfileIndex);
 
   return EFI_SUCCESS;

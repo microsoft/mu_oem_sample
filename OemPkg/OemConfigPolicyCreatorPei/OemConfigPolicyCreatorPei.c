@@ -59,7 +59,7 @@ ApplyProfileOverrides (
         ));
 
       // we may have failed in the middle of applying the profile, so we need to
-      // write the default value for each knob we may have passed to it's cache address so we can
+      // write the default value for each knob we may have passed to its cache address so we can
       // have a clean generic profile. We didn't apply the knob for this value of i, so decrement
       // before we start
       i--;
