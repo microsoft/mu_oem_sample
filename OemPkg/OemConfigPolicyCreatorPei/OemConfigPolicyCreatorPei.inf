@@ -32,6 +32,7 @@
   ConfigVariableListLib
   ConfigKnobShimLib
   SafeIntLib
+  ActiveProfileIndexSelectorLib
 
 [Ppis]
   gPeiPolicyPpiGuid                   ## CONSUMES
