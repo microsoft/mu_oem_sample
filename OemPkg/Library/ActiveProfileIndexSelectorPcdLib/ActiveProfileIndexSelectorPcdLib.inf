@@ -1,0 +1,30 @@
+## @file ActiveProfileIndexSelectorPcdLib.inf
+# PCD instance of ActiveProfileIndexSelectorLib to pick a profile based on
+# value of PcdActiveProfileIndex
+#
+# Copyright (c) Microsoft Corporation
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION         = 0x00010017
+  BASE_NAME           = ActiveProfileIndexSelectorPcdLib
+  FILE_GUID           = 4F334BDD-9C31-4244-8E27-153E450C8B58
+  VERSION_STRING      = 1.0
+  MODULE_TYPE         = BASE
+  LIBRARY_CLASS       = ActiveProfileIndexSelectorLib
+
+[Sources]
+  ActiveProfileIndexSelectorPcdLib.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  SetupDataPkg/SetupDataPkg.dec
+  OemPkg/OemPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  PcdLib
+
+[Pcd]
+  gOemPkgTokenSpaceGuid.PcdActiveProfileIndex ## CONSUMES

@@ -11,6 +11,7 @@
 #include <Uefi.h>
 #include <ConfigStdStructDefs.h>
 
-KNOB_DATA  gKnobData = { 0 };
-
-UINTN  gNumKnobs = 0;
+KNOB_DATA  gKnobData    = { 0 };
+UINTN      gNumKnobs    = 0;
+PROFILE    gProfileData = { 0 };
+UINTN      gNumProfiles = 0;
