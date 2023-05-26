@@ -28,7 +28,6 @@ extends:
         Pkgs: 'OemPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
         ArchList: $(arch_list)
-        SelfHostAgent: false
       TARGET_OEM_DEBUG_ARM:
         Pkgs: 'OemPkg'
         Targets: 'DEBUG,RELEASE,NO-TARGET,NOOPT'
