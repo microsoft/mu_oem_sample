@@ -270,6 +270,13 @@ UpdateDisplayStrings (
   Status       = SmbiosProtocol->GetNext (SmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR (Status)) {
     Type1Record = (SMBIOS_TABLE_TYPE1 *)Record;
+
+    Status = GetOptionalStringByIndex ((CHAR8 *)((UINT8 *)Type1Record + Type1Record->Hdr.Length), Type1Record->SerialNumber, &NewString);
+    if (!EFI_ERROR (Status)) {
+      HiiSetString (HiiHandle, STRING_TOKEN (STR_INF_VIEW_PC_SERIALNUM_VALUE), NewString, NULL);
+      FreePool (NewString);
+    }
+
     Status      = GetOptionalStringByIndex ((CHAR8 *)((UINT8 *)Type1Record + Type1Record->Hdr.Length), Type1Record->ProductName, &NewString);
     if (!EFI_ERROR (Status)) {
       HiiSetString (HiiHandle, STRING_TOKEN (STR_INF_VIEW_PC_MODEL_VALUE), NewString, NULL);
@@ -298,12 +305,6 @@ UpdateDisplayStrings (
     Status      = GetOptionalStringByIndex ((CHAR8 *)((UINT8 *)Type3Record + Type3Record->Hdr.Length), Type3Record->AssetTag, &NewString);
     if (!EFI_ERROR (Status)) {
       HiiSetString (HiiHandle, STRING_TOKEN (STR_INF_VIEW_PC_ASSET_TAG_VALUE), NewString, NULL);
-      FreePool (NewString);
-    }
-
-    Status = GetOptionalStringByIndex ((CHAR8 *)((UINT8 *)Type3Record + Type3Record->Hdr.Length), Type3Record->SerialNumber, &NewString);
-    if (!EFI_ERROR (Status)) {
-      HiiSetString (HiiHandle, STRING_TOKEN (STR_INF_VIEW_PC_SERIALNUM_VALUE), NewString, NULL);
       FreePool (NewString);
     }
   }
