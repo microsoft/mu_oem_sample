@@ -144,11 +144,10 @@
   OemPkg/Library/OemMfciLib/OemMfciLibPei.inf
   OemPkg/Library/OemMfciLib/OemMfciLibDxe.inf
   OemPkg/FrontpageButtonsVolumeUp/FrontpageButtonsVolumeUp.inf
-  OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
   OemPkg/OemConfigPolicyCreatorPei/OemConfigPolicyCreatorPei.inf {
     <LibraryClasses>
       # platform data lib
-      NULL|OemPkg/Library/PlatformConfigDataNullLib/PlatformConfigDataNullLib.inf
+      NULL|SetupDataPkg/Library/PlatformConfigDataLibNull/PlatformConfigDataLibNull.inf
   }
   OemPkg/Library/ActiveProfileIndexSelectorPcdLib/ActiveProfileIndexSelectorPcdLib.inf
 
