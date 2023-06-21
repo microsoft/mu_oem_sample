@@ -19,16 +19,7 @@
 #include <Library/ConfigKnobShimLib.h>
 #include <Library/SafeIntLib.h>
 #include <Library/ActiveProfileIndexSelectorLib.h>
-#include <ConfigStdStructDefs.h>
-
-// these externs are provided by PlatformConfigDataLib
-extern KNOB_DATA  gKnobData[];
-extern UINTN      gNumKnobs;
-// number of profile overrides (i.e. into gProfileData)
-// this does not count the generic profile, which is not
-// in gProfileData, but rather in gKnobData's defaults
-extern UINTN    gNumProfiles;
-extern PROFILE  gProfileData[];
+#include <Library/PlatformConfigDataLib.h>
 
 /**
   Helper function to apply profile overrides. This function is only
