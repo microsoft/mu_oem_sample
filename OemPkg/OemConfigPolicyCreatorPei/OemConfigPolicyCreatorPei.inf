@@ -33,6 +33,7 @@
   ConfigKnobShimLib
   SafeIntLib
   ActiveProfileIndexSelectorLib
+  PolicyLib
 
 [Ppis]
   gPeiPolicyPpiGuid                   ## CONSUMES
@@ -40,6 +41,7 @@
 
 [Guids]
   gOemConfigPolicyGuid                # Guid that config policy is filed under
+  gOemConfigMetadataPolicyGuid        # Guid that config metadata policy is filed under
 
 [Depex]
   gPeiPolicyPpiGuid AND               # Needed to file config policy

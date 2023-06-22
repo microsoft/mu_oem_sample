@@ -7,37 +7,34 @@
 **/
 
 #include <Uefi.h>
+#include <ConfigStdStructDefs.h>
 
-#include <Ppi/Policy.h>
 #include <Library/DebugLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/PeiServicesLib.h>
 #include <Library/DebugLib.h>
 #include <Library/MemoryAllocationLib.h>
 #include <Guid/VariableFormat.h>
+#include <Guid/OemConfigMetadataPolicy.h>
 #include <Library/ConfigVariableListLib.h>
 #include <Library/ConfigKnobShimLib.h>
 #include <Library/SafeIntLib.h>
+#include <Library/PolicyLib.h>
 #include <Library/ActiveProfileIndexSelectorLib.h>
-#include <ConfigStdStructDefs.h>
-
-// these externs are provided by PlatformConfigDataLib
-extern KNOB_DATA  gKnobData[];
-extern UINTN      gNumKnobs;
-// number of profile overrides (i.e. into gProfileData)
-// this does not count the generic profile, which is not
-// in gProfileData, but rather in gKnobData's defaults
-extern UINTN    gNumProfiles;
-extern PROFILE  gProfileData[];
+#include <Library/PlatformConfigDataLib.h>
 
 /**
   Helper function to apply profile overrides. This function is only
   called if the active profile index has been validated to be within
   the acceptable range.
+
   @param[in]  ActiveProfileIndex The validated index into gProfileData
+
+  @retval     EFI_SUCCESS        Successfully applied the input profile index
+  @retval     !EFI_SUCCESS       Failed to apply the input profile index, applied generic profile instead
 **/
 STATIC
-VOID
+EFI_STATUS
 ApplyProfileOverrides (
   UINT32  ActiveProfileIndex
   )
@@ -62,6 +59,10 @@ ApplyProfileOverrides (
       // write the default value for each knob we may have passed to its cache address so we can
       // have a clean generic profile. We didn't apply the knob for this value of i, so decrement
       // before we start
+      if (i == 0) {
+        return EFI_INVALID_PARAMETER;
+      }
+
       i--;
       for ( ; i > 0; i--) {
         Knob = ActiveProfile->Overrides[i].Knob;
@@ -74,11 +75,13 @@ ApplyProfileOverrides (
       CopyMem (gKnobData[Knob].CacheValueAddress, gKnobData[Knob].DefaultValueAddress, gKnobData[Knob].ValueSize);
 
       ASSERT (FALSE);
-      return;
+      return EFI_INVALID_PARAMETER;
     }
 
     CopyMem (gKnobData[Knob].CacheValueAddress, ActiveProfile->Overrides[i].Value, gKnobData[Knob].ValueSize);
   }
+
+  return EFI_SUCCESS;
 }
 
 /**
@@ -100,17 +103,19 @@ CreateConfPolicy (
   OUT   UINT16  *ConfPolicySize
   )
 {
-  EFI_STATUS             Status;
-  UINT32                 i;
-  UINT32                 NeededSize = 0;
-  UINT32                 Offset     = 0;
-  CHAR16                 UnicodeName[CONF_VAR_NAME_LEN];           // get a buffer of the max name size
-  CONFIG_VAR_LIST_ENTRY  VarListEntry;
-  UINTN                  VarListSize;
-  VOID                   *ConfListPtr;
-  UINT32                 UnicodeNameSize;
-  UINT32                 TmpNeededSize;
-  UINT32                 ActiveProfileIndex;
+  EFI_STATUS                  Status;
+  UINT32                      i;
+  UINT32                      NeededSize = 0;
+  UINT32                      Offset     = 0;
+  CHAR16                      UnicodeName[CONF_VAR_NAME_LEN];           // get a buffer of the max name size
+  CONFIG_VAR_LIST_ENTRY       VarListEntry;
+  UINTN                       VarListSize;
+  VOID                        *ConfListPtr;
+  UINT32                      UnicodeNameSize;
+  UINT32                      TmpNeededSize;
+  UINT32                      ActiveProfileIndex;
+  OEM_CONFIG_METADATA_POLICY  ConfigMetadata;
+  CHAR8                       *ProfileName;
 
   // first figure out how much space we need to allocate for the ConfPolicy
   for (i = 0; i < gNumKnobs; i++) {
@@ -169,22 +174,27 @@ CreateConfPolicy (
   if (EFI_ERROR (Status)) {
     // if we fail to get the active profile index, default to the generic profile
     DEBUG ((DEBUG_ERROR, "%a failed to get active profile index! Defaulting to generic profile\n", __FUNCTION__));
-    ActiveProfileIndex = MAX_UINT32;
+    ActiveProfileIndex = GENERIC_PROFILE_INDEX;
   }
 
   if ((ActiveProfileIndex >= 0) && (ActiveProfileIndex < gNumProfiles)) {
-    // if ActiveProfileIndex == MAX_UINT32, we are using the generic profile and don't
+    // if ActiveProfileIndex == GENERIC_PROFILE_INDEX, we are using the generic profile and don't
     // look for any profile overrides. Otherwise, ensure that the active profile index
     // is valid, otherwise use the generic profile. If it is valid, apply those overrides.
-    ApplyProfileOverrides (ActiveProfileIndex);
-  } else if (ActiveProfileIndex != MAX_UINT32) {
+    Status = ApplyProfileOverrides (ActiveProfileIndex);
+    if (EFI_ERROR (Status)) {
+      // if we failed to apply the profile, we defaulted to the generic profile
+      // mark that here so we report it in the config metadata policy
+      ActiveProfileIndex = GENERIC_PROFILE_INDEX;
+    }
+  } else if (ActiveProfileIndex != GENERIC_PROFILE_INDEX) {
     DEBUG ((
       DEBUG_ERROR,
       "%a bad value of ActiveProfileIndex returned: %d, defaulting to generic profile\n",
       __FUNCTION__,
       ActiveProfileIndex
       ));
-    ActiveProfileIndex = MAX_UINT32;
+    ActiveProfileIndex = GENERIC_PROFILE_INDEX;
   }
 
   // now go through and populate the Conf Policy
@@ -255,6 +265,32 @@ CreateConfPolicy (
     goto CreatePolicyExit;
   }
 
+  // Publish the config metadata policy
+  ConfigMetadata.ActiveProfileIndex = ActiveProfileIndex;
+  if (ConfigMetadata.ActiveProfileIndex == GENERIC_PROFILE_INDEX) {
+    ProfileName = (CHAR8 *)GENERIC_PROFILE_FLAVOR_NAME;
+  } else {
+    ProfileName = gProfileFlavorNames[ActiveProfileIndex];
+  }
+
+  Status = AsciiStrCpyS (&ConfigMetadata.ActiveProfileFlavorName[0], PROFILE_FLAVOR_NAME_LENGTH, ProfileName);
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a Failed to copy flavor name! Status (%r)\n", __FUNCTION__, Status));
+    goto CreatePolicyExit;
+  }
+
+  Status = SetPolicy (
+             &gOemConfigMetadataPolicyGuid,
+             POLICY_ATTRIBUTE_FINALIZED,
+             &ConfigMetadata,
+             OEM_CONFIG_METADATA_POLICY_SIZE
+             );
+
+  if (EFI_ERROR (Status)) {
+    DEBUG ((DEBUG_ERROR, "%a Failed to set config metadata policy! Status (%r)\n", __func__, Status));
+    goto CreatePolicyExit;
+  }
+
 CreatePolicyExit:
   if (EFI_ERROR (Status)) {
     *ConfPolicySize = 0;
@@ -283,23 +319,13 @@ OemConfigPolicyCreatorPeiEntry (
   )
 {
   EFI_STATUS  Status;
-  POLICY_PPI  *PolPpi        = NULL;
   VOID        *ConfPolicy    = NULL;
   UINT16      ConfPolicySize = 0;
 
   DEBUG ((DEBUG_INFO, "%a - Entry.\n", __FUNCTION__));
 
-  // First locate policy ppi.
-  Status = PeiServicesLocatePpi (&gPeiPolicyPpiGuid, 0, NULL, (VOID *)&PolPpi);
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a Failed to locate Policy PPI - %r\n", __FUNCTION__, Status));
-    ASSERT (FALSE);
-    goto Exit;
-  }
-
   // Oem can choose to do any Oem specific things to config here such as enforcing static only config or
   // selecting a configuration profile based on some criteria
-
   Status = CreateConfPolicy (&ConfPolicy, &ConfPolicySize);
 
   if (EFI_ERROR (Status) || (ConfPolicy == NULL) || (ConfPolicySize == 0)) {
@@ -311,7 +337,7 @@ OemConfigPolicyCreatorPeiEntry (
   // Publish immutable config policy
   // Policy Service will receive gOemConfigPolicyGuid and publish it as a PPI so that the Silicon Policy Creator can
   // have a depex on it and map it to Silicon Policies
-  Status = PolPpi->SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, ConfPolicy, ConfPolicySize);
+  Status = SetPolicy (&gOemConfigPolicyGuid, POLICY_ATTRIBUTE_FINALIZED, ConfPolicy, ConfPolicySize);
 
   if (EFI_ERROR (Status)) {
     DEBUG ((DEBUG_ERROR, "%a Failed to set config policy! Status (%r)\n", __FUNCTION__, Status));

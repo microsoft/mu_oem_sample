@@ -10,6 +10,7 @@ BuildConfig.conf
 
 # Ignore cloned dependencies
 /Common
+/Features
 /Silicon
 /MU_BASECORE
 
