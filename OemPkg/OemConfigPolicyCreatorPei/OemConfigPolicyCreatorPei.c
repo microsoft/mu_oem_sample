@@ -7,8 +7,8 @@
 **/
 
 #include <Uefi.h>
+#include <ConfigStdStructDefs.h>
 
-#include <Ppi/Policy.h>
 #include <Library/DebugLib.h>
 #include <Library/BaseMemoryLib.h>
 #include <Library/PeiServicesLib.h>
@@ -19,6 +19,7 @@
 #include <Library/ConfigVariableListLib.h>
 #include <Library/ConfigKnobShimLib.h>
 #include <Library/SafeIntLib.h>
+#include <Library/PolicyLib.h>
 #include <Library/ActiveProfileIndexSelectorLib.h>
 #include <Library/PlatformConfigDataLib.h>
 

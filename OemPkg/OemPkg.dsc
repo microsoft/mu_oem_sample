@@ -12,7 +12,7 @@
   PLATFORM_VERSION               = 1.0
   DSC_SPECIFICATION              = 0x00010005
   OUTPUT_DIRECTORY               = Build/OemPkg
-  SUPPORTED_ARCHITECTURES        = IA32|X64
+  SUPPORTED_ARCHITECTURES        = IA32|X64|ARM|AARCH64
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
 
@@ -101,6 +101,7 @@
 
 [LibraryClasses.common.DXE_DRIVER, LibraryClasses.common.UEFI_APPLICATION]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
+  PolicyLib|PolicyServicePkg/Library/DxePolicyLib/DxePolicyLib.inf
 
 [LibraryClasses.common.PEIM]
   PeimEntryPoint|MdePkg/Library/PeimEntryPoint/PeimEntryPoint.inf
@@ -109,6 +110,7 @@
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
   MemoryAllocationLib|MdePkg/Library/PeiMemoryAllocationLib/PeiMemoryAllocationLib.inf
   ConfigKnobShimLib|SetupDataPkg/Library/ConfigKnobShimLib/ConfigKnobShimPeiLib/ConfigKnobShimPeiLib.inf
+  PolicyLib|PolicyServicePkg/Library/PeiPolicyLib/PeiPolicyLib.inf
 ###############################################################
 #
 # Components Section - list of the modules and components that will be processed by compilation
