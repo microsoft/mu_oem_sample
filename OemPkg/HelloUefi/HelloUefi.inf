@@ -1,0 +1,35 @@
+## @file
+#  Sample UEFI Application Reference EDKII Module.
+#
+# This sample application that is the simplest UEFI application possible.
+#  It simply prints "Hello Uefi!" to the UEFI Console Out device.
+#
+#  Copyright (C) Microsoft Corporation
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = HelloUefi
+  MODULE_UNI_FILE                = HelloUefi.uni
+  FILE_GUID                      = 1C50FE8C-8607-4CB0-9050-48F6EE46BB82
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = UefiMain
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 AARCH64
+#
+
+[Sources]
+  HelloUefi.c
+  HelloUefi.ver
+
+[LibraryClasses]
+  UefiApplicationEntryPoint
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
