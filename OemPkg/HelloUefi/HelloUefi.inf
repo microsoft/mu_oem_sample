@@ -1,5 +1,5 @@
 ## @file
-#  Sample UEFI Application Reference EDKII Module.
+#  Sample UEFI Application Reference Module.
 #
 # This sample application that is the simplest UEFI application possible.
 #  It simply prints "Hello Uefi!" to the UEFI Console Out device.
