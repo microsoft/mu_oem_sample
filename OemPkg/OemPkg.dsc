@@ -152,6 +152,7 @@
       NULL|SetupDataPkg/Library/PlatformConfigDataLibNull/PlatformConfigDataLibNull.inf
   }
   OemPkg/Library/ActiveProfileIndexSelectorPcdLib/ActiveProfileIndexSelectorPcdLib.inf
+  OemPkg/HelloUefi/HelloUefi.inf
 
 [Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
@@ -159,7 +160,6 @@
 [Components.X64]
   OemPkg/FrontPage/FrontPage.inf
   OemPkg/BootMenu/BootMenu.inf
-  OemPkg/HelloUefi/HelloUefi.inf
   OemPkg/Override/MdeModulePkg/Universal/BootManagerPolicyDxe/BootManagerPolicyDxe.inf
   OemPkg/Library/DeviceBootManagerLib/DeviceBootManagerLib.inf
   OemPkg/Library/MsBootManagerSettingsDxeLib/MsBootManagerSettingsDxeLib.inf

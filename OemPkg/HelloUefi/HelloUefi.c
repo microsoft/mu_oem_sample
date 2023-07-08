@@ -30,7 +30,7 @@ UefiMain (
 {
   EFI_STATUS  Status;
 
-  if (SystemTable == NULL || SystemTable->ConOut == NULL || SystemTable->ConOut->OutputString == NULL) {
+  if ((SystemTable == NULL) || (SystemTable->ConOut == NULL) || (SystemTable->ConOut->OutputString == NULL)) {
     return EFI_INVALID_PARAMETER;
   }
 
