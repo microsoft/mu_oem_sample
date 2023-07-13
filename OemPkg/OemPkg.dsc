@@ -163,7 +163,6 @@
 [Components.X64]
   OemPkg/FrontPage/FrontPage.inf
   OemPkg/BootMenu/BootMenu.inf
-  OemPkg/HelloUefi/HelloUefi.inf
   OemPkg/Override/MdeModulePkg/Universal/BootManagerPolicyDxe/BootManagerPolicyDxe.inf
   OemPkg/Library/DeviceBootManagerLib/DeviceBootManagerLib.inf
   OemPkg/Library/MsBootManagerSettingsDxeLib/MsBootManagerSettingsDxeLib.inf
