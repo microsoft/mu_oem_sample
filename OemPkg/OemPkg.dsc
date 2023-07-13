@@ -12,7 +12,7 @@
   PLATFORM_VERSION               = 1.0
   DSC_SPECIFICATION              = 0x00010005
   OUTPUT_DIRECTORY               = Build/OemPkg
-  SUPPORTED_ARCHITECTURES        = IA32|X64
+  SUPPORTED_ARCHITECTURES        = IA32|X64|AARCH64
   BUILD_TARGETS                  = DEBUG|RELEASE
   SKUID_IDENTIFIER               = DEFAULT
 
@@ -85,6 +85,9 @@
   ConfigVariableListLib|SetupDataPkg/Library/ConfigVariableListLib/ConfigVariableListLib.inf
   ActiveProfileIndexSelectorLib|OemPkg/Library/ActiveProfileIndexSelectorPcdLib/ActiveProfileIndexSelectorPcdLib.inf
 
+  # Add support for GCC stack protector
+  NULL|MdePkg/Library/BaseStackCheckLib/BaseStackCheckLib.inf
+
 [LibraryClasses.IA32]
   MsUiThemeLib|MsGraphicsPkg/Library/MsUiThemeLib/Pei/MsUiThemeLib.inf
 
@@ -152,6 +155,7 @@
       NULL|SetupDataPkg/Library/PlatformConfigDataLibNull/PlatformConfigDataLibNull.inf
   }
   OemPkg/Library/ActiveProfileIndexSelectorPcdLib/ActiveProfileIndexSelectorPcdLib.inf
+  OemPkg/HelloUefi/HelloUefi.inf
 
 [Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
