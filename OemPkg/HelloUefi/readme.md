@@ -1,6 +1,6 @@
 # Simple Bootable Media Example
 
-Barebones example of how to boot to an EFI Application with no dependencies
+Barebones example of how to boot to an EFI Application with no dependencies.
 
 ## To boot directly to this EFI application perform the following
 
