@@ -2,7 +2,7 @@
 
 Barebones example of how to boot to an EFI Application with no dependencies.
 
-## To boot directly to this EFI application perform the following
+## Boot Directions
 
 1. Format a usb drive as FAT32
 2. At the root of this usb drive create the following folders: `EFI/Boot/`
