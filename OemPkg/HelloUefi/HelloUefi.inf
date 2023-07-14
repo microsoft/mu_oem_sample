@@ -2,7 +2,7 @@
 #  Sample UEFI Application Reference Module.
 #
 # This sample application that is the simplest UEFI application possible.
-#  It simply prints "Hello Uefi!" to the UEFI Console Out device.
+# It simply prints "Hello Uefi!" to the UEFI Console Out device and stalls the CPU for 30 seconds.
 #
 #  Copyright (C) Microsoft Corporation
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
