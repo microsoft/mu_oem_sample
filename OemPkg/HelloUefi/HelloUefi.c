@@ -10,7 +10,7 @@
 #include <Library/UefiApplicationEntryPoint.h>
 
 // 30 seconds in microseconds
-#define STALL_30_SECONDS 30000000
+#define STALL_30_SECONDS  30000000
 
 /**
   The user Entry Point for Application. The user code starts with this function
@@ -34,7 +34,6 @@ UefiMain (
   EFI_STATUS  Status;
 
   if (SystemTable == NULL) {
-
     return EFI_INVALID_PARAMETER;
   }
 

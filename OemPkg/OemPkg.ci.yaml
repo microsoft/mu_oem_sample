@@ -80,7 +80,9 @@
             "Passw",         # Partial string for password name. Actual name is Passw0rd.
             "OEM's",
             "Bootxxxx",
-            "SECUREBOOT"
+            "SECUREBOOT",
+            "bootaa",
+            "bootx",
         ],
         "AdditionalIncludePaths": [] # Additional paths to spell check relative to package root (wildcards supported)
     }
