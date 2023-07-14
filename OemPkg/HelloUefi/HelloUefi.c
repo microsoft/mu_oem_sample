@@ -33,7 +33,8 @@ UefiMain (
 {
   EFI_STATUS  Status;
 
-  if ((SystemTable == NULL)) {
+  if (SystemTable == NULL) {
+
     return EFI_INVALID_PARAMETER;
   }
 
