@@ -33,3 +33,6 @@
 [Packages]
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
+
+[BuildOptions]
+  RELEASE_GCC5_*_GENFW_FLAGS = -z
