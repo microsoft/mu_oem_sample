@@ -157,6 +157,7 @@
   }
   OemPkg/Library/ActiveProfileIndexSelectorPcdLib/ActiveProfileIndexSelectorPcdLib.inf
   OemPkg/HelloUefi/HelloUefi.inf
+ OemPkg/SecureBootRecovery/SecureBootRecovery.inf
 
 [Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
