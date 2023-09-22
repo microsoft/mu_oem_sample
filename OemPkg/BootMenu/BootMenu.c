@@ -552,6 +552,7 @@ BootMenuEntry (
     DEBUG ((DEBUG_ERROR, "%a: Error on HiiAddPackages. Code=%r\n", __FUNCTION__, Status));
   } else {
     Status = gBS->LocateProtocol (&gEdkiiFormBrowserEx2ProtocolGuid, NULL, (VOID **)&mBrowserEx2);
+    ASSERT_EFI_ERROR (Status);
   }
 
   return EFI_SUCCESS;
