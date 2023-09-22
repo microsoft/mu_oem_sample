@@ -550,13 +550,12 @@ BootMenuEntry (
                                  );
   if (mBootMenuPrivate.HiiHandle == NULL) {
     DEBUG ((DEBUG_ERROR, "%a: Error on HiiAddPackages. Code=%r\n", __FUNCTION__, Status));
-
-    return EFI_OUT_OF_RESOURCES;
+  } else {
+    Status = gBS->LocateProtocol (&gEdkiiFormBrowserEx2ProtocolGuid, NULL, (VOID **)&mBrowserEx2);
+    ASSERT_EFI_ERROR (Status);
   }
 
-  Status = gBS->LocateProtocol (&gEdkiiFormBrowserEx2ProtocolGuid, NULL, (VOID **)&mBrowserEx2);
-
-  return Status;
+  return EFI_SUCCESS;
 }
 
 /**
