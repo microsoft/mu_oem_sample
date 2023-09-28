@@ -66,6 +66,7 @@
         "IgnoreStandardPaths": [     # Standard Plugin defined paths that should be ignore
         ],
         "IgnoreFiles": [             # use gitignore syntax to ignore errors in matching files
+            SecureBootRecovery/RecoveryPayload.h
         ],
         "ExtendWords": [           # words to extend to the dictionary for this package
             "IDCANCEL",     # Used in FrontPage dialogs.

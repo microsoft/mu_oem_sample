@@ -1,17 +1,18 @@
 ## @file
-#  Sample UEFI Application Reference Module.
+#  Secure Boot Recovery Application
 #
-# This sample application that is the simplest UEFI application possible.
-# It simply prints "Hello Uefi!" to the UEFI Console Out device and stalls the CPU for 30 seconds.
+#  This application will attempt to append the 'Windows UEFI CA 2023' and then reboot the system. 
+#  On success, this application will allow the system to boot into 2023 signed Windows
 #
 #  Copyright (C) Microsoft Corporation
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 ##
 
+
 [Defines]
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = SecureBootRecovery
-  FILE_GUID                      = 5b470d41-ee34-4389-981a-f8ee8d7bc2ff
+  FILE_GUID                      = A794734A-B6C6-4461-8E37-7A0422E31FDB
   MODULE_TYPE                    = UEFI_APPLICATION
   VERSION_STRING                 = 1.0
   ENTRY_POINT                    = UefiMain
@@ -24,15 +25,12 @@
 
 [Sources]
   SecureBootRecovery.c
-  SecureBootRecovery.ver
 
 [LibraryClasses]
   UefiApplicationEntryPoint
-  DebugLib
-
+  
 [Packages]
   MdePkg/MdePkg.dec
-  MdeModulePkg/MdeModulePkg.dec
 
 [Guids]
   gEfiImageSecurityDatabaseGuid        ## CONSUMES
