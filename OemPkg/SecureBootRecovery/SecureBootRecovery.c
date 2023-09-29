@@ -9,11 +9,44 @@
 #include <Uefi.h>
 #include <Library/UefiApplicationEntryPoint.h>
 #include <Guid/ImageAuthentication.h>
+#include <Guid/VariableFormat.h>
+#include <Library/BaseLib.h>
 
 #include "RecoveryPayload.h"
 
 // 10 seconds in microseconds
 #define STALL_10_SECONDS  10000000
+
+#define STATUS_SIZE         (sizeof(EFI_STATUS) * 2)
+#define STATUS_STRING_SIZE  (STATUS_SIZE + sizeof(L"\0"))
+
+/**
+ * Converts an EFI_STATUS to a hex string
+ * @param[in] Status The EFI_STATUS to convert
+ *
+ * @return A pointer to a static buffer containing the hex string
+ * @note The caller must not free the returned pointer
+ * @note The returned pointer is only valid until the next call to this function
+*/
+CHAR16 *
+StatusToHexString (
+  EFI_STATUS  Status
+  )
+{
+  STATIC CHAR16  StatusString[STATUS_STRING_SIZE] = { 0 };
+  CONST CHAR16   HexChars[]                       = L"0123456789ABCDEF";
+  UINT32         Shift;
+  UINT32         Index;
+  UINT32         i;
+
+  for (i = 0; i < STATUS_SIZE; i++) {
+    Shift           = ((STATUS_SIZE - 1) - i) * 4;
+    Index           = (Status >> Shift) & 0xF;
+    StatusString[i] = HexChars[Index];
+  }
+
+  return StatusString;
+}
 
 /**
   The user Entry Point for Application. The user code starts with this function
@@ -37,11 +70,7 @@ UefiMain (
   EFI_STATUS  Status;
   UINT32      Attributes;
 
-  Attributes = EFI_VARIABLE_NON_VOLATILE |
-               EFI_VARIABLE_BOOTSERVICE_ACCESS |
-               EFI_VARIABLE_RUNTIME_ACCESS |
-               EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS |
-               EFI_VARIABLE_APPEND_WRITE;
+  Attributes = VARIABLE_ATTRIBUTE_NV_BS_RT_AT | EFI_VARIABLE_APPEND_WRITE;
 
   //
   // Start checking that the system is in a state we can safely use
@@ -69,16 +98,8 @@ UefiMain (
   //
   // Start informing the user of what is happening
   //
-  Status = SystemTable->ConOut->ClearScreen (SystemTable->ConOut);
-  if (EFI_ERROR (Status)) {
-    goto Exit;
-  }
-
-  Status = SystemTable->ConOut->OutputString (SystemTable->ConOut, L"\r\nAttempting to update the system's secureboot certificates\r\n");
-  if (EFI_ERROR (Status)) {
-    goto Exit;
-  }
-
+  SystemTable->ConOut->ClearScreen (SystemTable->ConOut);
+  SystemTable->ConOut->OutputString (SystemTable->ConOut, L"\r\nAttempting to update the system's secureboot certificates\r\n");
   SystemTable->ConOut->OutputString (SystemTable->ConOut, L"Learn more about this tool at https://aka.ms/securebootrecovery\r\n");
 
   //
@@ -97,6 +118,10 @@ UefiMain (
     // Likely this will continue to fail on reboot, the user will hopefully go to https://aka.ms/securebootrecovery to learn more
     //
     SystemTable->ConOut->OutputString (SystemTable->ConOut, L"\r\nFailed to update the system's secureboot keys\r\n");
+    SystemTable->ConOut->OutputString (SystemTable->ConOut, L"Error: 0x");
+    SystemTable->ConOut->OutputString (SystemTable->ConOut, StatusToHexString (Status));
+    SystemTable->ConOut->OutputString (SystemTable->ConOut, L"\r\n");
+
     goto Reboot;
   }
 
@@ -108,7 +133,7 @@ UefiMain (
 Reboot:
 
   //
-  //  Stall for 10 seconds to give the user a chance to read the error message
+  //  Stall for 10 seconds to give the user a chance to read the message
   //
   SystemTable->BootServices->Stall (STALL_10_SECONDS);
 
@@ -126,6 +151,9 @@ Exit:
   // let's atleast try to print an error to the console
   //
   SystemTable->ConOut->OutputString (SystemTable->ConOut, L"Exiting unexpectedly!\r\n");
+  SystemTable->ConOut->OutputString (SystemTable->ConOut, L"Error: 0x");
+  SystemTable->ConOut->OutputString (SystemTable->ConOut, StatusToHexString (Status));
+  SystemTable->ConOut->OutputString (SystemTable->ConOut, L"\r\n");
 
   //
   // Stall for 10 seconds to give the user a chance to read the error message

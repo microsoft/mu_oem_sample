@@ -1,6 +1,10 @@
 # Secure Boot Recovery
 
-This application appends the Windows UEFI CA 2023 to the DB if the DB contains the Microsoft Windows Production PCA 2011
+The Microsoft 2011 Secure Boot Certificates used to boot Windows OS and Third Party applications, drivers, option roms,
+through Secure Boot are expiring on 10/19/2026. New certificates have been created and are available at
+[Keys Required for Secure Boot on all PCs | Learn Microsoft.](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/windows-secure-boot-key-creation-and-management-guidance?view=windows-11).
+
+This EFI application is used to transition a system from the 2011 certificates to the 2023 certificates.
 
 ## Files
 
