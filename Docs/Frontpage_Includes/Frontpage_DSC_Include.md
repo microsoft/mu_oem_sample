@@ -329,13 +329,11 @@ toolkit required for UI display.
 
 ### Security Support
 
-**ResetUtilityLib** contains various helper functions for resetting the system. **BaseBinSecurityLib** is
-a [NULL](#what-are-null-libs?) implementation of a library for initializing security cookies.
+**ResetUtilityLib** contains various helper functions for resetting the system.
 **SecurityLockAuditLib** is another NULL implementation to satisfy compilation dependencies. The implemented
 version supplies necessary functions for logging hardware and software security locks.
 
     ResetUtilityLib|MdeModulePkg/Library/ResetUtilityLib/ResetUtilityLib.inf
-    BaseBinSecurityLib|MdePkg/Library/BaseBinSecurityLibNull/BaseBinSecurityLibNull.inf
     SecurityLockAuditLib|MdeModulePkg/Library/SecurityLockAuditLibNull/SecurityLockAuditLibNull.inf
 
 ## PCDs included
