@@ -12,38 +12,38 @@
 
 #include <Library/DebugLib.h>
 #include <Library/MemoryAllocationLib.h>
-
-#include "MsSecureBootDefaultVars.h"
+#include <Library/PcdLib.h>
 
 #define PLATFORM_SECURE_BOOT_KEY_COUNT  2
 
 SECURE_BOOT_PAYLOAD_INFO  *gSecureBootPayload     = NULL;
 UINT8                     gSecureBootPayloadCount = 0;
 
-// Note: This will not work as it will not be accepted as a valid X509 cert
-CONST UINT8  mDevelopmentPlatformKeyCertificate[] = { 0 };
-
 UINT8                     mSecureBootPayloadCount                            = PLATFORM_SECURE_BOOT_KEY_COUNT;
 SECURE_BOOT_PAYLOAD_INFO  mSecureBootPayload[PLATFORM_SECURE_BOOT_KEY_COUNT] = {
   {
     .SecureBootKeyName = L"Microsoft Only",
-    .KekPtr            = mKekDefault,
-    .KekSize           = sizeof (mKekDefault),
-    .DbPtr             = mDbDefault,
-    .DbSize            = sizeof (mDbDefault),
-    .DbxPtr            = mDbxDefault,
-    .DbxSize           = sizeof (mDbxDefault),
+    .KekPtr            = (CONST UINT8 *)FixedPcdGetPtr (PcdDefaultKek),
+    .KekSize           = (CONST UINT32)FixedPcdGetSize (PcdDefaultKek),
+    .DbPtr             = (CONST UINT8 *)FixedPcdGetPtr (PcdDefaultDb),
+    .DbSize            = (CONST UINT32)FixedPcdGetSize (PcdDefaultDb),
+    .DbxPtr            = (CONST UINT8 *)FixedPcdGetPtr (PcdDefaultDbx),
+    .DbxSize           = (CONST UINT32)FixedPcdGetSize (PcdDefaultDbx),
+    .PkPtr             = (CONST UINT8 *)FixedPcdGetPtr (PcdDefaultPk),
+    .PkSize            = (CONST UINT32)FixedPcdGetSize (PcdDefaultPk),
     .DbtPtr            = NULL,
     .DbtSize           = 0,
   },
   {
     .SecureBootKeyName = L"Microsoft Plus 3rd Party",
-    .KekPtr            = mKekDefault,
-    .KekSize           = sizeof (mKekDefault),
-    .DbPtr             = mDb3PDefault,
-    .DbSize            = sizeof (mDb3PDefault),
-    .DbxPtr            = mDbxDefault,
-    .DbxSize           = sizeof (mDbxDefault),
+    .KekPtr            = (CONST UINT8 *)FixedPcdGetPtr (PcdDefaultKek),
+    .KekSize           = (CONST UINT32)FixedPcdGetSize (PcdDefaultKek),
+    .DbPtr             = (CONST UINT8 *)FixedPcdGetPtr (PcdDefault3PDb),
+    .DbSize            = (CONST UINT32)FixedPcdGetSize (PcdDefault3PDb),
+    .DbxPtr            = (CONST UINT8 *)FixedPcdGetPtr (PcdDefaultDbx),
+    .DbxSize           = (CONST UINT32)FixedPcdGetSize (PcdDefaultDbx),
+    .PkPtr             = (CONST UINT8 *)FixedPcdGetPtr (PcdDefaultPk),
+    .PkSize            = (CONST UINT32)FixedPcdGetSize (PcdDefaultPk),
     .DbtPtr            = NULL,
     .DbtSize           = 0,
   }
@@ -92,55 +92,8 @@ SecureBootKeyStoreLibConstructor (
   VOID
   )
 {
-  EFI_STATUS                    Status;
-  UINTN                         DataSize;
-  EFI_SIGNATURE_LIST            *SigListBuffer = NULL;
-  SECURE_BOOT_CERTIFICATE_INFO  TempInfo       = {
-    .Data     = mDevelopmentPlatformKeyCertificate,
-    .DataSize = sizeof (mDevelopmentPlatformKeyCertificate)
-  };
-
-  //
-  // First, we must build the PK buffer with the correct data.
-  //
-  Status = SecureBootCreateDataFromInput (&DataSize, &SigListBuffer, 1, &TempInfo);
-
-  if (EFI_ERROR (Status)) {
-    DEBUG ((DEBUG_ERROR, "%a - Failed to build PK payload!\n", __FUNCTION__));
-    ASSERT (FALSE);
-  }
-
-  mSecureBootPayload[0].PkPtr  = SigListBuffer;
-  mSecureBootPayload[0].PkSize = DataSize;
-  mSecureBootPayload[1].PkPtr  = SigListBuffer;
-  mSecureBootPayload[1].PkSize = DataSize;
-
   gSecureBootPayload      = mSecureBootPayload;
   gSecureBootPayloadCount = mSecureBootPayloadCount;
-
-  return EFI_SUCCESS;
-}
-
-/**
-  Destructor of SecureBootKeyStoreLib, to free any allocated resources.
-
-  @retval EFI_SUCCESS   The destructor completed successfully.
-  @retval Other value   The destructor did not complete successfully.
-
-**/
-EFI_STATUS
-EFIAPI
-SecureBootKeyStoreLibDestructor (
-  VOID
-  )
-{
-  VOID  *SigListBuffer;
-
-  // This should be initialized from constructor, so casting here is fine
-  SigListBuffer = (VOID *)mSecureBootPayload[0].PkPtr;
-  if (SigListBuffer != NULL) {
-    FreePool (SigListBuffer);
-  }
 
   return EFI_SUCCESS;
 }
