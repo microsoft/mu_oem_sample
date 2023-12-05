@@ -73,7 +73,7 @@
   PasswordStoreLib|OemPkg/Library/PasswordStoreLib/PasswordStoreLib.inf
   PasswordPolicyLib|OemPkg/Library/PasswordPolicyLibNull/PasswordPolicyLibNull.inf
   SecureBootVariableLib|SecurityPkg/Library/SecureBootVariableLib/SecureBootVariableLib.inf
-  SecureBootKeyStoreLib|MsCorePkg/Library/SecureBootKeyStoreLib/SecureBootKeyStoreLib.inf
+  SecureBootKeyStoreLib|MsCorePkg/Library/BaseSecureBootKeyStoreLib/BaseSecureBootKeyStoreLib.inf
   MuSecureBootKeySelectorLib|MsCorePkg/Library/MuSecureBootKeySelectorLib/MuSecureBootKeySelectorLib.inf
   DeviceBootManagerLib|MsCorePkg/Library/DeviceBootManagerLibNull/DeviceBootManagerLibNull.inf
   MathLib|MsCorePkg/Library/MathLib/MathLib.inf
