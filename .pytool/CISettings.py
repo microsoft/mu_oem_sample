@@ -221,17 +221,17 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
             {
                 "Path": "MU_BASECORE",
                 "Url": "https://github.com/Microsoft/mu_basecore.git",
-                "Branch": "release/202302"
+                "Branch": "personal/klautner/rebase/2311_Staging"
             },
             {
                 "Path": "Common/MU",
                 "Url": "https://github.com/Microsoft/mu_plus.git",
-                "Branch": "release/202302"
+                "Branch": "personal/klautner/rebase/2311_Staging"
             },
             {
                 "Path": "Common/MU_TIANO",
                 "Url": "https://github.com/Microsoft/mu_tiano_plus.git",
-                "Branch": "release/202302"
+                "Branch": "personal/klautner/rebase/2311_Staging"
             },
             {
                 "Path": "Features/MU_FEATURE_DFCI",
