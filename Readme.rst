@@ -11,19 +11,19 @@ Ubuntu_GCC5_                  |UbuntuCiBuild|   |UbuntuCiTest|  |UbuntuCiCoverag
 
 This repository is part of Project Mu.  Please see Project Mu for details https://microsoft.github.io/mu
 
-Branch Status - release/202302
+Branch Status - release/202311
 ==============================
 
 :Status:
   In Development
 
 :Entered Development:
-  May 2023
+  Dec 2023
 
 :Anticipated Stabilization:
-  Aug 2023
+  Feb 2024
 
-Branch Changes - release/202302
+Branch Changes - release/202311
 ===============================
 
 Breaking Changes-dev
@@ -41,10 +41,10 @@ Bug Fixes-dev
 
 - Incomplete
 
-Branched from 202208
+Branched from 202302
 --------------------
 
-Commit: de725a19589dc367405493bd3fa7956e62afedd2
+Commit: b340920dce8c0cd7c87865386ae8dc53ecf230e0
 
 Code of Conduct
 ===============
@@ -73,13 +73,13 @@ Copyright & License
 
 .. CoreCI
 
-.. _Windows_VS: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=47&&branchName=release%2F202302
-.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/OEM%20Sample/Mu%20OEM%20Sample%20-%20CI%20-%20Windows%20VS?repoName=microsoft%2Fmu_oem_sample&branchName=release%2F202302
+.. _Windows_VS: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=47&&branchName=release%2F202311
+.. |WindowsCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/OEM%20Sample/Mu%20OEM%20Sample%20-%20CI%20-%20Windows%20VS?repoName=microsoft%2Fmu_oem_sample&branchName=release%2F202311
 .. |WindowsCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/47.svg
 .. |WindowsCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
-.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=48&&branchName=release%2F202302
-.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/OEM%20Sample/Mu%20OEM%20Sample%20-%20CI%20-%20GCC5?repoName=microsoft%2Fmu_oem_sample&branchName=release%2F202302
+.. _Ubuntu_GCC5: https://dev.azure.com/projectmu/mu/_build/latest?definitionId=48&&branchName=release%2F202311
+.. |UbuntuCiBuild| image:: https://dev.azure.com/projectmu/mu/_apis/build/status/CI/OEM%20Sample/Mu%20OEM%20Sample%20-%20CI%20-%20GCC5?repoName=microsoft%2Fmu_oem_sample&branchName=release%2F202311
 .. |UbuntuCiTest| image:: https://img.shields.io/azure-devops/tests/projectmu/mu/48.svg
 .. |UbuntuCiCoverage| image:: https://img.shields.io/badge/coverage-coming_soon-blue
 
