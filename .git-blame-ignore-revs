@@ -1,0 +1,13 @@
+###################################################
+# Line Ending Only Changes                        #
+###################################################
+# Fix line endings (LF to CRLF)
+66656ef038ac9a34ce3d10f4ef3d19d3cc5b7c06
+
+###################################################
+# Code Formatting (Uncrustify) Only Changes       #
+###################################################
+# Fixing Uncrustify break
+2ca270b989185eba7782a24bd19c1fcb9a7b5cd2
+# Uncrustify: Fix up all source files to match coding policy
+a0db1b30cff65401ed68ef510ddeb725c3c4c868
