@@ -100,13 +100,15 @@ DfciIdSupportV1GetSerialNumber (
   EFI_SMBIOS_HANDLE        SmbiosHandle;
   EFI_SMBIOS_TABLE_HEADER  *Record;
   SMBIOS_TYPE              Type;
-  SMBIOS_TABLE_TYPE1       *Type1Record;
+  SMBIOS_TABLE_TYPE1       *Type1Record = NULL;
 
   SmbiosHandle = SMBIOS_HANDLE_PI_RESERVED;      // Reset handle
   Type         = SMBIOS_TYPE_SYSTEM_INFORMATION; // Smbios type1
   Status       = mSmbiosProtocol->GetNext (mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR (Status)) {
     Type1Record = (SMBIOS_TABLE_TYPE1 *)Record;
+  } else {
+    goto Exit;
   }
 
   Status = GetOptionalStringByIndex ((CHAR8 *)((UINT8 *)Type1Record + Type1Record->Hdr.Length), Type1Record->SerialNumber, &NewString, NULL);
@@ -115,6 +117,7 @@ DfciIdSupportV1GetSerialNumber (
     FreePool (NewString);
   }
 
+Exit:
   return Status;
 }
 
@@ -139,7 +142,7 @@ DfciIdSupportGetManufacturer (
   EFI_SMBIOS_HANDLE        SmbiosHandle;
   EFI_SMBIOS_TABLE_HEADER  *Record;
   SMBIOS_TYPE              Type;
-  SMBIOS_TABLE_TYPE1       *Type1Record;
+  SMBIOS_TABLE_TYPE1       *Type1Record = NULL;
 
   if (Manufacturer == NULL) {
     return EFI_INVALID_PARAMETER;
@@ -150,9 +153,13 @@ DfciIdSupportGetManufacturer (
   Status       = mSmbiosProtocol->GetNext (mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR (Status)) {
     Type1Record = (SMBIOS_TABLE_TYPE1 *)Record;
+  } else {
+    goto Exit;
   }
 
   Status = GetOptionalStringByIndex ((CHAR8 *)((UINT8 *)Type1Record + Type1Record->Hdr.Length), Type1Record->Manufacturer, Manufacturer, ManufacturerSize);
+
+Exit:
   return Status;
 }
 
@@ -177,7 +184,7 @@ DfciIdSupportGetProductName (
   EFI_SMBIOS_HANDLE        SmbiosHandle;
   EFI_SMBIOS_TABLE_HEADER  *Record;
   SMBIOS_TYPE              Type;
-  SMBIOS_TABLE_TYPE1       *Type1Record;
+  SMBIOS_TABLE_TYPE1       *Type1Record = NULL;
 
   if (ProductName == NULL) {
     return EFI_INVALID_PARAMETER;
@@ -188,9 +195,13 @@ DfciIdSupportGetProductName (
   Status       = mSmbiosProtocol->GetNext (mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR (Status)) {
     Type1Record = (SMBIOS_TABLE_TYPE1 *)Record;
+  } else {
+    goto Exit;
   }
 
   Status = GetOptionalStringByIndex ((CHAR8 *)((UINT8 *)Type1Record + Type1Record->Hdr.Length), Type1Record->ProductName, ProductName, ProductNameSize);
+
+Exit:
   return Status;
 }
 
@@ -215,7 +226,7 @@ DfciIdSupportGetSerialNumber (
   EFI_SMBIOS_HANDLE        SmbiosHandle;
   EFI_SMBIOS_TABLE_HEADER  *Record;
   SMBIOS_TYPE              Type;
-  SMBIOS_TABLE_TYPE3       *Type3Record;
+  SMBIOS_TABLE_TYPE3       *Type3Record = NULL;
 
   if (SerialNumber == NULL) {
     return EFI_INVALID_PARAMETER;
@@ -226,9 +237,13 @@ DfciIdSupportGetSerialNumber (
   Status       = mSmbiosProtocol->GetNext (mSmbiosProtocol, &SmbiosHandle, &Type, &Record, NULL);
   if (!EFI_ERROR (Status)) {
     Type3Record = (SMBIOS_TABLE_TYPE3 *)Record;
+  } else {
+    goto Exit;
   }
 
   Status = GetOptionalStringByIndex ((CHAR8 *)((UINT8 *)Type3Record + Type3Record->Hdr.Length), Type3Record->SerialNumber, SerialNumber, SerialNumberSize);
+
+Exit:
   return Status;
 }
 
