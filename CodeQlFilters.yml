@@ -1,0 +1,22 @@
+## @file
+# CodeQL Result Filters for Packages in oem_sample
+#
+# Note:
+#   1. Packages that use Mu Basecore can reuse this file to quickly pick up the
+#      same filters applied to results in the Mu Basecore repo.
+#   2. It is recommended paths begin with `**/` in filter files residing in repos that
+#      are used as dependencies by other repos. That way the filter
+#      will apply both in the current repo directly and regardless of where the repo is
+#      located within a downstream repos directory hierarchy.
+#
+# Copyright (c) Microsoft Corporation
+# SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+{
+  "Filters":
+    [
+      "-**/OemPkg/Library/MsBootManagerSettingsDxeLib/BootManagerSettings.c:cpp/unsigned-comparison-zero",
+      "-**/OemPkg/Library/PasswordPolicyLib/PasswordPolicyLib.c:cpp/unused-static-variable",
+    ],
+}

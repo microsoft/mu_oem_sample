@@ -142,10 +142,6 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
                 scopes += codeql_helpers.get_scopes(self.codeql)
 
                 if self.codeql:
-                    shell_environment.GetBuildVars().SetValue(
-                        "STUART_CODEQL_AUDIT_ONLY",
-                        "TRUE",
-                        "Set in CISettings.py")
                     codeql_filter_files = [str(n) for n in glob.glob(
                         os.path.join(self.GetWorkspaceRoot(),
                             '**/CodeQlFilters.yml'),
@@ -188,17 +184,17 @@ class Settings(CiSetupSettingsManager, CiBuildSettingsManager, UpdateSettingsMan
             {
                 "Path": "MU_BASECORE",
                 "Url": "https://github.com/Microsoft/mu_basecore.git",
-                "Branch": "release/202311"
+                "Branch": "release/202405"
             },
             {
                 "Path": "Common/MU",
                 "Url": "https://github.com/Microsoft/mu_plus.git",
-                "Branch": "release/202311"
+                "Branch": "release/202405"
             },
             {
                 "Path": "Common/MU_TIANO",
                 "Url": "https://github.com/Microsoft/mu_tiano_plus.git",
-                "Branch": "release/202311"
+                "Branch": "release/202405"
             },
             {
                 "Path": "Features/MU_FEATURE_DFCI",

@@ -177,7 +177,7 @@ CreateConfPolicy (
     ActiveProfileIndex = GENERIC_PROFILE_INDEX;
   }
 
-  if ((ActiveProfileIndex >= 0) && (ActiveProfileIndex < gNumProfiles)) {
+  if (ActiveProfileIndex < gNumProfiles) {
     // if ActiveProfileIndex == GENERIC_PROFILE_INDEX, we are using the generic profile and don't
     // look for any profile overrides. Otherwise, ensure that the active profile index
     // is valid, otherwise use the generic profile. If it is valid, apply those overrides.
