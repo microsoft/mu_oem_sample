@@ -1,0 +1,48 @@
+## @file
+#  Overrides the Platform Key
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = OverridePlatformKey
+  FILE_GUID                      = 350F56E7-4DE1-4661-97E3-C9D8BBE9D4D2
+  # Ideally this is a transient capsule driver - but this is being built as a DXE_DRIVER for simplicity
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = OverridePlatformKeyEntryPoint
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 AA64
+#
+
+[Sources.common]
+  OverridePlatformKey.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  CryptoPkg/CryptoPkg.dec
+  SecurityPkg/SecurityPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  UefiLib
+  DebugLib
+  BaseCryptLib
+  BaseMemoryLib
+  MemoryAllocationLib
+  UefiDriverEntryPoint
+  SecureBootVariableLib
+  PlatformPKProtectionLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+
+[Protocols]
+
+[Guids]
+  gEfiGlobalVariableGuid        ## CONSUMES
+
+[Depex]
+  gEfiVariableArchProtocolGuid      AND
+  gEfiVariableWriteArchProtocolGuid
