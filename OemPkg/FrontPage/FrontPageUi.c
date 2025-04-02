@@ -649,6 +649,8 @@ UpdateSecureBootStatusStrings (
     CurrentConfig = GetCurrentSecureBootConfig ();
     if (MU_SB_CONFIG_NONE == CurrentConfig) {
       ConfigSubstring = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_GENERIC_TEXT_NONE), NULL);
+    } else if (MU_SB_CONFIG_MS_SERVICED_KEY == CurrentConfig) {
+      ConfigSubstring = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SEC_SB_MS_SERVICED_CONFIG_TEXT), NULL);
     } else if (mSecureBootKeysCount <= CurrentConfig) {
       ConfigSubstring = (CHAR16 *)HiiGetString (mFrontPagePrivate.HiiHandle, STRING_TOKEN (STR_SEC_SB_CUSTOM_CONFIG_TEXT), NULL);
     } else {
