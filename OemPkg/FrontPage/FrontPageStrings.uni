@@ -94,6 +94,8 @@
 
 #string STR_SEC_SB_CUSTOM_CONFIG_TEXT         #language en-US  "custom"
 
+#string STR_SEC_SB_MS_SERVICED_CONFIG_TEXT    #language en-US  "Microsoft Serviced"
+
 #string STR_SEC_SB_KEY_CONFIG_TEXT            #language en-US  "key configuration"
 
 #string STR_SEC_SB_CHANGE_CONFIG_BUTTON       #language en-US  "Change configuration"
