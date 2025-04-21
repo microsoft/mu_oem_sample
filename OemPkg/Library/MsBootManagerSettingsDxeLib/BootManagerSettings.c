@@ -133,7 +133,7 @@ InitializeNvVariable (
         } else if ((Settings.Version >= MS_BOOT_MANAGER_SETTINGS_VERSION1) &&
                    (Settings.Version < MS_BOOT_MANAGER_SETTINGS_VERSION3))
         {
-          // Handle the case where systems have the new settings varirable, but don't have
+          // Handle the case where systems have the new settings variable, but don't have
           // the correct value for USB Boot and, or StartNetworking
           if (Settings.Version == MS_BOOT_MANAGER_SETTINGS_VERSION1) {
             Settings.EnableUsbBoot = PcdGet8 (PcdEnableUsbBoot);
