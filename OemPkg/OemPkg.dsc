@@ -78,9 +78,9 @@
   DeviceBootManagerLib|MsCorePkg/Library/DeviceBootManagerLibNull/DeviceBootManagerLibNull.inf
   MathLib|MsCorePkg/Library/MathLib/MathLib.inf
   FltUsedLib|MdePkg/Library/FltUsedLib/FltUsedLib.inf
-
   RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf
   PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf
+  BaseCryptLib|CryptoPkg/Library/BaseCryptLibNull/BaseCryptLibNull.inf
 
   ConfigVariableListLib|SetupDataPkg/Library/ConfigVariableListLib/ConfigVariableListLib.inf
   ActiveProfileIndexSelectorLib|OemPkg/Library/ActiveProfileIndexSelectorPcdLib/ActiveProfileIndexSelectorPcdLib.inf
@@ -152,6 +152,7 @@
   OemPkg/Library/DeviceBootManagerLib/DeviceBootManagerLib.inf
   OemPkg/Library/MsBootManagerSettingsDxeLib/MsBootManagerSettingsDxeLib.inf
   OemPkg/Library/UpdateFacsHardwareSignatureLib/UpdateFacsHardwareSignatureLib.inf
+  OemPkg/OverridePlatformKey/OverridePlatformKey.inf
 
 [BuildOptions]
 #force deprecated interfaces off
