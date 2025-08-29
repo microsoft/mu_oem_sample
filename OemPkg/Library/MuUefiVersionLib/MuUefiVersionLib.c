@@ -59,6 +59,7 @@ typedef union {
 **/
 STATIC
 UINTN
+EFIAPI
 VerifyStringLength (
   IN  UINTN         TargetLength,
   IN  CONST CHAR16  *Template,
