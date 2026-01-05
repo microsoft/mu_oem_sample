@@ -30,8 +30,8 @@ BOOLEAN
 IsSecureBootOn (
   )
 {
-  EFI_STATUS                       Status;
-  UINTN                            PkSize  = 0;
+  EFI_STATUS  Status;
+  UINTN       PkSize = 0;
 
   Status = gRT->GetVariable (EFI_PLATFORM_KEY_NAME, &gEfiGlobalVariableGuid, NULL, &PkSize, NULL);
   if ((Status == EFI_BUFFER_TOO_SMALL) && (PkSize > 0)) {

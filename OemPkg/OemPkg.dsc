@@ -139,8 +139,14 @@
       # platform data lib
       NULL|SetupDataPkg/Library/PlatformConfigDataLibNull/PlatformConfigDataLibNull.inf
   }
+  OemPkg/OemConfigPolicyCreatorDxe/OemConfigPolicyCreatorDxe.inf {
+    <LibraryClasses>
+      # platform data lib
+      NULL|SetupDataPkg/Library/PlatformConfigDataLibNull/PlatformConfigDataLibNull.inf
+  }
   OemPkg/Library/ActiveProfileIndexSelectorPcdLib/ActiveProfileIndexSelectorPcdLib.inf
   OemPkg/HelloUefi/HelloUefi.inf
+  OemPkg/DeviceStateDxe/DeviceStateDxe.inf
 
 [Components.IA32]
   OemPkg/DeviceStatePei/DeviceStatePei.inf
