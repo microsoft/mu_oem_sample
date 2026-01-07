@@ -1,0 +1,46 @@
+## @file OemConfigPolicyCreatorDxe.inf
+#
+#  This module receives the static platform data for a platform and creates a config policy. It is intended to run
+#  before a platform level Silicon Policy Creator that maps this config policy to silicon policy.
+#
+#  Copyright (C) Microsoft Corporation.
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010017
+  BASE_NAME                      = OemConfigPolicyCreatorDxe
+  FILE_GUID                      = 8C809563-A6CD-4E1C-B02D-E0F92EFA70F0
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = OemConfigPolicyCreatorDxeEntry
+
+[Sources]
+  OemConfigPolicyCreatorDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  PolicyServicePkg/PolicyServicePkg.dec
+  SetupDataPkg/SetupDataPkg.dec
+  OemPkg/OemPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  DebugLib
+  ConfigVariableListLib
+  ConfigKnobShimLib
+  SafeIntLib
+  ActiveProfileIndexSelectorLib
+  PolicyLib
+
+[Protocols]
+  gPolicyProtocolGuid                 ## CONSUMES
+
+[Guids]
+  gOemConfigPolicyGuid                # Guid that config policy is filed under
+  gOemConfigMetadataPolicyGuid        # Guid that config metadata policy is filed under
+
+[Depex]
+  gPolicyProtocolGuid AND             # Needed to file config policy
+  gEfiVariableWriteArchProtocolGuid   # Needed to query variable storage

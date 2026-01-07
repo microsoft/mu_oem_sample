@@ -1,0 +1,40 @@
+## @file DeviceStateDxe.inf
+#
+#  This module checks a device state platform conditions and sets the state
+#  accordingly.
+#
+#  This driver currently implements the following bits in a standard method:
+#    DEVICE_STATE_SECUREBOOT_OFF
+#
+#  Copyright (C) Microsoft Corporation.
+#
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010017
+  BASE_NAME                      = DeviceStateDxe
+  FILE_GUID                      = E3CCCDB0-145F-46DC-9CA9-CC83A84DB3A3
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = DeviceStateDxeEntry
+
+[Sources]
+  DeviceStateDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  DebugLib
+  DeviceStateLib
+  UefiRuntimeServicesTableLib
+
+[Guids]
+  gEfiGlobalVariableGuid
+
+[Depex]
+  gEfiVariableWriteArchProtocolGuid     # Needed to query variable storage
