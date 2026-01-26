@@ -59,7 +59,7 @@
   gDfciStartOfBdsNotifyGuid
   gMsBootMenuFormsetGuid
   gEfiEventPreReadyToBootGuid
-  gEfiEventPostReadyToBootGuid
+  gEfiEventAfterReadyToBootGuid
   gDfciSettingsManagerVarNamespace
 
 [Protocols]
