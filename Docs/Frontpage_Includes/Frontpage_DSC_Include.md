@@ -126,7 +126,7 @@ into V2 DFCI strings.
 are used.
 
     DfciV1SupportLib|DfciPkg/Library/DfciV1SupportLibNull/DfciV1SupportLibNull.inf
-    FltUsedLib|MdePkg/Library/FltUsedLib/FltUsedLib.inf
+    FltUsedLib|MsCorePkg/Library/FltUsedLib/FltUsedLib.inf
 
 ### Library instances which understand the MsXml Settings Schema
 
