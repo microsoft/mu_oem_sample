@@ -36,6 +36,7 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 #include <Library/PcdLib.h>
 #include <Library/PrintLib.h>
 #include <Library/PowerServicesLib.h>
+#include <Library/Tcg2PhysicalPresenceLib.h>
 #include <Library/ThermalServicesLib.h>
 #include <Library/UefiBootServicesTableLib.h>
 #include <Library/UefiLib.h>
@@ -808,6 +809,8 @@ DeviceBootManagerAfterConsole (
       Status = TpmPp->PromptForConfirmation (TpmPp);
       DEBUG ((DEBUG_ERROR, "%a: Unexpected return from Tpm Physical Presence. Code=%r\n", __FUNCTION__, Status));
     }
+
+    Tcg2PhysicalPresenceLibProcessRequest (NULL);
   }
 
   return GetPlatformConnectList ();
