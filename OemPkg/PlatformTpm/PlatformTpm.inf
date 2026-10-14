@@ -1,0 +1,65 @@
+## @file PlatformTpm.inf
+# Primary initialization and configuration driver for TPM 2.0 on QEMU platforms.
+#
+# @copyright
+# Copyright (c) Microsoft Corporation.
+#
+# @par Specification Reference:
+#
+##
+
+
+[Defines]
+  INF_VERSION         = 0x00010017
+  BASE_NAME           = PlatformTpm
+  FILE_GUID           = D3BF1011-54DE-486A-B35F-E66623C73A31
+  VERSION_STRING      = 1.0
+  MODULE_TYPE         = DXE_DRIVER
+  ENTRY_POINT         = DriverEntry
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 AARCH64
+#
+
+
+[Sources]
+  PlatformTpm.c
+  PlatformTpmPpProtocol.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  SecurityPkg/SecurityPkg.dec
+  PcBdsPkg/PcBdsPkg.dec
+
+[LibraryClasses]
+  UefiDriverEntryPoint
+  UefiLib
+  DebugLib
+  BaseLib
+  HobLib
+  Tpm2CommandLib
+  Tcg2PhysicalPresenceLib
+  SecureBootVariableLib
+  UefiBootServicesTableLib
+  UefiRuntimeServicesTableLib
+  OemTpm2InitLibVendor
+  PcdLib
+  Tcg2PhysicalPresencePromptLib
+
+[Guids]
+  gEfiTpmDeviceInstanceNoneGuid                    ## CONSUMES ## EFI_GUID ## Used to indicate that no TPM is installed so initialization will cease.
+  gEfiEventExitBootServicesGuid                    ## CONSUMES ## Event ## Used to secure the TPM at Exit Boot Services
+  gEfiEventPreReadyToBootGuid                      ## CONSUMES ## Event ## Used to secure the TPM before Ready to Boot
+
+[Protocols]
+  gTpmPpProtocolGuid    ## PRODUCES
+
+[Pcd]
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid                          ## CONSUMES
+
+[Depex]
+  gEfiVariableArchProtocolGuid AND
+  gEfiVariableWriteArchProtocolGuid

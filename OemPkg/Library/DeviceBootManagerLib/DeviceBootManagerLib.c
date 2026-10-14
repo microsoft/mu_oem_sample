@@ -808,9 +808,9 @@ DeviceBootManagerAfterConsole (
     if (!EFI_ERROR (Status) && (TpmPp != NULL)) {
       Status = TpmPp->PromptForConfirmation (TpmPp);
       DEBUG ((DEBUG_ERROR, "%a: Unexpected return from Tpm Physical Presence. Code=%r\n", __FUNCTION__, Status));
+    } else {
+      DEBUG ((DEBUG_ERROR, "%a: Unable to locate Tpm Physical Presence Protocol. Code=%r\n", __func__, Status));
     }
-
-    Tcg2PhysicalPresenceLibProcessRequest (NULL);
   }
 
   return GetPlatformConnectList ();
